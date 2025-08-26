@@ -736,17 +736,7 @@ export const FeedPage: React.FC = () => {
 
                     
 
-                    {/* Duration Badge for videos */}
-                    {post.type === 'video' && (
-                      <div className="absolute bottom-2 right-2 bg-black text-white text-xs px-2 py-1 rounded">
-                        {post.duration || '0:00'}
-                      </div>
-                    )}
-
-                    {/* Media Type Badge */}
-                    <div className="absolute top-2 right-2 bg-black rounded px-2 py-1">
-                      {getTypeIcon(post.type)}
-                    </div>
+                    
                   </div>
 
                   {/* Bottom section - VideoWatch Up Next style */}
@@ -948,21 +938,7 @@ export const FeedPage: React.FC = () => {
 
                   
 
-                  {/* Duration overlay for videos */}
-                  {post.type === 'video' && (
-                    <div className="absolute bottom-2 right-2">
-                      <div className="px-2 py-1 bg-black/80 rounded text-white text-xs font-medium">
-                        {Math.floor(Math.random() * 10) + 1}:{Math.floor(Math.random() * 60).toString().padStart(2, '0')}
-                      </div>
-                    </div>
-                  )}
-
-                    {/* Content type badge */}
-                    <div className="absolute top-2 left-2">
-                      <Badge variant={getTierColor(post.tier)} className="text-xs">
-                        {post.tier === 'public' ? 'Free' : post.tier}
-                      </Badge>
-                    </div>
+                  
                   </div>
 
                 {/* YouTube-style content below thumbnail */}
@@ -1081,21 +1057,7 @@ export const FeedPage: React.FC = () => {
 
                     
 
-                    {/* Duration overlay for videos */}
-                    {post.type === 'video' && (
-                      <div className="absolute bottom-4 right-4">
-                        <div className="px-2 py-1 bg-black/80 rounded text-white text-sm font-medium">
-                          {Math.floor(Math.random() * 10) + 1}:{Math.floor(Math.random() * 60).toString().padStart(2, '0')}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Tier badge */}
-                    <div className="absolute top-4 left-4">
-                      <Badge variant={getTierColor(post.tier)} className="text-sm">
-                        {post.tier === 'public' ? 'Free' : post.tier}
-                      </Badge>
-                    </div>
+                    
                   </div>
 
                   {/* Creator Info and Content - VideoWatch Up Next style */}

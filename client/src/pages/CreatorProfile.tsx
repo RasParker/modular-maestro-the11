@@ -1714,23 +1714,7 @@ export const CreatorProfile: React.FC = () => {
                             }
                           })()}
 
-                          {/* Content type overlay - only show for non-video media */}
-                          {post.media_type !== 'video' && (
-                            <div className="absolute top-2 left-2">
-                              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-black/60 backdrop-blur-sm">
-                                {getMediaOverlayIcon(post.media_type)}
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Duration overlay for videos */}
-                          {post.media_type === 'video' && (
-                            <div className="absolute bottom-2 right-2">
-                              <div className="px-1 py-0.5 bg-black/60 rounded text-white text-xs">
-                                {Math.floor(Math.random() * 10) + 1}:{Math.floor(Math.random() * 60).toString().padStart(2, '0')}
-                              </div>
-                            </div>
-                          )}
+                          {/* No overlays here for mobile */}
                         </div>
 
                         {/* Bottom section - VideoWatch Up Next style */}
@@ -1945,38 +1929,7 @@ export const CreatorProfile: React.FC = () => {
                             })()}
 
 
-                            {/* Duration overlay for videos */}
-                            {post.media_type === 'video' && hasAccessToTier(post.tier) && (
-                              <div className="absolute bottom-4 right-4">
-                                <div className="px-2 py-1 bg-black/80 rounded text-white text-sm font-medium">
-                                  {Math.floor(Math.random() * 10) + 1}:{Math.floor(Math.random() * 60).toString().padStart(2, '0')}
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Tier badge */}
-                            <div className="absolute top-4 left-4">
-                              <Badge variant={getTierColor(post.tier)} className="text-sm">
-                                {post.tier === 'public' ? 'Free' : 
-                                 post.tier.toLowerCase() === 'starter pump' ? 'Starter Pump' :
-                                 post.tier.toLowerCase() === 'power gains' ? 'Power Gains' :
-                                 post.tier.toLowerCase() === 'elite beast mode' ? 'Elite Beast Mode' :
-                                 post.tier.toLowerCase().includes('starter') ? 'Starter Pump' :
-                                 post.tier.toLowerCase().includes('power') ? 'Power Gains' :
-                                 post.tier.toLowerCase().includes('elite') ? 'Elite Beast Mode' :
-                                 post.tier.toLowerCase().includes('beast') ? 'Elite Beast Mode' :
-                                 post.tier}
-                              </Badge>
-                            </div>
-
-                            {/* Content type overlay - only show for non-video media */}
-                            {post.media_type !== 'video' && (
-                              <div className="absolute top-4 right-4">
-                                <div className="flex items-center justify-center w-6 h-6 rounded-full bg-black/60 backdrop-blur-sm">
-                                  {getMediaOverlayIcon(post.media_type)}
-                                </div>
-                              </div>
-                            )}
+                            {/* No overlays here for desktop */}
                           </div>
 
                           {/* Creator Info and Content - Fan Feed Single View Style */}
@@ -2205,23 +2158,7 @@ export const CreatorProfile: React.FC = () => {
                             }
                           })()}
 
-                          {/* Content type overlay - only show for non-video media */}
-                          {post.media_type !== 'video' && (
-                            <div className="absolute top-2 left-2">
-                              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-black/60 backdrop-blur-sm">
-                                {getMediaOverlayIcon(post.media_type)}
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Duration overlay for videos */}
-                          {post.media_type === 'video' && (
-                            <div className="absolute bottom-2 right-2">
-                              <div className="px-1 py-0.5 bg-black/60 rounded text-white text-xs">
-                                {Math.floor(Math.random() * 10) + 1}:{Math.floor(Math.random() * 60).toString().padStart(2, '0')}
-                              </div>
-                            </div>
-                          )}
+                          {/* No overlays here for mobile */}
                         </div>
 
                         {/* Bottom section - VideoWatch Up Next style */}
@@ -2436,38 +2373,7 @@ export const CreatorProfile: React.FC = () => {
                             })()}
 
 
-                            {/* Duration overlay for videos */}
-                            {post.media_type === 'video' && hasAccessToTier(post.tier) && (
-                              <div className="absolute bottom-4 right-4">
-                                <div className="px-2 py-1 bg-black/80 rounded text-white text-sm font-medium">
-                                  {Math.floor(Math.random() * 10) + 1}:{Math.floor(Math.random() * 60).toString().padStart(2, '0')}
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Tier badge */}
-                            <div className="absolute top-4 left-4">
-                              <Badge variant={getTierColor(post.tier)} className="text-sm">
-                                {post.tier === 'public' ? 'Free' : 
-                                 post.tier.toLowerCase() === 'starter pump' ? 'Starter Pump' :
-                                 post.tier.toLowerCase() === 'power gains' ? 'Power Gains' :
-                                 post.tier.toLowerCase() === 'elite beast mode' ? 'Elite Beast Mode' :
-                                 post.tier.toLowerCase().includes('starter') ? 'Starter Pump' :
-                                 post.tier.toLowerCase().includes('power') ? 'Power Gains' :
-                                 post.tier.toLowerCase().includes('elite') ? 'Elite Beast Mode' :
-                                 post.tier.toLowerCase().includes('beast') ? 'Elite Beast Mode' :
-                                 post.tier}
-                              </Badge>
-                            </div>
-
-                            {/* Content type overlay - only show for non-video media */}
-                            {post.media_type !== 'video' && (
-                              <div className="absolute top-4 right-4">
-                                <div className="flex items-center justify-center w-6 h-6 rounded-full bg-black/60 backdrop-blur-sm">
-                                  {getMediaOverlayIcon(post.media_type)}
-                                </div>
-                              </div>
-                            )}
+                            {/* No overlays here for desktop */}
                           </div>
 
                           {/* Creator Info and Content - Fan Feed Single View Style */}
