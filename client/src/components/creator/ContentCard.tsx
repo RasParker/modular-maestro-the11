@@ -114,8 +114,8 @@ export const ContentCard: React.FC<ContentCardProps> = ({
 
   return (
     <Card className="bg-gradient-card border-border/50 hover:border-primary/20 transition-all duration-200">
-      <CardContent className="p-4">
-        <div className="flex items-center gap-3 p-3 bg-background/50 rounded-lg border border-border/50">
+      <CardContent className="p-3">
+        <div className="flex items-center gap-3 p-3 bg-background/50 rounded-lg">
           {/* Thumbnail */}
           <div className="flex-shrink-0">
             {mediaPreview ? (
