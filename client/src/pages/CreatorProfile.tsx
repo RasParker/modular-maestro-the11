@@ -729,19 +729,32 @@ export const CreatorProfile: React.FC = () => {
 
   // Filter posts based on active tab
   const getFilteredPosts = () => {
-    if (!userPosts || !Array.isArray(userPosts)) return [];
+    if (!userPosts || !Array.isArray(userPosts)) {
+      console.log('No userPosts available:', userPosts);
+      return [];
+    }
 
     console.log('Active tab:', activeTab);
     console.log('All user posts:', userPosts.map(p => ({ id: p.id, tier: p.tier, title: p.title })));
 
     switch (activeTab) {
       case 'public':
-        const publicPosts = userPosts.filter(post => post.tier === 'public');
-        console.log('Filtered public posts:', publicPosts.length);
+        const publicPosts = userPosts.filter(post => {
+          const tier = post.tier?.toLowerCase();
+          const isPublic = tier === 'public';
+          console.log(`Post ${post.id}: tier="${post.tier}" (normalized: "${tier}") isPublic: ${isPublic}`);
+          return isPublic;
+        });
+        console.log('Filtered public posts:', publicPosts.length, publicPosts.map(p => ({ id: p.id, tier: p.tier })));
         return publicPosts;
       case 'subscription':
-        const subscriptionPosts = userPosts.filter(post => post.tier !== 'public');
-        console.log('Filtered subscription posts:', subscriptionPosts.length);
+        const subscriptionPosts = userPosts.filter(post => {
+          const tier = post.tier?.toLowerCase();
+          const isSubscription = tier !== 'public';
+          console.log(`Post ${post.id}: tier="${post.tier}" (normalized: "${tier}") isSubscription: ${isSubscription}`);
+          return isSubscription;
+        });
+        console.log('Filtered subscription posts:', subscriptionPosts.length, subscriptionPosts.map(p => ({ id: p.id, tier: p.tier })));
         return subscriptionPosts;
       case 'all':
       default:
@@ -756,12 +769,12 @@ export const CreatorProfile: React.FC = () => {
 
     const counts = {
       all: userPosts.length,
-      subscription: userPosts.filter(post => post.tier !== 'public').length,
-      public: userPosts.filter(post => post.tier === 'public').length
+      subscription: userPosts.filter(post => post.tier?.toLowerCase() !== 'public').length,
+      public: userPosts.filter(post => post.tier?.toLowerCase() === 'public').length
     };
 
     console.log('Post counts:', counts);
-    console.log('Posts by tier:', userPosts.map(p => p.tier));
+    console.log('Posts by tier:', userPosts.map(p => ({ id: p.id, tier: p.tier, tierLower: p.tier?.toLowerCase() })));
     
     return counts;
   };
