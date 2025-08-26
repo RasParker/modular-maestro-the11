@@ -729,28 +729,41 @@ export const CreatorProfile: React.FC = () => {
 
   // Filter posts based on active tab
   const getFilteredPosts = () => {
-    if (!userPosts) return [];
+    if (!userPosts || !Array.isArray(userPosts)) return [];
+
+    console.log('Active tab:', activeTab);
+    console.log('All user posts:', userPosts.map(p => ({ id: p.id, tier: p.tier, title: p.title })));
 
     switch (activeTab) {
       case 'public':
-        return userPosts.filter(post => post.tier === 'public');
+        const publicPosts = userPosts.filter(post => post.tier === 'public');
+        console.log('Filtered public posts:', publicPosts.length);
+        return publicPosts;
       case 'subscription':
-        return userPosts.filter(post => post.tier !== 'public');
+        const subscriptionPosts = userPosts.filter(post => post.tier !== 'public');
+        console.log('Filtered subscription posts:', subscriptionPosts.length);
+        return subscriptionPosts;
       case 'all':
       default:
+        console.log('Showing all posts:', userPosts.length);
         return userPosts;
     }
   };
 
   // Get post counts for each tab
   const getPostCounts = () => {
-    if (!userPosts) return { all: 0, subscription: 0, public: 0 };
+    if (!userPosts || !Array.isArray(userPosts)) return { all: 0, subscription: 0, public: 0 };
 
-    return {
+    const counts = {
       all: userPosts.length,
       subscription: userPosts.filter(post => post.tier !== 'public').length,
       public: userPosts.filter(post => post.tier === 'public').length
     };
+
+    console.log('Post counts:', counts);
+    console.log('Posts by tier:', userPosts.map(p => p.tier));
+    
+    return counts;
   };
 
   const handleContentClick = (post: any) => {
@@ -2484,9 +2497,14 @@ export const CreatorProfile: React.FC = () => {
                   <CardContent className="p-6">
                     <div className="text-center py-4">
                       <DollarSign className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="text-lg font-medium mb-2">No public posts yet</h3>
+                      <h3 className="text-lg font-medium mb-2">No posts in this category</h3>
                       <p className="text-muted-foreground text-sm">
-                        {isOwnProfile ? 'Create some free content to attract new fans.' : `${creator.display_name} hasn't posted any public content yet.`}
+                        {activeTab === 'all' 
+                          ? (isOwnProfile ? 'Start creating content to build your audience.' : `${creator.display_name} hasn't posted any content yet.`)
+                          : activeTab === 'public'
+                          ? (isOwnProfile ? 'No public posts yet. Create some free content to attract new fans.' : `${creator.display_name} hasn't posted any public content yet.`)
+                          : (isOwnProfile ? 'No subscription content yet. Create premium posts for your subscribers.' : `${creator.display_name} hasn't posted any subscription content yet.`)
+                        }
                       </p>
                     </div>
                   </CardContent>
