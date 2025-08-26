@@ -347,9 +347,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all posts endpoint
   app.get("/api/posts", async (req, res) => {
     try {
-      const { status, creatorId } = req.query;
+      const { status, creatorId, includeAll } = req.query;
 
-      console.log('Fetching posts with params:', { status, creatorId });
+      console.log('Fetching posts with params:', { status, creatorId, includeAll });
 
       let query = `
         SELECT 
@@ -369,9 +369,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       `;
       const params: any[] = [];
 
-      if (status) {
+      if (includeAll === 'true') {
+        // For Content Manager - include all posts regardless of status or schedule
+        // No additional status filtering
+      } else if (status && status !== 'all') {
         query += ` AND posts.status = $${params.length + 1}`;
         params.push(status);
+      } else {
+        // Default behavior for profile views - show only published posts and scheduled posts that are due
+        query += ` AND (posts.status = 'published' OR (posts.status = 'scheduled' AND posts.scheduled_for <= NOW()))`;
       }
 
       if (creatorId) {
