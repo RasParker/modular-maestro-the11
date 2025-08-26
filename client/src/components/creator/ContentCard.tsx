@@ -17,14 +17,9 @@ import {
   FileText,
   Edit,
   CheckCircle,
-  MoreVertical
+  
 } from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+
 
 interface ContentCardProps {
   id: string;
@@ -163,7 +158,13 @@ export const ContentCard: React.FC<ContentCardProps> = ({
 
           {/* Content Info */}
           <div className="flex-1 min-w-0">
-            <h4 className="font-medium text-sm line-clamp-1 break-words overflow-hidden truncate mb-1">{caption}</h4>
+            <h4 className="font-medium text-sm line-clamp-1 break-words overflow-hidden truncate mb-1" style={{ 
+              display: '-webkit-box',
+              WebkitLineClamp: 1,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis'
+            }}>{caption}</h4>
             <div className="flex items-center gap-2 mb-2">
               <Badge variant={getTierColor(tier)} className="text-xs">{tier}</Badge>
               <span className="text-xs text-muted-foreground">{date}</span>
@@ -229,25 +230,17 @@ export const ContentCard: React.FC<ContentCardProps> = ({
                     <CheckCircle className="w-4 h-4" />
                   </Button>
                 )}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                      <MoreVertical className="w-4 h-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem
-                      onClick={(e) => {
-                        e.preventDefault();
-                        onDelete(id);
-                      }}
-                      className="text-destructive"
-                    >
-                      <Trash2 className="w-4 h-4 mr-2" />
-                      Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onDelete(id);
+                  }}
+                  className="h-8 w-8 p-0 text-destructive hover:text-destructive/80"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
               </div>
             </div>
           </div>
