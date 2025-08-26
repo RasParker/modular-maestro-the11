@@ -158,14 +158,14 @@ export const ContentCard: React.FC<ContentCardProps> = ({
 
           {/* Content Info */}
           <div className="flex-1 min-w-0">
-            <h4 className="font-medium text-sm line-clamp-1 break-words overflow-hidden truncate mb-1" style={{ 
+            <h4 className="font-medium text-sm line-clamp-1 break-words overflow-hidden truncate mb-0.5" style={{ 
               display: '-webkit-box',
               WebkitLineClamp: 1,
               WebkitBoxOrient: 'vertical',
               overflow: 'hidden',
               textOverflow: 'ellipsis'
             }}>{caption}</h4>
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2 mb-1">
               <Badge variant={getTierColor(tier)} className="text-xs">{tier}</Badge>
               <span className="text-xs text-muted-foreground">{date}</span>
               {status === 'Scheduled' && scheduledFor && (
