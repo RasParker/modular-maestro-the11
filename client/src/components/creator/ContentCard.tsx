@@ -143,17 +143,6 @@ export const ContentCard: React.FC<ContentCardProps> = ({
                 {getTypeIcon()}
               </div>
             )}
-
-
-
-            {/* Duration overlay for videos - Only show for Published content */}
-            {type === 'Video' && status === 'Published' && (
-              <div className="absolute bottom-1 right-1">
-                <div className="px-1 py-0.5 bg-black/80 rounded text-white text-xs font-medium">
-                  {Math.floor(Math.random() * 10) + 1}:{Math.floor(Math.random() * 60).toString().padStart(2, '0')}
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Content Info */}
