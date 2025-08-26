@@ -1,0 +1,33 @@
+Since you're ready to implement this, here is a new, revised prompt for the Replit AI to pivot your design.
+"Hello! I've decided to update my platform's design to follow the standard YouTube layout for both mobile and desktop. Please help me refactor my video experience.
+The goal is to have a main video player at the top of the screen with a scrollable content area below it for the video description, creator info, and comments.
+Here are the new requirements:
+1. Refactor the Main Video "Watch" Page
+This will be the core page where users watch content.
+ * Layout (CSS/HTML):
+   * Create a two-part layout for the mobile view:
+     * A top container (<div class="video-player-wrapper">) that will hold the video. This container should have a 16:9 aspect ratio and stick to the top.
+     * A bottom container (<div class="content-wrapper">) that is scrollable and will hold the title, description, and comments.
+   * Inside .video-player-wrapper, the <video> element should be styled with width: 100%; height: 100%;.
+ * Video Handling Logic (CSS/JavaScript):
+   * The video element should still use the data-aspect-ratio attribute ('portrait' or 'landscape').
+   * For a landscape video (data-aspect-ratio="landscape"), use object-fit: cover; to ensure it fills the 16:9 player wrapper completely.
+   * For a portrait video (data-aspect-ratio="portrait"), use object-fit: contain; and background-color: black;. This will center the vertical video within the horizontal player, creating the "pillarbox" effect.
+2. Implement an "Immersive Mode" for Vertical Videos
+ * HTML: In the video player's controls, add a "fullscreen/expand" button.
+ * JavaScript:
+   * When the video loads, check its data-aspect-ratio.
+   * Add a click listener to the fullscreen button.
+   * If the video's aspect ratio is 'portrait', the button click should add a class like is-immersive to the main page container.
+ * CSS:
+   * The .is-immersive .video-player-wrapper should be styled with position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999;.
+   * The .is-immersive .content-wrapper should be hidden (display: none;).
+   * This will make the player take over the entire screen, providing an immersive 9:16 experience. Clicking a close button or pressing 'escape' should remove the class and return to the standard view.
+3. Refactor the Feed Page
+The feed should now be a list of video thumbnails, not fullscreen players.
+ * Layout (CSS/HTML):
+   * Change the feed items from the tall 9:16 containers to smaller "card" elements.
+   * Each card should have:
+     * A video thumbnail <img> at the top, styled with a 16:9 aspect ratio.
+     * A content area below the thumbnail for the video title, creator's name, view count, and time since upload.
+   * This should be a vertically scrollable list of cards."

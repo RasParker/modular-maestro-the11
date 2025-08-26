@@ -1,0 +1,52 @@
+Of course. Here is a detailed prompt you can provide to the Replit AI agent to implement the flexible video handling system on your feed and upload pages.
+
+---
+
+### Prompt for Replit AI
+
+"Hello! I am building a content monetization web app. I need your help to implement a system that can elegantly handle both vertical ($9:16$) and horizontal ($16:9$) videos. Please modify my existing `feed` page and `upload` page to support this.
+
+Here are the detailed requirements:
+
+**1. Update the Feed Page (`feed.html`, `feed.css`, `feed.js`)**
+
+The goal is to display all videos in a consistent, vertically-oriented container, regardless of their original aspect ratio.
+
+* **HTML (`feed.html`):**
+    * In the main feed section, ensure each video post is wrapped in a container, like `<div class="video-post-container">`.
+    * Inside this container, place the `<video>` element. The video element should have a data attribute that we'll use for styling, like `data-aspect-ratio="portrait"` or `data-aspect-ratio="landscape"`.
+
+* **CSS (`feed.css`):**
+    * Style the `.video-post-container` to have a fixed **aspect ratio of 9:16**. Make it fill a good portion of the screen width (e.g., `width: 100%; max-width: 400px; margin: 20px auto;`).
+    * Style the `<video>` element inside the container to be `width: 100%;` and `height: 100%;`.
+    * Use the data attribute to apply the crucial styling:
+        * For vertical videos (`video[data-aspect-ratio="portrait"]`): Use `object-fit: cover;` to make it fill the entire container.
+        * For horizontal videos (`video[data-aspect-ratio="landscape"]`): Use `object-fit: contain;` This will fit the video within the container, resulting in black bars on the top and bottom (pillarboxing).
+
+* **JavaScript (`feed.js`):**
+    * Create a mock array of video objects to demonstrate. Each object should have a `src` URL and an `aspectRatio` property ('portrait' or 'landscape').
+    * Write a function to dynamically generate the video posts and append them to the feed, correctly setting the `data-aspect-ratio` attribute on each video tag based on the mock data.
+
+---
+
+**2. Update the Creator Upload Page (`upload.html`, `upload.js`)**
+
+The goal is to let creators upload a video and see an **immediate, accurate preview** of how it will appear in the feed.
+
+* **HTML (`upload.html`):**
+    * Add an `<input type="file" id="videoUpload" accept="video/*">`.
+    * Create a "Preview" section on the page. Inside this section, add a container that is styled exactly like `.video-post-container` from the feed page. This container will hold the preview video.
+
+* **JavaScript (`upload.js`):**
+    * Add an event listener for the `change` event on the `#videoUpload` input.
+    * When a user selects a file:
+        1.  Get the selected video file.
+        2.  Use `URL.createObjectURL()` to create a temporary local URL for the file.
+        3.  Set this temporary URL as the `src` for a `<video>` element inside your preview container.
+        4.  Add an event listener for the `loadedmetadata` event on that preview video element.
+        5.  Inside the `loadedmetadata` event handler, access `video.videoWidth` and `video.videoHeight`.
+        6.  Calculate the aspect ratio (`videoWidth / videoHeight`).
+        7.  Based on the result, set the `data-aspect-ratio` attribute on the preview video element to either 'portrait' or 'landscape'. This will make the preview automatically style itself correctly using the CSS from step 1.
+        8.  (Optional) Display the detected dimensions and aspect ratio to the user for their information.
+
+This implementation will provide a seamless experience for both creators and viewers on your platform."

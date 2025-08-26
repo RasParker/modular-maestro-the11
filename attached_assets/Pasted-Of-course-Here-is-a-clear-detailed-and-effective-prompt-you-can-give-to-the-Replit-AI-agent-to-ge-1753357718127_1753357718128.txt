@@ -1,0 +1,37 @@
+Of course. Here is a clear, detailed, and effective prompt you can give to the Replit AI agent to get the exact result you're looking for.
+
+Just copy and paste the text below into the Replit AI chat.
+
+***
+
+### Prompt for Replit AI
+
+Hello Replit AI,
+
+Please create the fan's feed page for my web application. I want to implement an immersive, vertical scrolling feed, styled exactly like Instagram Reels or TikTok, where each post fills the screen vertically.
+
+Here are the detailed requirements:
+
+**1. File Structure:**
+* Create an `index.html` file for the structure.
+* Create a `style.css` file for the styling.
+
+**2. HTML (`index.html`):**
+* The body should contain a main `<div class="feed-container">`.
+* Inside the feed container, create at least three individual posts using `<div class="media-post">`.
+* For the content, use placeholder images to simulate posts. Make them different colors to be distinct.
+    * Post 1: `https://placehold.co/1080x1920/E63946/FFFFFF?text=Creator+Post+1`
+    * Post 2: `https://placehold.co/1080x1920/457B9D/FFFFFF?text=Creator+Post+2`
+    * Post 3: `https://placehold.co/1080x1920/1D3557/FFFFFF?text=Creator+Post+3`
+* Inside each `media-post`, add a simple overlay for the user interface with a class like `post-overlay`. Include a placeholder for the creator's name (e.g., `<p>@CreatorName</p>`).
+
+**3. CSS (`style.css`):**
+* Set the page background to black (`#000`).
+* Center the `feed-container` horizontally on the page.
+* **Crucially, style the `.media-post` container to have a 9:16 aspect ratio.** Use the `aspect-ratio: 9 / 16;` property.
+* Give the `.media-post` a `max-width` of around `470px` so it looks good on desktop, but ensure it scales down on mobile.
+* The `<img>` tag inside each post must fill its container perfectly without distortion. Use `width: 100%`, `height: 100%`, and **`object-fit: cover;`**.
+* Style the `.post-overlay` to sit on top of the media. Give the text a white color and a subtle text shadow so it's readable.
+* Add a `gap` or `margin-bottom` to the posts for spacing.
+
+The final result should be a clean, centered, vertical column of 9:16 posts that I can scroll through. Thank you!

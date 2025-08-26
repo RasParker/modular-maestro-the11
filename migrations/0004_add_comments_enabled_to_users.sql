@@ -1,0 +1,2 @@
+
+ALTER TABLE users ADD COLUMN comments_enabled BOOLEAN DEFAULT TRUE NOT NULL;
