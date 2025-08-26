@@ -44,18 +44,7 @@ export const ContentScheduleCard: React.FC<ContentScheduleCardProps> = ({
   onPublish,
   scheduledFor
 }) => {
-  const getTypeIcon = () => {
-    switch (type) {
-      case 'Image':
-        return <Image className="w-6 h-6 text-muted-foreground" />;
-      case 'Video':
-        return <Video className="w-6 h-6 text-muted-foreground" />;
-      case 'Text':
-        return <FileText className="w-6 h-6 text-muted-foreground" />;
-      default:
-        return <FileText className="w-6 h-6 text-muted-foreground" />;
-    }
-  };
+  
 
   return (
     <div className="flex items-center gap-3 p-3 bg-background/50 rounded-lg">
@@ -102,12 +91,14 @@ export const ContentScheduleCard: React.FC<ContentScheduleCardProps> = ({
           })()
         ) : (
           <div className="w-16 h-16 bg-gradient-to-br from-accent/20 to-accent/10 rounded-lg flex items-center justify-center">
-            {getTypeIcon()}
+            <div className="text-center text-muted-foreground">
+              <p className="text-xs font-medium">{type}</p>
+            </div>
           </div>
         )}
       </div>
       <div className="flex-1 min-w-0">
-        <h4 className="font-medium text-sm line-clamp-2 break-words overflow-hidden">{title || description || 'Untitled Post'}</h4>
+        <h4 className="font-medium text-sm line-clamp-1 break-words overflow-hidden truncate">{title || description || 'Untitled Post'}</h4>
         <div className="flex items-center gap-2 mt-1">
           <Badge variant="outline" className="text-xs">{tier}</Badge>
           <span className="text-xs text-muted-foreground truncate">

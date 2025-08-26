@@ -380,7 +380,7 @@ export const CreatorDashboard: React.FC = () => {
                                   )}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                  <h4 className="font-medium text-sm truncate">{content.content || content.title || 'Untitled Post'}</h4>
+                                  <h4 className="font-medium text-sm line-clamp-1 break-words overflow-hidden truncate">{content.title || content.content || 'Untitled Post'}</h4>
                                   <div className="flex items-center gap-2 mt-1">
                                     <Badge variant="outline" className="text-xs">{content.tier}</Badge>
                                     <span className="text-xs text-muted-foreground">
@@ -480,7 +480,7 @@ export const CreatorDashboard: React.FC = () => {
                               )}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <h4 className="font-medium text-sm truncate">{content.content || content.title || 'Untitled Post'}</h4>
+                              <h4 className="font-medium text-sm line-clamp-1 break-words overflow-hidden truncate">{content.title || content.content || 'Untitled Post'}</h4>
                               <div className="flex items-center gap-2 mt-1">
                                 <Badge variant="outline" className="text-xs">{content.tier}</Badge>
                                 <span className="text-xs text-muted-foreground">
@@ -607,7 +607,7 @@ export const CreatorDashboard: React.FC = () => {
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h4 className="font-medium text-sm line-clamp-2 break-words">{post.caption || post.title || 'Untitled Post'}</h4>
+                            <h4 className="font-medium text-sm line-clamp-1 break-words overflow-hidden truncate">{post.caption || post.title || 'Untitled Post'}</h4>
                             <div className="flex items-center gap-2 mt-1">
                               <Badge variant="outline" className="text-xs">{post.tier}</Badge>
                               <span className="text-xs text-muted-foreground truncate">
@@ -691,7 +691,7 @@ export const CreatorDashboard: React.FC = () => {
                               )}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <h4 className="font-medium text-sm line-clamp-2 break-words">{post.caption || post.title || 'Untitled Post'}</h4>
+                              <h4 className="font-medium text-sm line-clamp-1 break-words overflow-hidden truncate">{post.caption || post.title || 'Untitled Post'}</h4>
                               <div className="flex items-center gap-2 mt-1">
                                 <Badge variant="outline" className="text-xs">{post.tier}</Badge>
                                 <span className="text-xs text-muted-foreground truncate">
