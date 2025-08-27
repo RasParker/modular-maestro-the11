@@ -2740,14 +2740,15 @@ export const CreatorProfile: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Desktop: Grid layout */}
+                {/* Desktop: YouTube-style 16:9 card layout */}
                 <div className="hidden md:block">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="max-w-4xl mx-auto space-y-6">
                     {getFilteredPosts().map((post) => (
-                      <Card key={post.id} className="feed-card group hover:shadow-lg transition-all duration-200">
-                        <CardContent className="p-0">
+                      <Card key={post.id} className="bg-gradient-card border-border/50 overflow-hidden">
+                        <CardContent className="p-4">
+                          {/* Media Content - 16:9 aspect ratio */}
                           <div 
-                            className="feed-card-thumbnail cursor-pointer"
+                            className="relative aspect-video bg-black cursor-pointer rounded-lg overflow-hidden mb-4"
                             onClick={() => handleContentClick(post)}
                             role="button"
                             tabIndex={0}
@@ -2767,12 +2768,33 @@ export const CreatorProfile: React.FC = () => {
                                     <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" />
                                     <div className="text-center z-10 p-4">
                                       <div className="mb-3">
-                                        <svg className="w-8 h-8 mx-auto text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <svg className="w-12 h-12 mx-auto text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                         </svg>
                                       </div>
-                                      <p className="text-accent text-sm font-medium mb-2">Subscribe to view</p>
-                                      <p className="text-accent/70 text-xs">This content is for subscribers only</p>
+                                      <h3 className="text-base font-medium text-foreground mb-2">
+                                        {post.tier === 'supporter' ? 'Supporter' : 
+                                         post.tier === 'fan' ? 'Fan' : 
+                                         post.tier === 'premium' ? 'Premium' : 
+                                         post.tier === 'superfan' ? 'Superfan' : 'Premium'} Content
+                                      </h3>
+                                      <p className="text-sm text-muted-foreground mb-3">
+                                        Subscribe to unlock
+                                      </p>
+                                      <Button 
+                                        size="sm" 
+                                        className="bg-accent hover:bg-accent/90 text-black text-sm px-4"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          if (!user) {
+                                            window.location.href = `/login?redirect=/creator/${username}`;
+                                          } else {
+                                            document.getElementById('subscription-tiers')?.scrollIntoView({ behavior: 'smooth' });
+                                          }
+                                        }}
+                                      >
+                                        {!user ? 'Login' : 'Subscribe'}
+                                      </Button>
                                     </div>
                                   </div>
                                 );
@@ -2780,138 +2802,151 @@ export const CreatorProfile: React.FC = () => {
 
                               const mediaUrls = Array.isArray(post.media_urls) ? post.media_urls : [post.media_urls];
                               const mediaUrl = mediaUrls[0];
-                              const fullUrl = mediaUrl?.startsWith('/uploads/') ? mediaUrl : `/uploads/${mediaUrl}`;
 
-                              return (
-                                <div className="relative w-full h-full">
-                                  {post.media_type === 'video' ? (
-                                    <>
-                                      <video 
-                                        src={fullUrl}
-                                        className="w-full h-full object-cover"
-                                        muted
-                                        playsInline
-                                        preload="metadata"
-                                      />
-                                      <div className="absolute top-2 right-2">
-                                        <Video className="w-4 h-4 text-white drop-shadow-lg" />
-                                      </div>
-                                    </>
-                                  ) : post.media_type === 'image' ? (
-                                    <>
-                                      <img 
-                                        src={fullUrl}
-                                        alt={post.content || post.title}
-                                        className="w-full h-full object-cover"
-                                        loading="lazy"
-                                      />
-                                      <div className="absolute top-2 right-2">
-                                        <Image className="w-4 h-4 text-white drop-shadow-lg" />
-                                      </div>
-                                    </>
-                                  ) : (
-                                    <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                                      <FileText className="w-8 h-8 text-primary" />
+                              if (mediaUrl) {
+                                const fullUrl = mediaUrl.startsWith('/uploads/') ? mediaUrl : `/uploads/${mediaUrl}`;
+
+                                return post.media_type === 'video' ? (
+                                  <video 
+                                    src={fullUrl}
+                                    className="w-full h-full object-cover"
+                                    muted
+                                    preload="metadata"
+                                    onError={(e) => {
+                                      const target = e.target as HTMLVideoElement;
+                                      target.style.display = 'none';
+                                      const parent = target.parentElement;
+                                      if (parent) {
+                                        parent.innerHTML = `<div class="w-full h-full bg-gray-800 flex items-center justify-center">
+                                          <div class="text-white text-sm">Video unavailable</div>
+                                        </div>`;
+                                      }
+                                    }}
+                                  />
+                                ) : (
+                                  <img 
+                                    src={fullUrl}
+                                    alt={post.title}
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                      const target = e.target as HTMLImageElement;
+                                      target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Ik0xMDAgNzVMMTI1IDEwMEgxMTJWMTI1SDg4VjEwMEg3NUwxMDAgNzVaIiBmaWxsPSIjOWNhM2FmIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOWNhM2FmIiBmb250LXNpemU9IjEyIj5JbWFnZSBub3QgZm91bmQ8L3RleHQ+Cjwvc3ZnPg==';
+                                      target.className = "w-full h-full object-cover opacity-50";
+                                    }}
+                                  />
+                                );
+                              } else {
+                                return (
+                                  <img 
+                                    src={`https://placehold.co/1280x720/6366F1/FFFFFF?text=Creator+Post+${post.id}`}
+                                    alt={`${creator.display_name}'s post`}
+                                    className="w-full h-full object-cover"
+                                  />
+                                );
+                              }
+                            })()}
+
+
+                            {/* No overlays here for desktop */}
+                          </div>
+
+                          {/* Creator Info and Content - Fan Feed Single View Style */}
+                          <div className="flex gap-3">
+                            <Avatar className="h-9 w-9 flex-shrink-0">
+                              <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
+                              <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
+                                {post.content || post.title || 'Untitled Post'}
+                              </h4>
+
+                                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                                  <span className="truncate">{creator.display_name}</span>
+                                  <div className="flex items-center gap-1 flex-shrink-0">
+                                    <Eye className="w-3 h-3" />
+                                    <span>{Math.floor(Math.random() * 2000) + 100}</span>
+                                    <span>•</span>
+                                  <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
+                                  </div>
+                                </div>
+
+                                {/* Action Buttons Row - VideoWatch Style */}
+                                <div className="flex items-center justify-between mt-2 overflow-hidden">
+                                  <div className="flex items-center gap-6 flex-1 min-w-0">
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className={`flex items-center gap-2 h-auto py-2 px-3 ${postLikes[post.id]?.liked ? 'text-red-500' : 'text-muted-foreground'}`}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleLike(post.id);
+                                      }}
+                                    >
+                                      <Heart className={`w-5 h-5 ${postLikes[post.id]?.liked ? 'fill-current' : ''}`} />
+                                      <span className="text-sm">{postLikes[post.id]?.count || 0}</span>
+                                    </Button>
+
+                                    <Button 
+                                      variant="ghost" 
+                                      size="sm" 
+                                      className="flex items-center gap-2 h-auto py-2 px-3 text-muted-foreground"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleCommentClick(post.id);
+                                      }}
+                                    >
+                                      <MessageSquare className="w-5 h-5" />
+                                      <span className="text-sm">{post.comments_count || 0}</span>
+                                    </Button>
+
+                                    <Button 
+                                      variant="ghost" 
+                                      size="sm" 
+                                      className="flex items-center gap-2 h-auto py-2 px-3 text-muted-foreground" 
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleShare(post.id);
+                                      }}
+                                    >
+                                      <Share2 className="w-5 h-5" />
+                                      <span className="text-sm">Share</span>
+                                    </Button>
+                                  </div>
+
+                                  {/* Creator Edit/Delete Actions - Only for own posts */}
+                                  {isOwnProfile && (
+                                    <div className="flex items-center gap-3 flex-shrink-0">
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="flex items-center gap-2 h-auto py-2 px-3 text-muted-foreground hover:text-foreground"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleEditPost(post.id);
+                                        }}
+                                      >
+                                        <Edit className="w-4 h-4" />
+                                        <span className="text-sm">Edit</span>
+                                      </Button>
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="flex items-center gap-2 h-auto py-2 px-3 text-red-500 hover:text-red-600"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleDeletePost(post.id);
+                                        }}
+                                      >
+                                        <Trash2 className="w-4 h-4" />
+                                        <span className="text-sm">Delete</span>
+                                      </Button>
                                     </div>
                                   )}
                                 </div>
-                              );
-                            })()} 
-                          </div>
 
-                          <div className="feed-card-content">
-                            <h3 className="feed-card-title">
-                              {post.content || post.title}
-                            </h3>
-                            <div className="flex items-center justify-between">
-                              <div className="feed-card-meta">
-                                <span>{getTimeAgo(post.created_at)}</span>
-                                <span className="mx-1">•</span>
-                                <span>{post.likes_count || 0} likes</span>
-                              </div>
-                              <Badge variant={getTierColor(post.tier)} className="text-xs">
-                                {post.tier === 'public' ? 'Free' : (
-                                  post.tier?.split(' ').map((word: string) => 
-                                    word.charAt(0).toUpperCase() + word.slice(1)
-                                  ).join(' ') || 'General'
-                                )}
-                              </Badge>
                             </div>
-
-                            {/* Desktop interaction bar */}
-                            <div className="flex items-center justify-between pt-2 mt-2 border-t border-border/20">
-                              <div className="flex items-center gap-3">
-                                <PostActions 
-                                  post={post}
-                                  postLikes={postLikes}
-                                  isOwnProfile={isOwnProfile}
-                                  onLike={handleLike}
-                                  onComment={handleCommentClick}
-                                  onShare={handleShare}
-                                />
-                              </div>
-                              {/* Creator actions for own posts */}
-                              {isOwnProfile && (
-                                <div className="flex gap-2">
-                                  <Button 
-                                    variant="outline" 
-                                    size="sm" 
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setEditingPost(post);
-                                      setEditCaption(post.content || post.title);
-                                      setIsEditModalOpen(true);
-                                    }}
-                                  >
-                                    <Edit className="w-4 h-4" />
-                                  </Button>
-                                  <Button 
-                                    variant="outline" 
-                                    size="sm" 
-                                    onClick={async (e) => {
-                                      e.stopPropagation();
-                                      try {
-                                        const response = await fetch(`/api/posts/${post.id}`, {
-                                          method: 'DELETE',
-                                        });
-                                        if (response.ok) {
-                                          toast({
-                                            title: "Post deleted",
-                                            description: "Your post has been deleted successfully.",
-                                          });
-                                          if (creator?.id) {
-                                            fetchUserPosts(creator.id);
-                                          }
-                                        } else {
-                                          throw new Error('Failed to delete post');
-                                        }
-                                      } catch (error) {
-                                        console.error('Error deleting post:', error);
-                                        toast({
-                                          title: "Error",
-                                          description: "Failed to delete post. Please try again.",
-                                          variant: "destructive"
-                                        });
-                                      }
-                                    }}
-                                  >
-                                    <Trash2 className="w-4 h-4" />
-                                  </Button>
-                                </div>
-                              )}
-                            </div>
-
-                            {/* Comments section */}
-                            {showComments[post.id] && (
-                              <div className="mt-3 pt-3 border-t border-border/50">
-                                <CommentSection 
-                                  postId={Number(post.id)} 
-                                  onCommentCountChange={(newCount) => handleCommentCountChange(post.id, newCount)}
-                                />
-                              </div>
-                            )}
                           </div>
-
                         </CardContent>
                       </Card>
                     ))}
