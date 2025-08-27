@@ -62,23 +62,23 @@ const MOCK_CREATORS = {
     subscribers: 2840,
     verified: true,
     tiers: [
-      { 
+      {
         id: '1',
-        name: 'Supporter', 
+        name: 'Supporter',
         price: 5,
         description: 'Access to basic content and community posts',
         features: ['Weekly art posts', 'Community access', 'Behind-the-scenes content']
       },
-      { 
+      {
         id: '2',
-        name: 'Fan', 
+        name: 'Fan',
         price: 15,
         description: 'Everything in Supporter plus exclusive tutorials',
         features: ['Everything in Supporter', 'Monthly tutorials', 'Process videos', 'High-res downloads']
       },
-      { 
+      {
         id: '3',
-        name: 'Superfan', 
+        name: 'Superfan',
         price: 25,
         description: 'Ultimate access with personal interaction',
         features: ['Everything in Fan', 'Direct messaging', '1-on-1 feedback', 'Custom artwork requests']
@@ -269,7 +269,7 @@ export const CreatorProfile: React.FC = () => {
           const parsedTiers = JSON.parse(savedTiers);
           if (Array.isArray(parsedTiers)) {
             // Check if these are mock tiers and clear them
-            const isMockData = parsedTiers.some(tier => 
+            const isMockData = parsedTiers.some(tier =>
               tier.name === 'Supporter' || tier.name === 'Fan' || tier.name === 'Superfan'
             );
 
@@ -404,8 +404,8 @@ export const CreatorProfile: React.FC = () => {
           console.log('Subscription API response:', subscription);
 
           // Only set subscription if it exists, is active, and is for this creator
-          if (subscription && 
-              subscription.status === 'active' && 
+          if (subscription &&
+              subscription.status === 'active' &&
               subscription.creator_id === creator.id) {
             setUserSubscription(subscription);
             console.log('✓ User ${user.id} has active subscription to creator ${creator.id}:', subscription);
@@ -682,7 +682,7 @@ export const CreatorProfile: React.FC = () => {
 
     // If user has no active subscription to this creator, no access to premium content
     if (!userSubscription || userSubscription.status !== 'active') {
-      console.log('Access denied: No active subscription', { 
+      console.log('Access denied: No active subscription', {
         userSubscription: userSubscription,
         hasSubscription: !!userSubscription,
         subscriptionStatus: userSubscription?.status
@@ -692,9 +692,9 @@ export const CreatorProfile: React.FC = () => {
 
     // Verify subscription is to this specific creator
     if (userSubscription.creator_id !== creator?.id) {
-      console.log('Access denied: Subscription not for this creator', { 
-        subscriptionCreatorId: userSubscription.creator_id, 
-        currentCreatorId: creator?.id 
+      console.log('Access denied: Subscription not for this creator', {
+        subscriptionCreatorId: userSubscription.creator_id,
+        currentCreatorId: creator?.id
       });
       return false;
     }
@@ -714,10 +714,10 @@ export const CreatorProfile: React.FC = () => {
     const postTierLevel = tierHierarchy[postTier.toLowerCase()] || 1; // Default to tier 1 for premium content
 
     const hasAccess = userTierLevel >= postTierLevel;
-    console.log('Tier access check:', { 
-      postTier, 
-      userTierLevel, 
-      postTierLevel, 
+    console.log('Tier access check:', {
+      postTier,
+      userTierLevel,
+      postTierLevel,
       userTierName: userSubscription.tier_name,
       hasAccess,
       creatorId: creator?.id,
@@ -903,8 +903,8 @@ export const CreatorProfile: React.FC = () => {
   };
 
   const handleCommentCountChange = (postId: string | number, newCount: number) => {
-    setUserPosts(prev => prev.map(post => 
-      post.id.toString() === postId.toString() 
+    setUserPosts(prev => prev.map(post =>
+      post.id.toString() === postId.toString()
         ? { ...post, comments_count: newCount }
         : post
     ));
@@ -1162,8 +1162,8 @@ export const CreatorProfile: React.FC = () => {
 
       if (response.ok) {
         const updatedPost = await response.json();
-        setUserPosts(prev => prev.map(post => 
-          post.id === editingPost.id 
+        setUserPosts(prev => prev.map(post =>
+          post.id === editingPost.id
             ? { ...post, title: editCaption, content: editCaption }
             : post
         ));
@@ -1256,8 +1256,8 @@ export const CreatorProfile: React.FC = () => {
       <div className="relative">
         <div className="h-48 md:h-64 overflow-hidden relative">
           {creator.cover ? (
-            <img 
-              src={creator.cover.startsWith('/uploads/') ? creator.cover : `/uploads/${creator.cover}`} 
+            <img
+              src={creator.cover.startsWith('/uploads/') ? creator.cover : `/uploads/${creator.cover}`}
               alt={creator.display_name}
               className="w-full h-full object-cover"
             />
@@ -1395,7 +1395,7 @@ export const CreatorProfile: React.FC = () => {
 
               return (
                 <div>
-                  <BioDisplay 
+                  <BioDisplay
                     bio={bioText}
                     context="profile"
                     className="text-muted-foreground leading-tight text-sm line-clamp-2"
@@ -1409,9 +1409,9 @@ export const CreatorProfile: React.FC = () => {
         {/* Action Buttons - Both Desktop and Mobile */}
         {isOwnProfile ? (
           <div className="flex items-center gap-2 mt-4">
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               className="h-10 w-10 p-0"
               title="Edit Profile"
               asChild
@@ -1420,9 +1420,9 @@ export const CreatorProfile: React.FC = () => {
                 <Settings className="w-4 h-4" />
               </Link>
             </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               className="h-10 w-10 p-0"
               title="Create Post"
               asChild
@@ -1448,9 +1448,9 @@ export const CreatorProfile: React.FC = () => {
           </div>
         ) : (
           <div className="flex items-center gap-2 mt-4">
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               className="h-10 w-10 p-0"
               title="Start conversation"
               onClick={handleChatClick}
@@ -1458,9 +1458,9 @@ export const CreatorProfile: React.FC = () => {
             >
               <MessageSquare className="w-4 h-4" />
             </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               className="h-10 w-10 p-0"
               title="Like creator"
               disabled={likingCreator || isOwnProfile || !user || user.role !== 'fan'}
@@ -1468,9 +1468,9 @@ export const CreatorProfile: React.FC = () => {
             >
               <Heart className={`w-4 h-4 ${isCreatorLiked ? 'fill-red-500 text-red-500' : ''}`} />
             </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               className="h-10 w-10 p-0"
               title="Add to favorites"
               disabled={favoritingCreator || isOwnProfile || !user || user.role !== 'fan'}
@@ -1478,9 +1478,9 @@ export const CreatorProfile: React.FC = () => {
             >
               <Star className={`w-4 h-4 ${isCreatorFavorited ? 'fill-yellow-500 text-yellow-500' : ''}`} />
             </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               className="h-10 w-10 p-0"
               title="Share profile"
               onClick={() => {
@@ -1503,7 +1503,7 @@ export const CreatorProfile: React.FC = () => {
           <div className="bg-gradient-card border border-border/50 rounded-lg shadow-sm overflow-hidden">
             {!isSubscriptionTiersExpanded ? (
               /* Compact View */
-              <div 
+              <div
                 className="p-4 md:p-6 cursor-pointer hover:bg-muted/30 transition-colors"
                 onClick={() => setIsSubscriptionTiersExpanded(true)}
               >
@@ -1529,8 +1529,8 @@ export const CreatorProfile: React.FC = () => {
                   </div>
                   <div className="flex-shrink-0">
                     {isOwnProfile ? (
-                      <Button 
-                        size="sm" 
+                      <Button
+                        size="sm"
                         variant="outline"
                         className="px-3 py-2 text-sm font-medium rounded-full md:px-6 md:py-3"
                         onClick={(e) => {
@@ -1541,8 +1541,8 @@ export const CreatorProfile: React.FC = () => {
                         MANAGE
                       </Button>
                     ) : (
-                      <Button 
-                        size="sm" 
+                      <Button
+                        size="sm"
                         className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 text-sm font-medium rounded-full md:px-6 md:py-3"
                         onClick={(e) => {
                           e.stopPropagation();
@@ -1560,7 +1560,7 @@ export const CreatorProfile: React.FC = () => {
               <div className="p-4 md:p-6">
                 <div className="flex items-center justify-between mb-4 md:mb-6">
                   <h3 className="text-base md:text-lg font-semibold">SUBSCRIPTION TIERS</h3>
-                  <button 
+                  <button
                     onClick={() => setIsSubscriptionTiersExpanded(false)}
                     className="p-1 hover:bg-muted/50 rounded-full transition-colors"
                   >
@@ -1570,8 +1570,8 @@ export const CreatorProfile: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-3">
                   {creator.tiers.map((tier: any, index: number) => (
-                    <div 
-                      key={tier.id} 
+                    <div
+                      key={tier.id}
                       className={`flex flex-col p-4 md:p-5 border border-border/30 rounded-lg hover:border-accent/50 transition-colors ${!isOwnProfile ? 'cursor-pointer hover:shadow-md' : ''}`}
                       onClick={!isOwnProfile ? (e) => {
                         e.stopPropagation();
@@ -1609,9 +1609,9 @@ export const CreatorProfile: React.FC = () => {
 
                 {isOwnProfile && (
                   <div className="mt-4 pt-4 border-t border-border/20">
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
+                    <Button
+                      variant="outline"
+                      size="sm"
                       className="w-full md:w-auto text-sm"
                       asChild
                     >
@@ -1659,7 +1659,7 @@ export const CreatorProfile: React.FC = () => {
                   }}>
                     {getFilteredPosts().map((post) => (
                       <div key={post.id} className="w-full bg-background border-b border-border/20 overflow-hidden">
-                        <div 
+                        <div
                           className="relative w-full aspect-video bg-black cursor-pointer"
                           onClick={() => handleContentClick(post)}
                           role="button"
@@ -1685,13 +1685,13 @@ export const CreatorProfile: React.FC = () => {
                                       </svg>
                                     </div>
                                     <p className="text-xs text-muted-foreground mb-2">
-                                      {post.tier === 'supporter' ? 'Supporter' : 
-                                       post.tier === 'fan' ? 'Fan' : 
-                                       post.tier === 'premium' ? 'Premium' : 
+                                      {post.tier === 'supporter' ? 'Supporter' :
+                                       post.tier === 'fan' ? 'Fan' :
+                                       post.tier === 'premium' ? 'Premium' :
                                        post.tier === 'superfan' ? 'Superfan' : 'Premium'} Content
                                     </p>
-                                    <Button 
-                                      size="sm" 
+                                    <Button
+                                      size="sm"
                                       className="bg-accent hover:bg-accent/90 text-black text-xs px-2 py-1"
                                       onClick={(e) => {
                                         e.stopPropagation();
@@ -1716,14 +1716,14 @@ export const CreatorProfile: React.FC = () => {
                               const fullUrl = mediaUrl.startsWith('/uploads/') ? mediaUrl : `/uploads/${mediaUrl}`;
 
                               return post.media_type === 'video' ? (
-                                <video 
+                                <video
                                   src={fullUrl}
                                   className="w-full h-full object-cover"
                                   muted
                                   preload="metadata"
                                 />
                               ) : (
-                                <img 
+                                <img
                                   src={fullUrl}
                                   alt={post.title}
                                   className="w-full h-full object-cover"
@@ -1736,7 +1736,7 @@ export const CreatorProfile: React.FC = () => {
                               );
                             } else {
                               return (
-                                <img 
+                                <img
                                   src={post.id === '1' ? 'https://placehold.co/640x360/E63946/FFFFFF?text=Creator+Post+1' :
                                        post.id === '2' ? 'https://placehold.co/640x360/457B9D/FFFFFF?text=Creator+Post+2' :
                                        post.id === '3' ? 'https://placehold.co/640x360/1D3557/FFFFFF?text=Creator+Post+3' :
@@ -1789,7 +1789,7 @@ export const CreatorProfile: React.FC = () => {
                       <Card key={post.id} className="bg-gradient-card border-border/50 overflow-hidden">
                         <CardContent className="p-4">
                           {/* Media Content - 16:9 aspect ratio */}
-                          <div 
+                          <div
                             className="relative aspect-video bg-black cursor-pointer rounded-lg overflow-hidden mb-4"
                             onClick={() => handleContentClick(post)}
                             role="button"
@@ -1815,16 +1815,16 @@ export const CreatorProfile: React.FC = () => {
                                         </svg>
                                       </div>
                                       <h3 className="text-base font-medium text-foreground mb-2">
-                                        {post.tier === 'supporter' ? 'Supporter' : 
-                                         post.tier === 'fan' ? 'Fan' : 
-                                         post.tier === 'premium' ? 'Premium' : 
+                                        {post.tier === 'supporter' ? 'Supporter' :
+                                         post.tier === 'fan' ? 'Fan' :
+                                         post.tier === 'premium' ? 'Premium' :
                                          post.tier === 'superfan' ? 'Superfan' : 'Premium'} Content
                                       </h3>
                                       <p className="text-sm text-muted-foreground mb-3">
                                         Subscribe to unlock
                                       </p>
-                                      <Button 
-                                        size="sm" 
+                                      <Button
+                                        size="sm"
                                         className="bg-accent hover:bg-accent/90 text-black text-sm px-4"
                                         onClick={(e) => {
                                           e.stopPropagation();
@@ -1849,7 +1849,7 @@ export const CreatorProfile: React.FC = () => {
                                 const fullUrl = mediaUrl.startsWith('/uploads/') ? mediaUrl : `/uploads/${mediaUrl}`;
 
                                 return post.media_type === 'video' ? (
-                                  <video 
+                                  <video
                                     src={fullUrl}
                                     className="w-full h-full object-cover"
                                     muted
@@ -1866,7 +1866,7 @@ export const CreatorProfile: React.FC = () => {
                                     }}
                                   />
                                 ) : (
-                                  <img 
+                                  <img
                                     src={fullUrl}
                                     alt={post.title}
                                     className="w-full h-full object-cover"
@@ -1879,7 +1879,7 @@ export const CreatorProfile: React.FC = () => {
                                 );
                               } else {
                                 return (
-                                  <img 
+                                  <img
                                     src={`https://placehold.co/1280x720/6366F1/FFFFFF?text=Creator+Post+${post.id}`}
                                     alt={`${creator.display_name}'s post`}
                                     className="w-full h-full object-cover"
@@ -1912,68 +1912,7 @@ export const CreatorProfile: React.FC = () => {
                                   <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className={`flex items-center gap-1 h-auto py-1 px-2 ${postLikes[post.id]?.liked ? 'text-red-500' : 'text-muted-foreground'}`}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleLike(post.id);
-                                    }}
-                                  >
-                                    <Heart className={`w-4 h-4 ${postLikes[post.id]?.liked ? 'fill-current' : ''}`} />
-                                    <span className="text-xs">{postLikes[post.id]?.count || 0}</span>
-                                  </Button>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleCommentClick(post.id);
-                                    }}
-                                  >
-                                    <MessageSquare className="w-4 h-4" />
-                                    <span className="text-xs">{post.comments_count || 0}</span>
-                                  </Button>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground" 
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleShare(post.id);
-                                    }}
-                                  >
-                                    <Share2 className="w-4 h-4" />
-                                  </Button>
-                                  {/* Creator Edit/Delete Actions - Only for own posts */}
-                                  {isOwnProfile && (
-                                    <>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground hover:text-foreground"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleEditPost(post.id);
-                                        }}
-                                      >
-                                        <Edit className="w-4 h-4" />
-                                      </Button>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="flex items-center gap-1 h-auto py-1 px-2 text-red-500 hover:text-red-600"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleDeletePost(post.id);
-                                        }}
-                                      >
-                                        <Trash2 className="w-4 h-4" />
-                                      </Button>
-                                    </>
-                                  )}
+                                  {/* Removed stats/action icons and edit/delete buttons for desktop */}
                                 </div>
                               </div>
                             </div>
@@ -1991,7 +1930,7 @@ export const CreatorProfile: React.FC = () => {
                       <DollarSign className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                       <h3 className="text-lg font-medium mb-2">No posts in this category</h3>
                       <p className="text-muted-foreground text-sm">
-                        {activeTab === 'all' 
+                        {activeTab === 'all'
                           ? (isOwnProfile ? 'Start creating content to build your audience.' : `${creator.display_name} hasn't posted any content yet.`)
                           : activeTab === 'free'
                           ? (isOwnProfile ? 'No free posts yet. Create some free content to attract new fans.' : `${creator.display_name} hasn't posted any free content yet.`)
@@ -2018,7 +1957,7 @@ export const CreatorProfile: React.FC = () => {
                   }}>
                     {getFilteredPosts().map((post) => (
                       <div key={post.id} className="w-full bg-background border-b border-border/20 overflow-hidden">
-                        <div 
+                        <div
                           className="relative w-full aspect-video bg-black cursor-pointer"
                           onClick={() => handleContentClick(post)}
                           role="button"
@@ -2044,13 +1983,13 @@ export const CreatorProfile: React.FC = () => {
                                       </svg>
                                     </div>
                                     <p className="text-xs text-muted-foreground mb-2">
-                                      {post.tier === 'supporter' ? 'Supporter' : 
-                                       post.tier === 'fan' ? 'Fan' : 
-                                       post.tier === 'premium' ? 'Premium' : 
+                                      {post.tier === 'supporter' ? 'Supporter' :
+                                       post.tier === 'fan' ? 'Fan' :
+                                       post.tier === 'premium' ? 'Premium' :
                                        post.tier === 'superfan' ? 'Superfan' : 'Premium'} Content
                                     </p>
-                                    <Button 
-                                      size="sm" 
+                                    <Button
+                                      size="sm"
                                       className="bg-accent hover:bg-accent/90 text-black text-xs px-2 py-1"
                                       onClick={(e) => {
                                         e.stopPropagation();
@@ -2075,14 +2014,14 @@ export const CreatorProfile: React.FC = () => {
                               const fullUrl = mediaUrl.startsWith('/uploads/') ? mediaUrl : `/uploads/${mediaUrl}`;
 
                               return post.media_type === 'video' ? (
-                                <video 
+                                <video
                                   src={fullUrl}
                                   className="w-full h-full object-cover"
                                   muted
                                   preload="metadata"
                                 />
                               ) : (
-                                <img 
+                                <img
                                   src={fullUrl}
                                   alt={post.title}
                                   className="w-full h-full object-cover"
@@ -2095,7 +2034,7 @@ export const CreatorProfile: React.FC = () => {
                               );
                             } else {
                               return (
-                                <img 
+                                <img
                                   src={post.id === '1' ? 'https://placehold.co/640x360/E63946/FFFFFF?text=Creator+Post+1' :
                                        post.id === '2' ? 'https://placehold.co/640x360/457B9D/FFFFFF?text=Creator+Post+2' :
                                        post.id === '3' ? 'https://placehold.co/640x360/1D3557/FFFFFF?text=Creator+Post+3' :
@@ -2148,7 +2087,7 @@ export const CreatorProfile: React.FC = () => {
                       <Card key={post.id} className="bg-gradient-card border-border/50 overflow-hidden">
                         <CardContent className="p-4">
                           {/* Media Content - 16:9 aspect ratio */}
-                          <div 
+                          <div
                             className="relative aspect-video bg-black cursor-pointer rounded-lg overflow-hidden mb-4"
                             onClick={() => handleContentClick(post)}
                             role="button"
@@ -2174,16 +2113,16 @@ export const CreatorProfile: React.FC = () => {
                                         </svg>
                                       </div>
                                       <h3 className="text-base font-medium text-foreground mb-2">
-                                        {post.tier === 'supporter' ? 'Supporter' : 
-                                         post.tier === 'fan' ? 'Fan' : 
-                                         post.tier === 'premium' ? 'Premium' : 
+                                        {post.tier === 'supporter' ? 'Supporter' :
+                                         post.tier === 'fan' ? 'Fan' :
+                                         post.tier === 'premium' ? 'Premium' :
                                          post.tier === 'superfan' ? 'Superfan' : 'Premium'} Content
                                       </h3>
                                       <p className="text-sm text-muted-foreground mb-3">
                                         Subscribe to unlock
                                       </p>
-                                      <Button 
-                                        size="sm" 
+                                      <Button
+                                        size="sm"
                                         className="bg-accent hover:bg-accent/90 text-black text-sm px-4"
                                         onClick={(e) => {
                                           e.stopPropagation();
@@ -2208,7 +2147,7 @@ export const CreatorProfile: React.FC = () => {
                                 const fullUrl = mediaUrl.startsWith('/uploads/') ? mediaUrl : `/uploads/${mediaUrl}`;
 
                                 return post.media_type === 'video' ? (
-                                  <video 
+                                  <video
                                     src={fullUrl}
                                     className="w-full h-full object-cover"
                                     muted
@@ -2225,7 +2164,7 @@ export const CreatorProfile: React.FC = () => {
                                     }}
                                   />
                                 ) : (
-                                  <img 
+                                  <img
                                     src={fullUrl}
                                     alt={post.title}
                                     className="w-full h-full object-cover"
@@ -2238,7 +2177,7 @@ export const CreatorProfile: React.FC = () => {
                                 );
                               } else {
                                 return (
-                                  <img 
+                                  <img
                                     src={`https://placehold.co/1280x720/6366F1/FFFFFF?text=Creator+Post+${post.id}`}
                                     alt={`${creator.display_name}'s post`}
                                     className="w-full h-full object-cover"
@@ -2283,9 +2222,9 @@ export const CreatorProfile: React.FC = () => {
                                     <Heart className={`w-4 h-4 ${postLikes[post.id]?.liked ? 'fill-current' : ''}`} />
                                     <span className="text-xs">{postLikes[post.id]?.count || 0}</span>
                                   </Button>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
                                     className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground"
                                     onClick={(e) => {
                                       e.stopPropagation();
@@ -2295,10 +2234,10 @@ export const CreatorProfile: React.FC = () => {
                                     <MessageSquare className="w-4 h-4" />
                                     <span className="text-xs">{post.comments_count || 0}</span>
                                   </Button>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground" 
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground"
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       handleShare(post.id);
@@ -2350,7 +2289,7 @@ export const CreatorProfile: React.FC = () => {
                       <DollarSign className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                       <h3 className="text-lg font-medium mb-2">No posts in this category</h3>
                       <p className="text-muted-foreground text-sm">
-                        {activeTab === 'all' 
+                        {activeTab === 'all'
                           ? (isOwnProfile ? 'Start creating content to build your audience.' : `${creator.display_name} hasn't posted any content yet.`)
                           : activeTab === 'free'
                           ? (isOwnProfile ? 'No free posts yet. Create some free content to attract new fans.' : `${creator.display_name} hasn't posted any free content yet.`)
@@ -2377,7 +2316,7 @@ export const CreatorProfile: React.FC = () => {
                   }}>
                     {getFilteredPosts().map((post) => (
                       <div key={post.id} className="w-full bg-background border-b border-border/20 overflow-hidden">
-                        <div 
+                        <div
                           className="relative w-full aspect-video bg-black cursor-pointer"
                           onClick={() => handleContentClick(post)}
                           role="button"
@@ -2403,13 +2342,13 @@ export const CreatorProfile: React.FC = () => {
                                       </svg>
                                     </div>
                                     <p className="text-xs text-muted-foreground mb-2">
-                                      {post.tier === 'supporter' ? 'Supporter' : 
-                                       post.tier === 'fan' ? 'Fan' : 
-                                       post.tier === 'premium' ? 'Premium' : 
+                                      {post.tier === 'supporter' ? 'Supporter' :
+                                       post.tier === 'fan' ? 'Fan' :
+                                       post.tier === 'premium' ? 'Premium' :
                                        post.tier === 'superfan' ? 'Superfan' : 'Premium'} Content
                                     </p>
-                                    <Button 
-                                      size="sm" 
+                                    <Button
+                                      size="sm"
                                       className="bg-accent hover:bg-accent/90 text-black text-xs px-2 py-1"
                                       onClick={(e) => {
                                         e.stopPropagation();
@@ -2434,14 +2373,14 @@ export const CreatorProfile: React.FC = () => {
                               const fullUrl = mediaUrl.startsWith('/uploads/') ? mediaUrl : `/uploads/${mediaUrl}`;
 
                               return post.media_type === 'video' ? (
-                                <video 
+                                <video
                                   src={fullUrl}
                                   className="w-full h-full object-cover"
                                   muted
                                   preload="metadata"
                                 />
                               ) : (
-                                <img 
+                                <img
                                   src={fullUrl}
                                   alt={post.title}
                                   className="w-full h-full object-cover"
@@ -2454,7 +2393,7 @@ export const CreatorProfile: React.FC = () => {
                               );
                             } else {
                               return (
-                                <img 
+                                <img
                                   src={post.id === '1' ? 'https://placehold.co/640x360/E63946/FFFFFF?text=Creator+Post+1' :
                                        post.id === '2' ? 'https://placehold.co/640x360/457B9D/FFFFFF?text=Creator+Post+2' :
                                        post.id === '3' ? 'https://placehold.co/640x360/1D3557/FFFFFF?text=Creator+Post+3' :
@@ -2507,7 +2446,7 @@ export const CreatorProfile: React.FC = () => {
                       <Card key={post.id} className="bg-gradient-card border-border/50 overflow-hidden">
                         <CardContent className="p-4">
                           {/* Media Content - 16:9 aspect ratio */}
-                          <div 
+                          <div
                             className="relative aspect-video bg-black cursor-pointer rounded-lg overflow-hidden mb-4"
                             onClick={() => handleContentClick(post)}
                             role="button"
@@ -2533,16 +2472,16 @@ export const CreatorProfile: React.FC = () => {
                                         </svg>
                                       </div>
                                       <h3 className="text-base font-medium text-foreground mb-2">
-                                        {post.tier === 'supporter' ? 'Supporter' : 
-                                         post.tier === 'fan' ? 'Fan' : 
-                                         post.tier === 'premium' ? 'Premium' : 
+                                        {post.tier === 'supporter' ? 'Supporter' :
+                                         post.tier === 'fan' ? 'Fan' :
+                                         post.tier === 'premium' ? 'Premium' :
                                          post.tier === 'superfan' ? 'Superfan' : 'Premium'} Content
                                       </h3>
                                       <p className="text-sm text-muted-foreground mb-3">
                                         Subscribe to unlock
                                       </p>
-                                      <Button 
-                                        size="sm" 
+                                      <Button
+                                        size="sm"
                                         className="bg-accent hover:bg-accent/90 text-black text-sm px-4"
                                         onClick={(e) => {
                                           e.stopPropagation();
@@ -2567,7 +2506,7 @@ export const CreatorProfile: React.FC = () => {
                                 const fullUrl = mediaUrl.startsWith('/uploads/') ? mediaUrl : `/uploads/${mediaUrl}`;
 
                                 return post.media_type === 'video' ? (
-                                  <video 
+                                  <video
                                     src={fullUrl}
                                     className="w-full h-full object-cover"
                                     muted
@@ -2584,7 +2523,7 @@ export const CreatorProfile: React.FC = () => {
                                     }}
                                   />
                                 ) : (
-                                  <img 
+                                  <img
                                     src={fullUrl}
                                     alt={post.title}
                                     className="w-full h-full object-cover"
@@ -2597,7 +2536,7 @@ export const CreatorProfile: React.FC = () => {
                                 );
                               } else {
                                 return (
-                                  <img 
+                                  <img
                                     src={`https://placehold.co/1280x720/6366F1/FFFFFF?text=Creator+Post+${post.id}`}
                                     alt={`${creator.display_name}'s post`}
                                     className="w-full h-full object-cover"
@@ -2642,9 +2581,9 @@ export const CreatorProfile: React.FC = () => {
                                     <Heart className={`w-4 h-4 ${postLikes[post.id]?.liked ? 'fill-current' : ''}`} />
                                     <span className="text-xs">{postLikes[post.id]?.count || 0}</span>
                                   </Button>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
                                     className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground"
                                     onClick={(e) => {
                                       e.stopPropagation();
@@ -2654,10 +2593,10 @@ export const CreatorProfile: React.FC = () => {
                                     <MessageSquare className="w-4 h-4" />
                                     <span className="text-xs">{post.comments_count || 0}</span>
                                   </Button>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground" 
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground"
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       handleShare(post.id);
@@ -2709,7 +2648,7 @@ export const CreatorProfile: React.FC = () => {
                       <DollarSign className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                       <h3 className="text-lg font-medium mb-2">No posts in this category</h3>
                       <p className="text-muted-foreground text-sm">
-                        {activeTab === 'all' 
+                        {activeTab === 'all'
                           ? (isOwnProfile ? 'Start creating content to build your audience.' : `${creator.display_name} hasn't posted any content yet.`)
                           : activeTab === 'free'
                           ? (isOwnProfile ? 'No free posts yet. Create some free content to attract new fans.' : `${creator.display_name} hasn't posted any free content yet.`)
@@ -2750,23 +2689,23 @@ export const CreatorProfile: React.FC = () => {
                 {selectedContent.mediaPreview ? (
                   <div className="relative w-full h-full">
                     {/* Blurred background layer */}
-                    <div 
+                    <div
                       className="absolute inset-0 bg-cover bg-center filter blur-sm scale-110"
                       style={{ backgroundImage: `url(${selectedContent.mediaPreview})` }}
                     />
                     {/* Main media content - Square container */}
                     <div className="relative z-10 w-full h-full">
                       {selectedContent.type === 'Video' ? (
-                        <video 
-                          src={selectedContent.mediaPreview} 
+                        <video
+                          src={selectedContent.mediaPreview}
                           className="w-full h-full object-contain"
                           controls
                           autoPlay
                           muted
                         />
                       ) : (
-                        <img 
-                          src={selectedContent.mediaPreview} 
+                        <img
+                          src={selectedContent.mediaPreview}
                           alt={selectedContent.caption}
                           className="w-full h-full object-contain"
                         />
