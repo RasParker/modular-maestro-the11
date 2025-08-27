@@ -738,16 +738,16 @@ export const CreatorProfile: React.FC = () => {
     console.log('All user posts:', userPosts.map(p => ({ id: p.id, tier: p.tier, title: p.title })));
 
     switch (activeTab) {
-      case 'public':
-        const publicPosts = userPosts.filter(post => {
+      case 'free':
+        const freePosts = userPosts.filter(post => {
           const tier = post.tier?.toLowerCase();
-          // Handle multiple variations of "public" content
-          const isPublic = tier === 'public' || tier === 'free' || !tier || tier === '';
-          console.log(`Post ${post.id}: tier="${post.tier}" (normalized: "${tier}") isPublic: ${isPublic}`);
-          return isPublic;
+          // Handle multiple variations of "free" content
+          const isFree = tier === 'public' || tier === 'free' || !tier || tier === '';
+          console.log(`Post ${post.id}: tier="${post.tier}" (normalized: "${tier}") isFree: ${isFree}`);
+          return isFree;
         });
-        console.log('Filtered public posts:', publicPosts.length, publicPosts.map(p => ({ id: p.id, tier: p.tier })));
-        return publicPosts;
+        console.log('Filtered free posts:', freePosts.length, freePosts.map(p => ({ id: p.id, tier: p.tier })));
+        return freePosts;
       case 'subscription':
         const subscriptionPosts = userPosts.filter(post => {
           const tier = post.tier?.toLowerCase();
@@ -767,7 +767,7 @@ export const CreatorProfile: React.FC = () => {
 
   // Get post counts for each tab
   const getPostCounts = () => {
-    if (!userPosts || !Array.isArray(userPosts)) return { all: 0, subscription: 0, public: 0 };
+    if (!userPosts || !Array.isArray(userPosts)) return { all: 0, subscription: 0, free: 0 };
 
     const counts = {
       all: userPosts.length,
@@ -775,7 +775,7 @@ export const CreatorProfile: React.FC = () => {
         const tier = post.tier?.toLowerCase();
         return tier !== 'public' && tier !== 'free' && tier && tier !== '';
       }).length,
-      public: userPosts.filter(post => {
+      free: userPosts.filter(post => {
         const tier = post.tier?.toLowerCase();
         return tier === 'public' || tier === 'free' || !tier || tier === '';
       }).length
@@ -1641,8 +1641,8 @@ export const CreatorProfile: React.FC = () => {
               <TabsTrigger value="subscription" className="text-sm">
                 Subscription ({getPostCounts().subscription})
               </TabsTrigger>
-              <TabsTrigger value="public" className="text-sm">
-                Public ({getPostCounts().public})
+              <TabsTrigger value="free" className="text-sm">
+                Free ({getPostCounts().free})
               </TabsTrigger>
             </TabsList>
 
@@ -2078,8 +2078,8 @@ export const CreatorProfile: React.FC = () => {
                       <p className="text-muted-foreground text-sm">
                         {activeTab === 'all' 
                           ? (isOwnProfile ? 'Start creating content to build your audience.' : `${creator.display_name} hasn't posted any content yet.`)
-                          : activeTab === 'public'
-                          ? (isOwnProfile ? 'No public posts yet. Create some free content to attract new fans.' : `${creator.display_name} hasn't posted any public content yet.`)
+                          : activeTab === 'free'
+                          ? (isOwnProfile ? 'No free posts yet. Create some free content to attract new fans.' : `${creator.display_name} hasn't posted any free content yet.`)
                           : (isOwnProfile ? 'No subscription content yet. Create premium posts for your subscribers.' : `${creator.display_name} hasn't posted any subscription content yet.`)
                         }
                       </p>
@@ -2522,8 +2522,387 @@ export const CreatorProfile: React.FC = () => {
                       <p className="text-muted-foreground text-sm">
                         {activeTab === 'all' 
                           ? (isOwnProfile ? 'Start creating content to build your audience.' : `${creator.display_name} hasn't posted any content yet.`)
-                          : activeTab === 'public'
-                          ? (isOwnProfile ? 'No public posts yet. Create some free content to attract new fans.' : `${creator.display_name} hasn't posted any public content yet.`)
+                          : activeTab === 'free'
+                          ? (isOwnProfile ? 'No free posts yet. Create some free content to attract new fans.' : `${creator.display_name} hasn't posted any free content yet.`)
+                          : (isOwnProfile ? 'No subscription content yet. Create premium posts for your subscribers.' : `${creator.display_name} hasn't posted any subscription content yet.`)
+                        }
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="free" className="space-y-6">
+              {/* Free Posts Content - Same as All Posts but filtered */}
+              <div>
+            {getFilteredPosts().length > 0 ? (
+              <>
+                {/* Mobile: Edge-to-edge borderless layout like fan feed */}
+                <div className="md:hidden">
+                  <div className="w-full bg-background space-y-0 scrollbar-hide mobile-feed-container" style={{
+                    scrollbarWidth: 'none',
+                    msOverflowStyle: 'none'
+                  }}>
+                    {getFilteredPosts().map((post) => (
+                      <div key={post.id} className="w-full bg-background border-b border-border/20 overflow-hidden">
+                        <div 
+                          className="relative w-full aspect-video bg-black cursor-pointer"
+                          onClick={() => handleContentClick(post)}
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              handleContentClick(post);
+                            }
+                          }}
+                        >
+                          {(() => {
+                            const hasAccess = hasAccessToTier(post.tier);
+
+                            if (!hasAccess) {
+                              return (
+                                <div className="w-full h-full bg-gradient-to-br from-accent/20 to-accent/10 flex items-center justify-center relative">
+                                  <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" />
+                                  <div className="text-center z-10 p-4">
+                                    <div className="mb-3">
+                                      <svg className="w-8 h-8 mx-auto text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                      </svg>
+                                    </div>
+                                    <p className="text-white text-sm font-medium mb-2">Subscribe to view</p>
+                                    <p className="text-white/70 text-xs">This content is for subscribers only</p>
+                                  </div>
+                                </div>
+                              );
+                            }
+
+                            const mediaUrls = Array.isArray(post.media_urls) ? post.media_urls : [post.media_urls];
+                            const mediaUrl = mediaUrls[0];
+                            const fullUrl = mediaUrl?.startsWith('/uploads/') ? mediaUrl : `/uploads/${mediaUrl}`;
+
+                            return (
+                              <div className="relative w-full h-full">
+                                {post.media_type === 'video' ? (
+                                  <>
+                                    <video 
+                                      src={fullUrl}
+                                      className="w-full h-full object-cover"
+                                      muted
+                                      playsInline
+                                      preload="metadata"
+                                    />
+                                    <div className="absolute inset-0 bg-black/20" />
+                                    <div className="absolute top-2 right-2">
+                                      <Video className="w-4 h-4 text-white drop-shadow-lg" />
+                                    </div>
+                                  </>
+                                ) : post.media_type === 'image' ? (
+                                  <>
+                                    <img 
+                                      src={fullUrl}
+                                      alt={post.content || post.title}
+                                      className="w-full h-full object-cover"
+                                      loading="lazy"
+                                    />
+                                    <div className="absolute top-2 right-2">
+                                      <Image className="w-4 h-4 text-white drop-shadow-lg" />
+                                    </div>
+                                  </>
+                                ) : (
+                                  <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+                                    <FileText className="w-8 h-8 text-primary" />
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })()} 
+                        </div>
+
+                        {/* Post info section */}
+                        <div className="p-3 bg-background">
+                          <div className="flex items-start justify-between gap-3 mb-2">
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-foreground line-clamp-2 mb-1">
+                                {post.content || post.title}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Interaction bar */}
+                          <div className="flex items-center justify-between pt-2">
+                            <div className="flex items-center gap-4">
+                              <button 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleLike(post.id);
+                                }}
+                                className="flex items-center gap-1 text-muted-foreground hover:text-red-500 transition-colors"
+                              >
+                                <Heart className={`w-4 h-4 ${postLikes[post.id]?.liked ? 'fill-red-500 text-red-500' : ''}`} />
+                                <span className="text-xs">{postLikes[post.id]?.count || 0}</span>
+                              </button>
+                              <button 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleCommentClick(post.id);
+                                }}
+                                className="flex items-center gap-1 text-muted-foreground hover:text-primary transition-colors"
+                              >
+                                <MessageSquare className="w-4 h-4" />
+                                <span className="text-xs">{post.comments_count || 0}</span>
+                              </button>
+                              <button 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleShare(post.id);
+                                }}
+                                className="flex items-center gap-1 text-muted-foreground hover:text-primary transition-colors"
+                              >
+                                <Share2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                            <Badge variant={getTierColor(post.tier)} className="text-xs px-2 py-1">
+                              {post.tier === 'public' ? 'Free' : (
+                                post.tier?.split(' ').map((word: string) => 
+                                  word.charAt(0).toUpperCase() + word.slice(1)
+                                ).join(' ') || 'General'
+                              )}
+                            </Badge>
+                          </div>
+
+                          {/* Creator actions (edit/delete) for own posts */}
+                          {isOwnProfile && (
+                            <div className="flex gap-2 mt-3 pt-3 border-t border-border/50">
+                              <CreatorPostActions 
+                                post={post} 
+                                onEdit={(postData) => {
+                                  setEditingPost(postData);
+                                  setEditCaption(postData.content || postData.title);
+                                  setIsEditModalOpen(true);
+                                }}
+                                onDelete={async (postId) => {
+                                  try {
+                                    const response = await fetch(`/api/posts/${postId}`, {
+                                      method: 'DELETE',
+                                    });
+                                    if (response.ok) {
+                                      toast({
+                                        title: "Post deleted",
+                                        description: "Your post has been deleted successfully.",
+                                      });
+                                      if (creator?.id) {
+                                        fetchUserPosts(creator.id);
+                                      }
+                                    } else {
+                                      throw new Error('Failed to delete post');
+                                    }
+                                  } catch (error) {
+                                    console.error('Error deleting post:', error);
+                                    toast({
+                                      title: "Error",
+                                      description: "Failed to delete post. Please try again.",
+                                      variant: "destructive"
+                                    });
+                                  }
+                                }}
+                              />
+                            </div>
+                          )}
+
+                          {/* Comments section */}
+                          {showComments[post.id] && (
+                            <div className="mt-3 pt-3 border-t border-border/50">
+                              <CommentSection 
+                                postId={Number(post.id)} 
+                                onCommentCountChange={(newCount) => handleCommentCountChange(post.id, newCount)}
+                              />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Desktop: Grid layout */}
+                <div className="hidden md:block">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {getFilteredPosts().map((post) => (
+                      <Card key={post.id} className="feed-card group hover:shadow-lg transition-all duration-200">
+                        <CardContent className="p-0">
+                          <div 
+                            className="feed-card-thumbnail cursor-pointer"
+                            onClick={() => handleContentClick(post)}
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                handleContentClick(post);
+                              }
+                            }}
+                          >
+                            {(() => {
+                              const hasAccess = hasAccessToTier(post.tier);
+
+                              if (!hasAccess) {
+                                return (
+                                  <div className="w-full h-full bg-gradient-to-br from-accent/20 to-accent/10 flex items-center justify-center relative">
+                                    <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" />
+                                    <div className="text-center z-10 p-4">
+                                      <div className="mb-3">
+                                        <svg className="w-8 h-8 mx-auto text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                        </svg>
+                                      </div>
+                                      <p className="text-accent text-sm font-medium mb-2">Subscribe to view</p>
+                                      <p className="text-accent/70 text-xs">This content is for subscribers only</p>
+                                    </div>
+                                  </div>
+                                );
+                              }
+
+                              const mediaUrls = Array.isArray(post.media_urls) ? post.media_urls : [post.media_urls];
+                              const mediaUrl = mediaUrls[0];
+                              const fullUrl = mediaUrl?.startsWith('/uploads/') ? mediaUrl : `/uploads/${mediaUrl}`;
+
+                              return (
+                                <div className="relative w-full h-full">
+                                  {post.media_type === 'video' ? (
+                                    <>
+                                      <video 
+                                        src={fullUrl}
+                                        className="w-full h-full object-cover"
+                                        muted
+                                        playsInline
+                                        preload="metadata"
+                                      />
+                                      <div className="absolute top-2 right-2">
+                                        <Video className="w-4 h-4 text-white drop-shadow-lg" />
+                                      </div>
+                                    </>
+                                  ) : post.media_type === 'image' ? (
+                                    <>
+                                      <img 
+                                        src={fullUrl}
+                                        alt={post.content || post.title}
+                                        className="w-full h-full object-cover"
+                                        loading="lazy"
+                                      />
+                                      <div className="absolute top-2 right-2">
+                                        <Image className="w-4 h-4 text-white drop-shadow-lg" />
+                                      </div>
+                                    </>
+                                  ) : (
+                                    <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+                                      <FileText className="w-8 h-8 text-primary" />
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })()} 
+                          </div>
+
+                          <div className="feed-card-content">
+                            <h3 className="feed-card-title">
+                              {post.content || post.title}
+                            </h3>
+                            <div className="flex items-center justify-between">
+                              <div className="feed-card-meta">
+                                <span>{getTimeAgo(post.created_at)}</span>
+                                <span className="mx-1">•</span>
+                                <span>{post.likes_count || 0} likes</span>
+                              </div>
+                              <Badge variant={getTierColor(post.tier)} className="text-xs">
+                                {post.tier === 'public' ? 'Free' : (
+                                  post.tier?.split(' ').map((word: string) => 
+                                    word.charAt(0).toUpperCase() + word.slice(1)
+                                  ).join(' ') || 'General'
+                                )}
+                              </Badge>
+                            </div>
+
+                            {/* Desktop interaction bar */}
+                            <div className="flex items-center justify-between pt-2 mt-2 border-t border-border/20">
+                              <div className="flex items-center gap-3">
+                                <PostActions 
+                                  post={post}
+                                  liked={postLikes[post.id]?.liked || false}
+                                  likeCount={postLikes[post.id]?.count || 0}
+                                  onLike={() => handleLike(post.id)}
+                                  onComment={() => handleCommentClick(post.id)}
+                                  onShare={() => handleShare(post.id)}
+                                />
+                              </div>
+                              {/* Creator actions for own posts */}
+                              {isOwnProfile && (
+                                <CreatorPostActions 
+                                  post={post} 
+                                  onEdit={(postData) => {
+                                    setEditingPost(postData);
+                                    setEditCaption(postData.content || postData.title);
+                                    setIsEditModalOpen(true);
+                                  }}
+                                  onDelete={async (postId) => {
+                                    try {
+                                      const response = await fetch(`/api/posts/${postId}`, {
+                                        method: 'DELETE',
+                                      });
+                                      if (response.ok) {
+                                        toast({
+                                          title: "Post deleted",
+                                          description: "Your post has been deleted successfully.",
+                                        });
+                                        if (creator?.id) {
+                                          fetchUserPosts(creator.id);
+                                        }
+                                      } else {
+                                        throw new Error('Failed to delete post');
+                                      }
+                                    } catch (error) {
+                                      console.error('Error deleting post:', error);
+                                      toast({
+                                        title: "Error",
+                                        description: "Failed to delete post. Please try again.",
+                                        variant: "destructive"
+                                      });
+                                    }
+                                  }}
+                                />
+                              )}
+                            </div>
+
+                            {/* Comments section */}
+                            {showComments[post.id] && (
+                              <div className="mt-3 pt-3 border-t border-border/50">
+                                <CommentSection 
+                                  postId={Number(post.id)} 
+                                  onCommentCountChange={(newCount) => handleCommentCountChange(post.id, newCount)}
+                                />
+                              </div>
+                            )}
+                          </div>
+
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+                </>
+              ) : (
+                <Card className="bg-gradient-card border-border/50">
+                  <CardContent className="p-6">
+                    <div className="text-center py-4">
+                      <DollarSign className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                      <h3 className="text-lg font-medium mb-2">No posts in this category</h3>
+                      <p className="text-muted-foreground text-sm">
+                        {activeTab === 'all' 
+                          ? (isOwnProfile ? 'Start creating content to build your audience.' : `${creator.display_name} hasn't posted any content yet.`)
+                          : activeTab === 'free'
+                          ? (isOwnProfile ? 'No free posts yet. Create some free content to attract new fans.' : `${creator.display_name} hasn't posted any free content yet.`)
                           : (isOwnProfile ? 'No subscription content yet. Create premium posts for your subscribers.' : `${creator.display_name} hasn't posted any subscription content yet.`)
                         }
                       </p>
