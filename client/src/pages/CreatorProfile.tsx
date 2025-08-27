@@ -1754,102 +1754,64 @@ export const CreatorProfile: React.FC = () => {
                         {/* Bottom section - VideoWatch Up Next style */}
                         <div className="p-3">
                           {/* Creator Info and Content - Fan Feed Single View Style */}
-                          <div className="flex gap-3">
-                            <div className="flex flex-col items-start gap-2">
-                              <Avatar className="h-9 w-9 flex-shrink-0">
-                                <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
-                                <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
-                              </Avatar>
-                              <div className="text-left">
-                                <div className="text-xs text-muted-foreground mb-1">
-                                  <span className="truncate">{creator.display_name}</span>
-                                </div>
+                          <div className="flex gap-2">
+                            <Avatar className="h-9 w-9 flex-shrink-0">
+                              <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
+                              <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
+                                {post.content || post.title || 'Untitled Post'}
+                              </h4>
+                              <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                  <span className="truncate">{creator.display_name}</span>
+                                  <span>•</span>
                                   <Eye className="w-3 h-3" />
                                   <span>{Math.floor(Math.random() * 2000) + 100}</span>
                                   <span>•</span>
                                   <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
                                 </div>
-                              </div>
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
-                                {post.content || post.title || 'Untitled Post'}
-                              </h4>
-
-                                {/* Action Buttons Row - VideoWatch Style */}
-                                <div className="flex items-center justify-between mt-2 overflow-hidden">
-                                  <div className="flex items-center gap-4 flex-1 min-w-0">
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      className={`flex items-center gap-1 h-auto py-2 px-2 ${postLikes[post.id]?.liked ? 'text-red-500' : 'text-muted-foreground'}`}
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleLike(post.id);
-                                      }}
-                                    >
-                                      <Heart className={`w-4 h-4 ${postLikes[post.id]?.liked ? 'fill-current' : ''}`} />
-                                      <span className="text-sm">{postLikes[post.id]?.count || 0}</span>
-                                    </Button>
-
-                                    <Button 
-                                      variant="ghost" 
-                                      size="sm" 
-                                      className="flex items-center gap-1 h-auto py-2 px-2 text-muted-foreground"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleCommentClick(post.id);
-                                      }}
-                                    >
-                                      <MessageSquare className="w-4 h-4" />
-                                      <span className="text-sm">{post.comments_count || 0}</span>
-                                    </Button>
-
-                                    <Button 
-                                      variant="ghost" 
-                                      size="sm" 
-                                      className="flex items-center gap-1 h-auto py-2 px-2 text-muted-foreground" 
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleShare(post.id);
-                                      }}
-                                    >
-                                      <Share2 className="w-4 h-4" />
-                                      <span className="text-sm">Share</span>
-                                    </Button>
-                                  </div>
-
-                                  {/* Creator Edit/Delete Actions - Only for own posts */}
-                                  {isOwnProfile && (
-                                    <div className="flex items-center gap-2 flex-shrink-0">
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="flex items-center gap-1 h-auto py-2 px-2 text-muted-foreground hover:text-foreground"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleEditPost(post.id);
-                                        }}
-                                      >
-                                        <Edit className="w-4 h-4" />
-                                        <span className="text-sm">Edit</span>
-                                      </Button>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="flex items-center gap-1 h-auto py-2 px-2 text-red-500 hover:text-red-600"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleDeletePost(post.id);
-                                        }}
-                                      >
-                                        <Trash2 className="w-4 h-4" />
-                                        <span className="text-sm">Delete</span>
-                                      </Button>
-                                    </div>
-                                  )}
+                                <div className="flex items-center gap-2">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className={`flex items-center gap-1 h-auto py-1 px-2 ${postLikes[post.id]?.liked ? 'text-red-500' : 'text-muted-foreground'}`}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleLike(post.id);
+                                    }}
+                                  >
+                                    <Heart className={`w-4 h-4 ${postLikes[post.id]?.liked ? 'fill-current' : ''}`} />
+                                    <span className="text-xs">{postLikes[post.id]?.count || 0}</span>
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleCommentClick(post.id);
+                                    }}
+                                  >
+                                    <MessageSquare className="w-4 h-4" />
+                                    <span className="text-xs">{post.comments_count || 0}</span>
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground" 
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleShare(post.id);
+                                    }}
+                                  >
+                                    <Share2 className="w-4 h-4" />
+                                  </Button>
                                 </div>
+                              </div>
+
+
 
                             </div>
                           </div>
@@ -1970,28 +1932,62 @@ export const CreatorProfile: React.FC = () => {
                           </div>
 
                           {/* Creator Info and Content - Fan Feed Single View Style */}
-                          <div className="flex gap-3">
-                            <div className="flex flex-col items-start gap-2">
-                              <Avatar className="h-9 w-9 flex-shrink-0">
-                                <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
-                                <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
-                              </Avatar>
-                              <div className="text-left">
-                                <div className="text-xs text-muted-foreground mb-1">
-                                  <span className="truncate">{creator.display_name}</span>
-                                </div>
+                          <div className="flex gap-2">
+                            <Avatar className="h-9 w-9 flex-shrink-0">
+                              <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
+                              <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
+                                {post.content || post.title || 'Untitled Post'}
+                              </h4>
+                              <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                  <span className="truncate">{creator.display_name}</span>
+                                  <span>•</span>
                                   <Eye className="w-3 h-3" />
                                   <span>{Math.floor(Math.random() * 2000) + 100}</span>
                                   <span>•</span>
                                   <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
                                 </div>
+                                <div className="flex items-center gap-2">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className={`flex items-center gap-1 h-auto py-1 px-2 ${postLikes[post.id]?.liked ? 'text-red-500' : 'text-muted-foreground'}`}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleLike(post.id);
+                                    }}
+                                  >
+                                    <Heart className={`w-4 h-4 ${postLikes[post.id]?.liked ? 'fill-current' : ''}`} />
+                                    <span className="text-xs">{postLikes[post.id]?.count || 0}</span>
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleCommentClick(post.id);
+                                    }}
+                                  >
+                                    <MessageSquare className="w-4 h-4" />
+                                    <span className="text-xs">{post.comments_count || 0}</span>
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground" 
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleShare(post.id);
+                                    }}
+                                  >
+                                    <Share2 className="w-4 h-4" />
+                                  </Button>
+                                </div>
                               </div>
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
-                                {post.content || post.title || 'Untitled Post'}
-                              </h4>
 
                                 {/* Action Buttons Row - VideoWatch Style */}
                                 <div className="flex items-center justify-between mt-2 overflow-hidden">
@@ -2204,102 +2200,64 @@ export const CreatorProfile: React.FC = () => {
                         {/* Bottom section - VideoWatch Up Next style */}
                         <div className="p-3">
                           {/* Creator Info and Content - Fan Feed Single View Style */}
-                          <div className="flex gap-3">
-                            <div className="flex flex-col items-start gap-2">
-                              <Avatar className="h-9 w-9 flex-shrink-0">
-                                <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
-                                <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
-                              </Avatar>
-                              <div className="text-left">
-                                <div className="text-xs text-muted-foreground mb-1">
-                                  <span className="truncate">{creator.display_name}</span>
-                                </div>
+                          <div className="flex gap-2">
+                            <Avatar className="h-9 w-9 flex-shrink-0">
+                              <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
+                              <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
+                                {post.content || post.title || 'Untitled Post'}
+                              </h4>
+                              <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                  <span className="truncate">{creator.display_name}</span>
+                                  <span>•</span>
                                   <Eye className="w-3 h-3" />
                                   <span>{Math.floor(Math.random() * 2000) + 100}</span>
                                   <span>•</span>
                                   <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
                                 </div>
-                              </div>
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
-                                {post.content || post.title || 'Untitled Post'}
-                              </h4>
-
-                                {/* Action Buttons Row - VideoWatch Style */}
-                                <div className="flex items-center justify-between mt-2 overflow-hidden">
-                                  <div className="flex items-center gap-4 flex-1 min-w-0">
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      className={`flex items-center gap-1 h-auto py-2 px-2 ${postLikes[post.id]?.liked ? 'text-red-500' : 'text-muted-foreground'}`}
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleLike(post.id);
-                                      }}
-                                    >
-                                      <Heart className={`w-4 h-4 ${postLikes[post.id]?.liked ? 'fill-current' : ''}`} />
-                                      <span className="text-sm">{postLikes[post.id]?.count || 0}</span>
-                                    </Button>
-
-                                    <Button 
-                                      variant="ghost" 
-                                      size="sm" 
-                                      className="flex items-center gap-1 h-auto py-2 px-2 text-muted-foreground"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleCommentClick(post.id);
-                                      }}
-                                    >
-                                      <MessageSquare className="w-4 h-4" />
-                                      <span className="text-sm">{post.comments_count || 0}</span>
-                                    </Button>
-
-                                    <Button 
-                                      variant="ghost" 
-                                      size="sm" 
-                                      className="flex items-center gap-1 h-auto py-2 px-2 text-muted-foreground" 
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleShare(post.id);
-                                      }}
-                                    >
-                                      <Share2 className="w-4 h-4" />
-                                      <span className="text-sm">Share</span>
-                                    </Button>
-                                  </div>
-
-                                  {/* Creator Edit/Delete Actions - Only for own posts */}
-                                  {isOwnProfile && (
-                                    <div className="flex items-center gap-2 flex-shrink-0">
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="flex items-center gap-1 h-auto py-2 px-2 text-muted-foreground hover:text-foreground"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleEditPost(post.id);
-                                        }}
-                                      >
-                                        <Edit className="w-4 h-4" />
-                                        <span className="text-sm">Edit</span>
-                                      </Button>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="flex items-center gap-1 h-auto py-2 px-2 text-red-500 hover:text-red-600"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleDeletePost(post.id);
-                                        }}
-                                      >
-                                        <Trash2 className="w-4 h-4" />
-                                        <span className="text-sm">Delete</span>
-                                      </Button>
-                                    </div>
-                                  )}
+                                <div className="flex items-center gap-2">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className={`flex items-center gap-1 h-auto py-1 px-2 ${postLikes[post.id]?.liked ? 'text-red-500' : 'text-muted-foreground'}`}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleLike(post.id);
+                                    }}
+                                  >
+                                    <Heart className={`w-4 h-4 ${postLikes[post.id]?.liked ? 'fill-current' : ''}`} />
+                                    <span className="text-xs">{postLikes[post.id]?.count || 0}</span>
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleCommentClick(post.id);
+                                    }}
+                                  >
+                                    <MessageSquare className="w-4 h-4" />
+                                    <span className="text-xs">{post.comments_count || 0}</span>
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground" 
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleShare(post.id);
+                                    }}
+                                  >
+                                    <Share2 className="w-4 h-4" />
+                                  </Button>
                                 </div>
+                              </div>
+
+
 
                             </div>
                           </div>
@@ -2420,28 +2378,62 @@ export const CreatorProfile: React.FC = () => {
                           </div>
 
                           {/* Creator Info and Content - Fan Feed Single View Style */}
-                          <div className="flex gap-3">
-                            <div className="flex flex-col items-start gap-2">
-                              <Avatar className="h-9 w-9 flex-shrink-0">
-                                <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
-                                <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
-                              </Avatar>
-                              <div className="text-left">
-                                <div className="text-xs text-muted-foreground mb-1">
-                                  <span className="truncate">{creator.display_name}</span>
-                                </div>
+                          <div className="flex gap-2">
+                            <Avatar className="h-9 w-9 flex-shrink-0">
+                              <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
+                              <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
+                                {post.content || post.title || 'Untitled Post'}
+                              </h4>
+                              <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                  <span className="truncate">{creator.display_name}</span>
+                                  <span>•</span>
                                   <Eye className="w-3 h-3" />
                                   <span>{Math.floor(Math.random() * 2000) + 100}</span>
                                   <span>•</span>
                                   <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
                                 </div>
+                                <div className="flex items-center gap-2">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className={`flex items-center gap-1 h-auto py-1 px-2 ${postLikes[post.id]?.liked ? 'text-red-500' : 'text-muted-foreground'}`}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleLike(post.id);
+                                    }}
+                                  >
+                                    <Heart className={`w-4 h-4 ${postLikes[post.id]?.liked ? 'fill-current' : ''}`} />
+                                    <span className="text-xs">{postLikes[post.id]?.count || 0}</span>
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleCommentClick(post.id);
+                                    }}
+                                  >
+                                    <MessageSquare className="w-4 h-4" />
+                                    <span className="text-xs">{post.comments_count || 0}</span>
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground" 
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleShare(post.id);
+                                    }}
+                                  >
+                                    <Share2 className="w-4 h-4" />
+                                  </Button>
+                                </div>
                               </div>
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
-                                {post.content || post.title || 'Untitled Post'}
-                              </h4>
 
                                 {/* Action Buttons Row - VideoWatch Style */}
                                 <div className="flex items-center justify-between mt-2 overflow-hidden">
@@ -2654,102 +2646,64 @@ export const CreatorProfile: React.FC = () => {
                         {/* Bottom section - VideoWatch Up Next style */}
                         <div className="p-3">
                           {/* Creator Info and Content - Fan Feed Single View Style */}
-                          <div className="flex gap-3">
-                            <div className="flex flex-col items-start gap-2">
-                              <Avatar className="h-9 w-9 flex-shrink-0">
-                                <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
-                                <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
-                              </Avatar>
-                              <div className="text-left">
-                                <div className="text-xs text-muted-foreground mb-1">
-                                  <span className="truncate">{creator.display_name}</span>
-                                </div>
+                          <div className="flex gap-2">
+                            <Avatar className="h-9 w-9 flex-shrink-0">
+                              <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
+                              <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
+                                {post.content || post.title || 'Untitled Post'}
+                              </h4>
+                              <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                  <span className="truncate">{creator.display_name}</span>
+                                  <span>•</span>
                                   <Eye className="w-3 h-3" />
                                   <span>{Math.floor(Math.random() * 2000) + 100}</span>
                                   <span>•</span>
                                   <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
                                 </div>
-                              </div>
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
-                                {post.content || post.title || 'Untitled Post'}
-                              </h4>
-
-                                {/* Action Buttons Row - VideoWatch Style */}
-                                <div className="flex items-center justify-between mt-2 overflow-hidden">
-                                  <div className="flex items-center gap-4 flex-1 min-w-0">
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      className={`flex items-center gap-1 h-auto py-2 px-2 ${postLikes[post.id]?.liked ? 'text-red-500' : 'text-muted-foreground'}`}
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleLike(post.id);
-                                      }}
-                                    >
-                                      <Heart className={`w-4 h-4 ${postLikes[post.id]?.liked ? 'fill-current' : ''}`} />
-                                      <span className="text-sm">{postLikes[post.id]?.count || 0}</span>
-                                    </Button>
-
-                                    <Button 
-                                      variant="ghost" 
-                                      size="sm" 
-                                      className="flex items-center gap-1 h-auto py-2 px-2 text-muted-foreground"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleCommentClick(post.id);
-                                      }}
-                                    >
-                                      <MessageSquare className="w-4 h-4" />
-                                      <span className="text-sm">{post.comments_count || 0}</span>
-                                    </Button>
-
-                                    <Button 
-                                      variant="ghost" 
-                                      size="sm" 
-                                      className="flex items-center gap-1 h-auto py-2 px-2 text-muted-foreground" 
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleShare(post.id);
-                                      }}
-                                    >
-                                      <Share2 className="w-4 h-4" />
-                                      <span className="text-sm">Share</span>
-                                    </Button>
-                                  </div>
-
-                                  {/* Creator Edit/Delete Actions - Only for own posts */}
-                                  {isOwnProfile && (
-                                    <div className="flex items-center gap-2 flex-shrink-0">
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="flex items-center gap-1 h-auto py-2 px-2 text-muted-foreground hover:text-foreground"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleEditPost(post.id);
-                                        }}
-                                      >
-                                        <Edit className="w-4 h-4" />
-                                        <span className="text-sm">Edit</span>
-                                      </Button>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="flex items-center gap-1 h-auto py-2 px-2 text-red-500 hover:text-red-600"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleDeletePost(post.id);
-                                        }}
-                                      >
-                                        <Trash2 className="w-4 h-4" />
-                                        <span className="text-sm">Delete</span>
-                                      </Button>
-                                    </div>
-                                  )}
+                                <div className="flex items-center gap-2">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className={`flex items-center gap-1 h-auto py-1 px-2 ${postLikes[post.id]?.liked ? 'text-red-500' : 'text-muted-foreground'}`}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleLike(post.id);
+                                    }}
+                                  >
+                                    <Heart className={`w-4 h-4 ${postLikes[post.id]?.liked ? 'fill-current' : ''}`} />
+                                    <span className="text-xs">{postLikes[post.id]?.count || 0}</span>
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleCommentClick(post.id);
+                                    }}
+                                  >
+                                    <MessageSquare className="w-4 h-4" />
+                                    <span className="text-xs">{post.comments_count || 0}</span>
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground" 
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleShare(post.id);
+                                    }}
+                                  >
+                                    <Share2 className="w-4 h-4" />
+                                  </Button>
                                 </div>
+                              </div>
+
+
 
                             </div>
                           </div>
@@ -2870,28 +2824,62 @@ export const CreatorProfile: React.FC = () => {
                           </div>
 
                           {/* Creator Info and Content - Fan Feed Single View Style */}
-                          <div className="flex gap-3">
-                            <div className="flex flex-col items-start gap-2">
-                              <Avatar className="h-9 w-9 flex-shrink-0">
-                                <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
-                                <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
-                              </Avatar>
-                              <div className="text-left">
-                                <div className="text-xs text-muted-foreground mb-1">
-                                  <span className="truncate">{creator.display_name}</span>
-                                </div>
+                          <div className="flex gap-2">
+                            <Avatar className="h-9 w-9 flex-shrink-0">
+                              <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
+                              <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
+                                {post.content || post.title || 'Untitled Post'}
+                              </h4>
+                              <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                  <span className="truncate">{creator.display_name}</span>
+                                  <span>•</span>
                                   <Eye className="w-3 h-3" />
                                   <span>{Math.floor(Math.random() * 2000) + 100}</span>
                                   <span>•</span>
                                   <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
                                 </div>
+                                <div className="flex items-center gap-2">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className={`flex items-center gap-1 h-auto py-1 px-2 ${postLikes[post.id]?.liked ? 'text-red-500' : 'text-muted-foreground'}`}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleLike(post.id);
+                                    }}
+                                  >
+                                    <Heart className={`w-4 h-4 ${postLikes[post.id]?.liked ? 'fill-current' : ''}`} />
+                                    <span className="text-xs">{postLikes[post.id]?.count || 0}</span>
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleCommentClick(post.id);
+                                    }}
+                                  >
+                                    <MessageSquare className="w-4 h-4" />
+                                    <span className="text-xs">{post.comments_count || 0}</span>
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground" 
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleShare(post.id);
+                                    }}
+                                  >
+                                    <Share2 className="w-4 h-4" />
+                                  </Button>
+                                </div>
                               </div>
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
-                                {post.content || post.title || 'Untitled Post'}
-                              </h4>
 
                                 {/* Action Buttons Row - VideoWatch Style */}
                                 <div className="flex items-center justify-between mt-2 overflow-hidden">
