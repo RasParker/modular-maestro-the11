@@ -1755,24 +1755,27 @@ export const CreatorProfile: React.FC = () => {
                         <div className="p-3">
                           {/* Creator Info and Content - Fan Feed Single View Style */}
                           <div className="flex gap-3">
-                            <Avatar className="h-9 w-9 flex-shrink-0">
-                              <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
-                              <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
-                            </Avatar>
+                            <div className="flex flex-col items-start gap-2">
+                              <Avatar className="h-9 w-9 flex-shrink-0">
+                                <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
+                                <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
+                              </Avatar>
+                              <div className="text-left">
+                                <div className="text-xs text-muted-foreground mb-1">
+                                  <span className="truncate">{creator.display_name}</span>
+                                </div>
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                  <Eye className="w-3 h-3" />
+                                  <span>{Math.floor(Math.random() * 2000) + 100}</span>
+                                  <span>•</span>
+                                  <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
+                                </div>
+                              </div>
+                            </div>
                             <div className="flex-1 min-w-0">
                               <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
                                 {post.content || post.title || 'Untitled Post'}
                               </h4>
-
-                                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                                  <span className="truncate">{creator.display_name}</span>
-                                  <div className="flex items-center gap-1 flex-shrink-0">
-                                    <Eye className="w-3 h-3" />
-                                    <span>{Math.floor(Math.random() * 2000) + 100}</span>
-                                    <span>•</span>
-                                  <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
-                                  </div>
-                                </div>
 
                                 {/* Action Buttons Row - VideoWatch Style */}
                                 <div className="flex items-center justify-between mt-2 overflow-hidden">
@@ -1968,24 +1971,27 @@ export const CreatorProfile: React.FC = () => {
 
                           {/* Creator Info and Content - Fan Feed Single View Style */}
                           <div className="flex gap-3">
-                            <Avatar className="h-9 w-9 flex-shrink-0">
-                              <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
-                              <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
-                            </Avatar>
+                            <div className="flex flex-col items-start gap-2">
+                              <Avatar className="h-9 w-9 flex-shrink-0">
+                                <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
+                                <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
+                              </Avatar>
+                              <div className="text-left">
+                                <div className="text-xs text-muted-foreground mb-1">
+                                  <span className="truncate">{creator.display_name}</span>
+                                </div>
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                  <Eye className="w-3 h-3" />
+                                  <span>{Math.floor(Math.random() * 2000) + 100}</span>
+                                  <span>•</span>
+                                  <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
+                                </div>
+                              </div>
+                            </div>
                             <div className="flex-1 min-w-0">
                               <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
                                 {post.content || post.title || 'Untitled Post'}
                               </h4>
-
-                                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                                  <span className="truncate">{creator.display_name}</span>
-                                  <div className="flex items-center gap-1 flex-shrink-0">
-                                    <Eye className="w-3 h-3" />
-                                    <span>{Math.floor(Math.random() * 2000) + 100}</span>
-                                    <span>•</span>
-                                  <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
-                                  </div>
-                                </div>
 
                                 {/* Action Buttons Row - VideoWatch Style */}
                                 <div className="flex items-center justify-between mt-2 overflow-hidden">
@@ -2199,24 +2205,27 @@ export const CreatorProfile: React.FC = () => {
                         <div className="p-3">
                           {/* Creator Info and Content - Fan Feed Single View Style */}
                           <div className="flex gap-3">
-                            <Avatar className="h-9 w-9 flex-shrink-0">
-                              <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
-                              <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
-                            </Avatar>
+                            <div className="flex flex-col items-start gap-2">
+                              <Avatar className="h-9 w-9 flex-shrink-0">
+                                <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
+                                <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
+                              </Avatar>
+                              <div className="text-left">
+                                <div className="text-xs text-muted-foreground mb-1">
+                                  <span className="truncate">{creator.display_name}</span>
+                                </div>
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                  <Eye className="w-3 h-3" />
+                                  <span>{Math.floor(Math.random() * 2000) + 100}</span>
+                                  <span>•</span>
+                                  <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
+                                </div>
+                              </div>
+                            </div>
                             <div className="flex-1 min-w-0">
                               <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
                                 {post.content || post.title || 'Untitled Post'}
                               </h4>
-
-                                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                                  <span className="truncate">{creator.display_name}</span>
-                                  <div className="flex items-center gap-1 flex-shrink-0">
-                                    <Eye className="w-3 h-3" />
-                                    <span>{Math.floor(Math.random() * 2000) + 100}</span>
-                                    <span>•</span>
-                                  <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
-                                  </div>
-                                </div>
 
                                 {/* Action Buttons Row - VideoWatch Style */}
                                 <div className="flex items-center justify-between mt-2 overflow-hidden">
@@ -2412,24 +2421,27 @@ export const CreatorProfile: React.FC = () => {
 
                           {/* Creator Info and Content - Fan Feed Single View Style */}
                           <div className="flex gap-3">
-                            <Avatar className="h-9 w-9 flex-shrink-0">
-                              <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
-                              <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
-                            </Avatar>
+                            <div className="flex flex-col items-start gap-2">
+                              <Avatar className="h-9 w-9 flex-shrink-0">
+                                <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
+                                <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
+                              </Avatar>
+                              <div className="text-left">
+                                <div className="text-xs text-muted-foreground mb-1">
+                                  <span className="truncate">{creator.display_name}</span>
+                                </div>
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                  <Eye className="w-3 h-3" />
+                                  <span>{Math.floor(Math.random() * 2000) + 100}</span>
+                                  <span>•</span>
+                                  <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
+                                </div>
+                              </div>
+                            </div>
                             <div className="flex-1 min-w-0">
                               <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
                                 {post.content || post.title || 'Untitled Post'}
                               </h4>
-
-                                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                                  <span className="truncate">{creator.display_name}</span>
-                                  <div className="flex items-center gap-1 flex-shrink-0">
-                                    <Eye className="w-3 h-3" />
-                                    <span>{Math.floor(Math.random() * 2000) + 100}</span>
-                                    <span>•</span>
-                                  <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
-                                  </div>
-                                </div>
 
                                 {/* Action Buttons Row - VideoWatch Style */}
                                 <div className="flex items-center justify-between mt-2 overflow-hidden">
@@ -2643,24 +2655,27 @@ export const CreatorProfile: React.FC = () => {
                         <div className="p-3">
                           {/* Creator Info and Content - Fan Feed Single View Style */}
                           <div className="flex gap-3">
-                            <Avatar className="h-9 w-9 flex-shrink-0">
-                              <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
-                              <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
-                            </Avatar>
+                            <div className="flex flex-col items-start gap-2">
+                              <Avatar className="h-9 w-9 flex-shrink-0">
+                                <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
+                                <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
+                              </Avatar>
+                              <div className="text-left">
+                                <div className="text-xs text-muted-foreground mb-1">
+                                  <span className="truncate">{creator.display_name}</span>
+                                </div>
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                  <Eye className="w-3 h-3" />
+                                  <span>{Math.floor(Math.random() * 2000) + 100}</span>
+                                  <span>•</span>
+                                  <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
+                                </div>
+                              </div>
+                            </div>
                             <div className="flex-1 min-w-0">
                               <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
                                 {post.content || post.title || 'Untitled Post'}
                               </h4>
-
-                                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                                  <span className="truncate">{creator.display_name}</span>
-                                  <div className="flex items-center gap-1 flex-shrink-0">
-                                    <Eye className="w-3 h-3" />
-                                    <span>{Math.floor(Math.random() * 2000) + 100}</span>
-                                    <span>•</span>
-                                  <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
-                                  </div>
-                                </div>
 
                                 {/* Action Buttons Row - VideoWatch Style */}
                                 <div className="flex items-center justify-between mt-2 overflow-hidden">
@@ -2856,24 +2871,27 @@ export const CreatorProfile: React.FC = () => {
 
                           {/* Creator Info and Content - Fan Feed Single View Style */}
                           <div className="flex gap-3">
-                            <Avatar className="h-9 w-9 flex-shrink-0">
-                              <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
-                              <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
-                            </Avatar>
+                            <div className="flex flex-col items-start gap-2">
+                              <Avatar className="h-9 w-9 flex-shrink-0">
+                                <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
+                                <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
+                              </Avatar>
+                              <div className="text-left">
+                                <div className="text-xs text-muted-foreground mb-1">
+                                  <span className="truncate">{creator.display_name}</span>
+                                </div>
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                  <Eye className="w-3 h-3" />
+                                  <span>{Math.floor(Math.random() * 2000) + 100}</span>
+                                  <span>•</span>
+                                  <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
+                                </div>
+                              </div>
+                            </div>
                             <div className="flex-1 min-w-0">
                               <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
                                 {post.content || post.title || 'Untitled Post'}
                               </h4>
-
-                                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                                  <span className="truncate">{creator.display_name}</span>
-                                  <div className="flex items-center gap-1 flex-shrink-0">
-                                    <Eye className="w-3 h-3" />
-                                    <span>{Math.floor(Math.random() * 2000) + 100}</span>
-                                    <span>•</span>
-                                  <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
-                                  </div>
-                                </div>
 
                                 {/* Action Buttons Row - VideoWatch Style */}
                                 <div className="flex items-center justify-between mt-2 overflow-hidden">
