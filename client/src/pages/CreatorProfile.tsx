@@ -741,7 +741,8 @@ export const CreatorProfile: React.FC = () => {
       case 'public':
         const publicPosts = userPosts.filter(post => {
           const tier = post.tier?.toLowerCase();
-          const isPublic = tier === 'public';
+          // Handle multiple variations of "public" content
+          const isPublic = tier === 'public' || tier === 'free' || !tier || tier === '';
           console.log(`Post ${post.id}: tier="${post.tier}" (normalized: "${tier}") isPublic: ${isPublic}`);
           return isPublic;
         });
@@ -750,7 +751,8 @@ export const CreatorProfile: React.FC = () => {
       case 'subscription':
         const subscriptionPosts = userPosts.filter(post => {
           const tier = post.tier?.toLowerCase();
-          const isSubscription = tier !== 'public';
+          // Handle multiple variations of "public" content for exclusion
+          const isSubscription = tier !== 'public' && tier !== 'free' && tier && tier !== '';
           console.log(`Post ${post.id}: tier="${post.tier}" (normalized: "${tier}") isSubscription: ${isSubscription}`);
           return isSubscription;
         });
@@ -769,8 +771,14 @@ export const CreatorProfile: React.FC = () => {
 
     const counts = {
       all: userPosts.length,
-      subscription: userPosts.filter(post => post.tier?.toLowerCase() !== 'public').length,
-      public: userPosts.filter(post => post.tier?.toLowerCase() === 'public').length
+      subscription: userPosts.filter(post => {
+        const tier = post.tier?.toLowerCase();
+        return tier !== 'public' && tier !== 'free' && tier && tier !== '';
+      }).length,
+      public: userPosts.filter(post => {
+        const tier = post.tier?.toLowerCase();
+        return tier === 'public' || tier === 'free' || !tier || tier === '';
+      }).length
     };
 
     console.log('Post counts:', counts);
