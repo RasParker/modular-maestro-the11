@@ -375,8 +375,8 @@ export const CreatorDashboard: React.FC = () => {
                   {scheduledContent.length > 0 ? (
                     scheduledContent.length > 2 ? (
                       <div>
-                        <ScrollArea className="h-[200px] w-full scrollbar-hide">
-                          <div className="space-y-4 pr-4">
+                        <ScrollArea className="h-[200px] w-full">
+                          <div className="space-y-4 pr-3">
                             {scheduledContent.map((content) => (
                               <div key={content.id} className="flex items-center gap-3 p-3 bg-background/50 rounded-lg">
                                 <div className="flex-shrink-0">
@@ -399,7 +399,7 @@ export const CreatorDashboard: React.FC = () => {
                                             target.style.display = 'none';
                                             const parent = target.parentElement;
                                             if (parent) {
-                                              parent.innerHTML = `<div class="w-16 h-16 bg-gradient-to-br from-accent/20 to-accent/10 rounded-lg flex items-center justify-center"><svg class="w-6 h-6 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg></div>`;
+                                              parent.innerHTML = `<div class="w-16 h-16 bg-gradient-to-br from-accent/20 to-accent/10 rounded-lg flex items-center justify-center"><svg class="w-6 h-6 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 002 2v8a2 2 0 002 2z"></path></svg></div>`;
                                             }
                                           }}
                                         />
@@ -433,7 +433,7 @@ export const CreatorDashboard: React.FC = () => {
                                   )}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                  <h4 className="font-medium text-sm line-clamp-1 break-words overflow-hidden truncate">{content.title || content.content || 'Untitled Post'}</h4>
+                                  <h4 className="font-medium text-sm text-ellipsis overflow-hidden whitespace-nowrap">{content.title || content.content || 'Untitled Post'}</h4>
                                   <div className="flex items-center gap-2 mt-1">
                                     <Badge variant="outline" className="text-xs">{content.tier}</Badge>
                                     <CountdownTimer
@@ -477,7 +477,7 @@ export const CreatorDashboard: React.FC = () => {
                                         target.style.display = 'none';
                                         const parent = target.parentElement;
                                         if (parent) {
-                                          parent.innerHTML = `<div class="w-16 h-16 bg-gradient-to-br from-accent/20 to-accent/10 rounded-lg flex items-center justify-center"><svg class="w-6 h-6 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg></div>`;
+                                          parent.innerHTML = `<div class="w-16 h-16 bg-gradient-to-br from-accent/20 to-accent/10 rounded-lg flex items-center justify-center"><svg class="w-6 h-6 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 002 2v8a2 2 0 002 2z"></path></svg></div>`;
                                         }
                                       }}
                                     />
@@ -511,7 +511,7 @@ export const CreatorDashboard: React.FC = () => {
                               )}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <h4 className="font-medium text-sm line-clamp-1 break-words overflow-hidden truncate">{content.title || content.content || 'Untitled Post'}</h4>
+                              <h4 className="font-medium text-sm text-ellipsis overflow-hidden whitespace-nowrap">{content.title || content.content || 'Untitled Post'}</h4>
                               <div className="flex items-center gap-2 mt-1">
                                 <Badge variant="outline" className="text-xs">{content.tier}</Badge>
                                 <CountdownTimer
@@ -558,8 +558,8 @@ export const CreatorDashboard: React.FC = () => {
                 <CardContent>
                   {userPosts.length > 0 ? (
                     userPosts.length > 2 ? (
-                      <ScrollArea className="h-[200px] w-full scrollbar-hide">
-                        <div className="space-y-4 pr-4">
+                      <ScrollArea className="h-[200px] w-full">
+                        <div className="space-y-4 pr-3">
                           {userPosts.map((post) => (
                             <div key={post.id} className="flex items-center gap-3 p-3 bg-background/50 rounded-lg">
                               <div className="flex-shrink-0">
@@ -582,7 +582,7 @@ export const CreatorDashboard: React.FC = () => {
                                           target.style.display = 'none';
                                           const parent = target.parentElement;
                                           if (parent) {
-                                            parent.innerHTML = `<div class="w-16 h-16 bg-gradient-to-br from-accent/20 to-accent/10 rounded-lg flex items-center justify-center"><svg class="w-6 h-6 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg></div>`;
+                                            parent.innerHTML = `<div class="w-16 h-16 bg-gradient-to-br from-accent/20 to-accent/10 rounded-lg flex items-center justify-center"><svg class="w-6 h-6 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 002 2v8a2 2 0 002 2z"></path></svg></div>`;
                                           }
                                         }}
                                       />
@@ -616,7 +616,7 @@ export const CreatorDashboard: React.FC = () => {
                                 )}
                               </div>
                               <div className="flex-1 min-w-0">
-                                <h4 className="font-medium text-sm line-clamp-1 break-words overflow-hidden truncate">{post.caption || post.title || 'Untitled Post'}</h4>
+                                <h4 className="font-medium text-sm text-ellipsis overflow-hidden whitespace-nowrap">{post.caption || post.title || 'Untitled Post'}</h4>
                                 <div className="flex items-center gap-2 mt-1">
                                   <Badge variant="outline" className="text-xs">{post.tier}</Badge>
                                   <span className="text-xs text-muted-foreground truncate">
@@ -666,7 +666,7 @@ export const CreatorDashboard: React.FC = () => {
                                         target.style.display = 'none';
                                         const parent = target.parentElement;
                                         if (parent) {
-                                          parent.innerHTML = `<div class="w-16 h-16 bg-gradient-to-br from-accent/20 to-accent/10 rounded-lg flex items-center justify-center"><svg class="w-6 h-6 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg></div>`;
+                                          parent.innerHTML = `<div class="w-16 h-16 bg-gradient-to-br from-accent/20 to-accent/10 rounded-lg flex items-center justify-center"><svg class="w-6 h-6 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 002 2v8a2 2 0 002 2z"></path></svg></div>`;
                                         }
                                       }}
                                     />
@@ -700,7 +700,7 @@ export const CreatorDashboard: React.FC = () => {
                               )}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <h4 className="font-medium text-sm line-clamp-1 break-words overflow-hidden truncate">{post.caption || post.title || 'Untitled Post'}</h4>
+                              <h4 className="font-medium text-sm text-ellipsis overflow-hidden whitespace-nowrap">{post.caption || post.title || 'Untitled Post'}</h4>
                               <div className="flex items-center gap-2 mt-1">
                                 <Badge variant="outline" className="text-xs">{post.tier}</Badge>
                                 <span className="text-xs text-muted-foreground truncate">
