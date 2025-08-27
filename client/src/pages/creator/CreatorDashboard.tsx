@@ -33,6 +33,59 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 
 // Analytics data will be fetched from API
 
+// Helper component for countdown timer
+const CountdownTimer: React.FC<{ targetDate: string; className?: string }> = ({ targetDate, className }) => {
+  const calculateTimeLeft = () => {
+    const difference = +new Date(targetDate) - +new Date();
+    let timeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+
+    if (difference > 0) {
+      timeLeft = {
+        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((difference / 1000 / 60) % 60),
+        seconds: Math.floor((difference / 1000) % 60),
+      };
+    }
+    return timeLeft;
+  };
+
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  });
+
+  const timerParts = [];
+  if (timeLeft.days > 0) {
+    timerParts.push(`${timeLeft.days}d`);
+  }
+  if (timeLeft.hours > 0 || timerParts.length > 0) {
+    timerParts.push(`${timeLeft.hours}h`);
+  }
+  if (timeLeft.minutes > 0 || timerParts.length > 0) {
+    timerParts.push(`${timeLeft.minutes}m`);
+  }
+
+  // Only display if there's time left or if it's exactly 0
+  const displayTimer = Object.values(timeLeft).some(val => val > 0) || (Object.values(timeLeft).every(val => val === 0) && new Date(targetDate) < new Date());
+
+
+  return (
+    <div className={`flex items-center gap-1 ${className}`}>
+      <Clock className="w-3 h-3" />
+      {displayTimer ? (
+        <span>{timerParts.join(' ')}</span>
+      ) : (
+        <span>Expired</span>
+      )}
+    </div>
+  );
+};
 
 
 // Tier breakdown will be fetched from API
@@ -395,17 +448,10 @@ export const CreatorDashboard: React.FC = () => {
                                       <Clock className="w-3 h-3" />
                                       <span>{content.status === 'scheduled' ? 'Pending' : 'Draft'}</span>
                                     </div>
-                                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                      <Calendar className="w-3 h-3" />
-                                      <span>
-                                        {content.scheduled_for 
-                                          ? new Date(content.scheduled_for) > new Date() 
-                                            ? 'Future' 
-                                            : 'Ready'
-                                          : 'Not Set'
-                                        }
-                                      </span>
-                                    </div>
+                                    <CountdownTimer 
+                                      targetDate={content.scheduled_for}
+                                      className="text-xs"
+                                    />
                                   </div>
                                 </div>
                               </div>
@@ -486,17 +532,10 @@ export const CreatorDashboard: React.FC = () => {
                                   <Clock className="w-3 h-3" />
                                   <span>{content.status === 'scheduled' ? 'Pending' : 'Draft'}</span>
                                 </div>
-                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                  <Calendar className="w-3 h-3" />
-                                  <span>
-                                    {content.scheduled_for 
-                                      ? new Date(content.scheduled_for) > new Date() 
-                                        ? 'Future' 
-                                        : 'Ready'
-                                      : 'Not Set'
-                                    }
-                                  </span>
-                                </div>
+                                <CountdownTimer 
+                                  targetDate={content.scheduled_for}
+                                  className="text-xs"
+                                />
                               </div>
                             </div>
                           </div>

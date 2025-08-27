@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { CountdownTimer } from '@/components/shared/CountdownTimer';
 import { 
   Edit3, 
   Trash2, 
@@ -112,32 +113,11 @@ export const ContentScheduleCard: React.FC<ContentScheduleCardProps> = ({
           <Badge variant="secondary" className="text-xs">
             {type === 'Image' ? 'Image' : type === 'Video' ? 'Video' : 'Text'}
           </Badge>
-          {status === 'Scheduled' && scheduledFor && (
-            <div className="flex items-center gap-1 text-xs text-amber-600 dark:text-amber-400 font-medium">
-              <Clock className="w-3 h-3" />
-              <span>
-                {(() => {
-                  const releaseDate = new Date(scheduledFor);
-                  const now = new Date();
-                  const isToday = releaseDate.toDateString() === now.toDateString();
-                  const isTomorrow = releaseDate.toDateString() === new Date(now.getTime() + 24 * 60 * 60 * 1000).toDateString();
-
-                  if (isToday) {
-                    return `Today ${releaseDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}`;
-                  } else if (isTomorrow) {
-                    return `Tomorrow ${releaseDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}`;
-                  } else {
-                    return releaseDate.toLocaleDateString('en-US', { 
-                      month: 'short', 
-                      day: 'numeric',
-                      hour: 'numeric',
-                      minute: '2-digit',
-                      hour12: true
-                    });
-                  }
-                })()}
-              </span>
-            </div>
+          {status === 'Scheduled' && (
+            <CountdownTimer 
+              targetDate={scheduledFor}
+              className="text-xs font-medium"
+            />
           )}
         </div>
       </div>
