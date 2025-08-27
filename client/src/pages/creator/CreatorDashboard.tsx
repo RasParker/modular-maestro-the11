@@ -562,7 +562,7 @@ export const CreatorDashboard: React.FC = () => {
                         <div className="space-y-4 pr-1">
                           {userPosts.map((post) => (
                             <div key={post.id} className="flex items-center gap-3 p-3 bg-background/50 rounded-lg mr-2">
-                              <div className="flex-shrink-0"></div>
+                              <div className="flex-shrink-0">
                                 {post.media_urls && post.media_urls.length > 0 ? (
                                   (() => {
                                     // Construct full URL - add /uploads/ prefix if not present
