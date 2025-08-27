@@ -2210,68 +2210,7 @@ export const CreatorProfile: React.FC = () => {
                                   <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className={`flex items-center gap-1 h-auto py-1 px-2 ${postLikes[post.id]?.liked ? 'text-red-500' : 'text-muted-foreground'}`}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleLike(post.id);
-                                    }}
-                                  >
-                                    <Heart className={`w-4 h-4 ${postLikes[post.id]?.liked ? 'fill-current' : ''}`} />
-                                    <span className="text-xs">{postLikes[post.id]?.count || 0}</span>
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleCommentClick(post.id);
-                                    }}
-                                  >
-                                    <MessageSquare className="w-4 h-4" />
-                                    <span className="text-xs">{post.comments_count || 0}</span>
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleShare(post.id);
-                                    }}
-                                  >
-                                    <Share2 className="w-4 h-4" />
-                                  </Button>
-                                  {/* Creator Edit/Delete Actions - Only for own posts */}
-                                  {isOwnProfile && (
-                                    <>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground hover:text-foreground"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleEditPost(post.id);
-                                        }}
-                                      >
-                                        <Edit className="w-4 h-4" />
-                                      </Button>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="flex items-center gap-1 h-auto py-1 px-2 text-red-500 hover:text-red-600"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleDeletePost(post.id);
-                                        }}
-                                      >
-                                        <Trash2 className="w-4 h-4" />
-                                      </Button>
-                                    </>
-                                  )}
+                                  {/* Removed stats/action icons and edit/delete buttons for desktop */}
                                 </div>
                               </div>
                             </div>
@@ -2569,68 +2508,7 @@ export const CreatorProfile: React.FC = () => {
                                   <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className={`flex items-center gap-1 h-auto py-1 px-2 ${postLikes[post.id]?.liked ? 'text-red-500' : 'text-muted-foreground'}`}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleLike(post.id);
-                                    }}
-                                  >
-                                    <Heart className={`w-4 h-4 ${postLikes[post.id]?.liked ? 'fill-current' : ''}`} />
-                                    <span className="text-xs">{postLikes[post.id]?.count || 0}</span>
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleCommentClick(post.id);
-                                    }}
-                                  >
-                                    <MessageSquare className="w-4 h-4" />
-                                    <span className="text-xs">{post.comments_count || 0}</span>
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleShare(post.id);
-                                    }}
-                                  >
-                                    <Share2 className="w-4 h-4" />
-                                  </Button>
-                                  {/* Creator Edit/Delete Actions - Only for own posts */}
-                                  {isOwnProfile && (
-                                    <>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground hover:text-foreground"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleEditPost(post.id);
-                                        }}
-                                      >
-                                        <Edit className="w-4 h-4" />
-                                      </Button>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="flex items-center gap-1 h-auto py-1 px-2 text-red-500 hover:text-red-600"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleDeletePost(post.id);
-                                        }}
-                                      >
-                                        <Trash2 className="w-4 h-4" />
-                                      </Button>
-                                    </>
-                                  )}
+                                  {/* Removed stats/action icons and edit/delete buttons for desktop */}
                                 </div>
                               </div>
                             </div>
