@@ -268,20 +268,58 @@ export const CreatorDashboard: React.FC = () => {
               </CardContent>
             </Card>
 
-            {/* Simple Scheduled Content and Recent Posts */}
+            {/* Scheduled Content and Recent Posts */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               <Card className="bg-gradient-card border-border/50">
                 <CardHeader>
                   <CardTitle className="text-base sm:text-lg">Scheduled Content</CardTitle>
+                  <CardDescription className="text-sm">
+                    {scheduledContent.length} {scheduledContent.length === 1 ? 'post' : 'posts'} scheduled
+                  </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-3">
                   {scheduledContent.length > 0 ? (
-                    <p className="text-sm text-muted-foreground">{scheduledContent.length} items scheduled</p>
+                    <>
+                      {scheduledContent.slice(0, 3).map((post) => (
+                        <div key={post.id} className="flex items-center gap-3 p-2 rounded-lg bg-background/50">
+                          <div className="w-2 h-2 rounded-full bg-accent flex-shrink-0"></div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium truncate" title={post.title || post.caption}>
+                              {post.title || post.caption || 'Untitled Post'}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {post.scheduled_for ? 
+                                new Date(post.scheduled_for).toLocaleDateString('en-US', { 
+                                  month: 'short', 
+                                  day: 'numeric', 
+                                  year: 'numeric' 
+                                }) : 
+                                'Not scheduled'
+                              }
+                            </p>
+                          </div>
+                          <Badge variant="outline" className="text-xs">
+                            {post.tier || 'Free'}
+                          </Badge>
+                        </div>
+                      ))}
+                      {scheduledContent.length > 3 && (
+                        <p className="text-xs text-muted-foreground text-center">
+                          +{scheduledContent.length - 3} more
+                        </p>
+                      )}
+                    </>
                   ) : (
-                    <p className="text-sm text-muted-foreground">No scheduled content</p>
+                    <div className="text-center py-4">
+                      <Clock className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                      <p className="text-sm text-muted-foreground">No scheduled content</p>
+                    </div>
                   )}
-                  <Button variant="outline" size="sm" className="mt-2" asChild>
-                    <Link to="/creator/manage-content">Manage Content</Link>
+                  <Button variant="outline" size="sm" className="w-full mt-3" asChild>
+                    <Link to="/creator/manage-content">
+                      <Calendar className="w-4 h-4 mr-2" />
+                      Manage Content
+                    </Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -289,15 +327,53 @@ export const CreatorDashboard: React.FC = () => {
               <Card className="bg-gradient-card border-border/50">
                 <CardHeader>
                   <CardTitle className="text-base sm:text-lg">Recent Posts</CardTitle>
+                  <CardDescription className="text-sm">
+                    {userPosts.length} {userPosts.length === 1 ? 'post' : 'posts'} published
+                  </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-3">
                   {userPosts.length > 0 ? (
-                    <p className="text-sm text-muted-foreground">{userPosts.length} published posts</p>
+                    <>
+                      {userPosts.slice(0, 3).map((post) => (
+                        <div key={post.id} className="flex items-center gap-3 p-2 rounded-lg bg-background/50">
+                          <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0"></div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium truncate" title={post.title || post.content}>
+                              {post.title || post.content || 'Untitled Post'}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {post.created_at ? 
+                                new Date(post.created_at).toLocaleDateString('en-US', { 
+                                  month: 'short', 
+                                  day: 'numeric', 
+                                  year: 'numeric' 
+                                }) : 
+                                'No date'
+                              }
+                            </p>
+                          </div>
+                          <Badge variant="outline" className="text-xs">
+                            {post.tier || 'Free'}
+                          </Badge>
+                        </div>
+                      ))}
+                      {userPosts.length > 3 && (
+                        <p className="text-xs text-muted-foreground text-center">
+                          +{userPosts.length - 3} more
+                        </p>
+                      )}
+                    </>
                   ) : (
-                    <p className="text-sm text-muted-foreground">No posts yet</p>
+                    <div className="text-center py-4">
+                      <FileText className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                      <p className="text-sm text-muted-foreground">No posts yet</p>
+                    </div>
                   )}
-                  <Button variant="outline" size="sm" className="mt-2" asChild>
-                    <Link to="/creator/upload">Create Post</Link>
+                  <Button variant="outline" size="sm" className="w-full mt-3" asChild>
+                    <Link to="/creator/upload">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Create Post
+                    </Link>
                   </Button>
                 </CardContent>
               </Card>
