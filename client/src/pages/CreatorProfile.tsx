@@ -116,7 +116,7 @@ const MOCK_CREATORS = {
         mediaType: 'video',
         tier: 'Superfan',
         createdAt: '2024-02-18T15:20:00',
-        thumbnail: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop',
+        thumbnail: 'https://images.unsplash.com/photo-1560472354-b33ff0c44443?w=400&h=300&fit=crop',
         likes: 18,
         comments: [
           {
@@ -353,7 +353,7 @@ export const CreatorProfile: React.FC = () => {
     };
   }, [username]); // Remove user dependency to prevent infinite loops
 
-  // Fetch user data from database
+  // Fetch user's posts from database
 
   // Separate useEffect for fetching user posts
   useEffect(() => {
@@ -783,7 +783,7 @@ export const CreatorProfile: React.FC = () => {
 
     console.log('Post counts:', counts);
     console.log('Posts by tier:', userPosts.map(p => ({ id: p.id, tier: p.tier, tierLower: p.tier?.toLowerCase() })));
-    
+
     return counts;
   };
 
@@ -1729,862 +1729,6 @@ export const CreatorProfile: React.FC = () => {
                                   className="w-full h-full object-cover"
                                   onError={(e) => {
                                     const target = e.target as HTMLImageElement;
-                                    target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy92MDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Ik0xMDAgNzVMMTI1IDEwMEgxMTJWMTI1SDg4VjEwMEg3NUwxMDAgNzVaIiBmaWxsPSIjOWNhM2FmIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOWNhM2FmIiBmb250LXNpemU9IjEyIj5JbWFnZSBub3QgZm91bmQ8L3RleHQ+Cjwvc3ZnPg==';
-                                    target.className = "w-full h-full object-cover opacity-50";
-                                  }}
-                                />
-                              );
-                            } else {
-                              return (
-                                <img 
-                                  src={post.id === '1' ? 'https://placehold.co/640x360/E63946/FFFFFF?text=Creator+Post+1' :
-                                       post.id === '2' ? 'https://placehold.co/640x360/457B9D/FFFFFF?text=Creator+Post+2' :
-                                       post.id === '3' ? 'https://placehold.co/640x360/1D3557/FFFFFF?text=Creator+Post+3' :
-                                       `https://placehold.co/640x360/6366F1/FFFFFF?text=Creator+Post+${post.id}`}
-                                  alt={`${creator.display_name}'s post`}
-                                  className="w-full h-full object-cover"
-                                />
-                              );
-                            }
-                          })()}
-
-                          {/* No overlays here for mobile */}
-                        </div>
-
-                        {/* Bottom section - VideoWatch Up Next style */}
-                        <div className="p-3">
-                          {/* Creator Info and Content - Fan Feed Single View Style */}
-                          <div className="flex gap-2">
-                            <Avatar className="h-9 w-9 flex-shrink-0">
-                              <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
-                              <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1 min-w-0">
-                              <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
-                                {post.content || post.title || 'Untitled Post'}
-                              </h4>
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                  <span className="truncate">{creator.display_name}</span>
-                                  <span>•</span>
-                                  <Eye className="w-3 h-3" />
-                                  <span>{Math.floor(Math.random() * 2000) + 100}</span>
-                                  <span>•</span>
-                                  <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className={`flex items-center gap-1 h-auto py-1 px-2 ${postLikes[post.id]?.liked ? 'text-red-500' : 'text-muted-foreground'}`}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleLike(post.id);
-                                    }}
-                                  >
-                                    <Heart className={`w-4 h-4 ${postLikes[post.id]?.liked ? 'fill-current' : ''}`} />
-                                    <span className="text-xs">{postLikes[post.id]?.count || 0}</span>
-                                  </Button>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleCommentClick(post.id);
-                                    }}
-                                  >
-                                    <MessageSquare className="w-4 h-4" />
-                                    <span className="text-xs">{post.comments_count || 0}</span>
-                                  </Button>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground" 
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleShare(post.id);
-                                    }}
-                                  >
-                                    <Share2 className="w-4 h-4" />
-                                  </Button>
-                                  {/* Creator Edit/Delete Actions - Only for own posts */}
-                                  {isOwnProfile && (
-                                    <>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground hover:text-foreground"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleEditPost(post.id);
-                                        }}
-                                      >
-                                        <Edit className="w-4 h-4" />
-                                      </Button>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="flex items-center gap-1 h-auto py-1 px-2 text-red-500 hover:text-red-600"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleDeletePost(post.id);
-                                        }}
-                                      >
-                                        <Trash2 className="w-4 h-4" />
-                                      </Button>
-                                    </>
-                                  )}
-                                </div>
-                              </div>
-
-
-
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Desktop: YouTube-style 16:9 card layout */}
-                <div className="hidden md:block">
-                  <div className="max-w-4xl mx-auto space-y-6">
-                    {getFilteredPosts().map((post) => (
-                      <Card key={post.id} className="bg-gradient-card border-border/50 overflow-hidden">
-                        <CardContent className="p-4">
-                          {/* Media Content - 16:9 aspect ratio */}
-                          <div 
-                            className="relative aspect-video bg-black cursor-pointer rounded-lg overflow-hidden mb-4"
-                            onClick={() => handleContentClick(post)}
-                            role="button"
-                            tabIndex={0}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter' || e.key === ' ') {
-                                e.preventDefault();
-                                handleContentClick(post);
-                              }
-                            }}
-                          >
-                            {(() => {
-                              const hasAccess = hasAccessToTier(post.tier);
-
-                              if (!hasAccess) {
-                                return (
-                                  <div className="w-full h-full bg-gradient-to-br from-accent/20 to-accent/10 flex items-center justify-center relative">
-                                    <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" />
-                                    <div className="text-center z-10 p-4">
-                                      <div className="mb-3">
-                                        <svg className="w-12 h-12 mx-auto text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                        </svg>
-                                      </div>
-                                      <h3 className="text-base font-medium text-foreground mb-2">
-                                        {post.tier === 'supporter' ? 'Supporter' : 
-                                         post.tier === 'fan' ? 'Fan' : 
-                                         post.tier === 'premium' ? 'Premium' : 
-                                         post.tier === 'superfan' ? 'Superfan' : 'Premium'} Content
-                                      </h3>
-                                      <p className="text-sm text-muted-foreground mb-3">
-                                        Subscribe to unlock
-                                      </p>
-                                      <Button 
-                                        size="sm" 
-                                        className="bg-accent hover:bg-accent/90 text-black text-sm px-4"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          if (!user) {
-                                            window.location.href = `/login?redirect=/creator/${username}`;
-                                          } else {
-                                            document.getElementById('subscription-tiers')?.scrollIntoView({ behavior: 'smooth' });
-                                          }
-                                        }}
-                                      >
-                                        {!user ? 'Login' : 'Subscribe'}
-                                      </Button>
-                                    </div>
-                                  </div>
-                                );
-                              }
-
-                              const mediaUrls = Array.isArray(post.media_urls) ? post.media_urls : [post.media_urls];
-                              const mediaUrl = mediaUrls[0];
-
-                              if (mediaUrl) {
-                                const fullUrl = mediaUrl.startsWith('/uploads/') ? mediaUrl : `/uploads/${mediaUrl}`;
-
-                                return post.media_type === 'video' ? (
-                                  <video 
-                                    src={fullUrl}
-                                    className="w-full h-full object-cover"
-                                    muted
-                                    preload="metadata"
-                                    onError={(e) => {
-                                      const target = e.target as HTMLVideoElement;
-                                      target.style.display = 'none';
-                                      const parent = target.parentElement;
-                                      if (parent) {
-                                        parent.innerHTML = `<div class="w-full h-full bg-gray-800 flex items-center justify-center">
-                                          <div class="text-white text-sm">Video unavailable</div>
-                                        </div>`;
-                                      }
-                                    }}
-                                  />
-                                ) : (
-                                  <img 
-                                    src={fullUrl}
-                                    alt={post.title}
-                                    className="w-full h-full object-cover"
-                                    onError={(e) => {
-                                      const target = e.target as HTMLImageElement;
-                                      target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy92MDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Ik0xMDAgNzVMMTI1IDEwMEgxMTJWMTI1SDg4VjEwMEg3NUwxMDAgNzVaIiBmaWxsPSIjOWNhM2FmIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOWNhM2FmIiBmb250LXNpemU9IjEyIj5JbWFnZSBub3QgZm91bmQ8L3RleHQ+Cjwvc3ZnPg==';
-                                      target.className = "w-full h-full object-cover opacity-50";
-                                    }}
-                                  />
-                                );
-                              } else {
-                                return (
-                                  <img 
-                                    src={`https://placehold.co/1280x720/6366F1/FFFFFF?text=Creator+Post+${post.id}`}
-                                    alt={`${creator.display_name}'s post`}
-                                    className="w-full h-full object-cover"
-                                  />
-                                );
-                              }
-                            })()}
-
-
-                            {/* No overlays here for desktop */}
-                          </div>
-
-                          {/* Creator Info and Content - Fan Feed Single View Style */}
-                          <div className="flex gap-2">
-                            <Avatar className="h-9 w-9 flex-shrink-0">
-                              <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
-                              <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1 min-w-0">
-                              <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
-                                {post.content || post.title || 'Untitled Post'}
-                              </h4>
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                  <span className="truncate">{creator.display_name}</span>
-                                  <span>•</span>
-                                  <Eye className="w-3 h-3" />
-                                  <span>{Math.floor(Math.random() * 2000) + 100}</span>
-                                  <span>•</span>
-                                  <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className={`flex items-center gap-1 h-auto py-1 px-2 ${postLikes[post.id]?.liked ? 'text-red-500' : 'text-muted-foreground'}`}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleLike(post.id);
-                                    }}
-                                  >
-                                    <Heart className={`w-4 h-4 ${postLikes[post.id]?.liked ? 'fill-current' : ''}`} />
-                                    <span className="text-xs">{postLikes[post.id]?.count || 0}</span>
-                                  </Button>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleCommentClick(post.id);
-                                    }}
-                                  >
-                                    <MessageSquare className="w-4 h-4" />
-                                    <span className="text-xs">{post.comments_count || 0}</span>
-                                  </Button>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground" 
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleShare(post.id);
-                                    }}
-                                  >
-                                    <Share2 className="w-4 h-4" />
-                                  </Button>
-                                  {/* Creator Edit/Delete Actions - Only for own posts */}
-                                  {isOwnProfile && (
-                                    <>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground hover:text-foreground"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleEditPost(post.id);
-                                        }}
-                                      >
-                                        <Edit className="w-4 h-4" />
-                                      </Button>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="flex items-center gap-1 h-auto py-1 px-2 text-red-500 hover:text-red-600"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleDeletePost(post.id);
-                                        }}
-                                      >
-                                        <Trash2 className="w-4 h-4" />
-                                      </Button>
-                                    </>
-                                  )}
-                                </div>
-                              </div>
-
-
-
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-                </>
-              ) : (
-                <Card className="bg-gradient-card border-border/50">
-                  <CardContent className="p-6">
-                    <div className="text-center py-4">
-                      <DollarSign className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="text-lg font-medium mb-2">No posts in this category</h3>
-                      <p className="text-muted-foreground text-sm">
-                        {activeTab === 'all' 
-                          ? (isOwnProfile ? 'Start creating content to build your audience.' : `${creator.display_name} hasn't posted any content yet.`)
-                          : activeTab === 'free'
-                          ? (isOwnProfile ? 'No free posts yet. Create some free content to attract new fans.' : `${creator.display_name} hasn't posted any free content yet.`)
-                          : (isOwnProfile ? 'No subscription content yet. Create premium posts for your subscribers.' : `${creator.display_name} hasn't posted any subscription content yet.`)
-                        }
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-            )}
-              </div>
-            </TabsContent>
-
-            <TabsContent value="subscription" className="space-y-6">
-              {/* Subscription Posts Content */}
-              <div>
-            {getFilteredPosts().length > 0 ? (
-              <>
-                {/* Mobile: Edge-to-edge borderless layout like fan feed */}
-                <div className="md:hidden">
-                  <div className="w-full bg-background space-y-0 scrollbar-hide mobile-feed-container" style={{
-                    scrollbarWidth: 'none',
-                    msOverflowStyle: 'none'
-                  }}>
-                    {getFilteredPosts().map((post) => (
-                      <div key={post.id} className="w-full bg-background border-b border-border/20 overflow-hidden">
-                        <div 
-                          className="relative w-full aspect-video bg-black cursor-pointer"
-                          onClick={() => handleContentClick(post)}
-                          role="button"
-                          tabIndex={0}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                              e.preventDefault();
-                              handleContentClick(post);
-                            }
-                          }}
-                        >
-                          {(() => {
-                            const hasAccess = hasAccessToTier(post.tier);
-
-                            if (!hasAccess) {
-                              return (
-                                <div className="w-full h-full bg-gradient-to-br from-accent/20 to-accent/10 flex items-center justify-center relative">
-                                  <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" />
-                                  <div className="text-center z-10 p-4">
-                                    <div className="mb-3">
-                                      <svg className="w-8 h-8 mx-auto text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                      </svg>
-                                    </div>
-                                    <p className="text-xs text-muted-foreground mb-2">
-                                      {post.tier === 'supporter' ? 'Supporter' : 
-                                       post.tier === 'fan' ? 'Fan' : 
-                                       post.tier === 'premium' ? 'Premium' : 
-                                       post.tier === 'superfan' ? 'Superfan' : 'Premium'} Content
-                                    </p>
-                                    <Button 
-                                      size="sm" 
-                                      className="bg-accent hover:bg-accent/90 text-black text-xs px-2 py-1"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        if (!user) {
-                                          window.location.href = `/login?redirect=/creator/${username}`;
-                                        } else {
-                                          document.getElementById('subscription-tiers')?.scrollIntoView({ behavior: 'smooth' });
-                                        }
-                                      }}
-                                    >
-                                      {!user ? 'Login' : 'Subscribe'}
-                                    </Button>
-                                  </div>
-                                </div>
-                              );
-                            }
-
-                            const mediaUrls = Array.isArray(post.media_urls) ? post.media_urls : [post.media_urls];
-                            const mediaUrl = mediaUrls[0];
-
-                            if (mediaUrl) {
-                              const fullUrl = mediaUrl.startsWith('/uploads/') ? mediaUrl : `/uploads/${mediaUrl}`;
-
-                              return post.media_type === 'video' ? (
-                                <video 
-                                  src={fullUrl}
-                                  className="w-full h-full object-cover"
-                                  muted
-                                  preload="metadata"
-                                />
-                              ) : (
-                                <img 
-                                  src={fullUrl}
-                                  alt={post.title}
-                                  className="w-full h-full object-cover"
-                                  onError={(e) => {
-                                    const target = e.target as HTMLImageElement;
-                                    target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy92MDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Ik0xMDAgNzVMMTI1IDEwMEgxMTJWMTI1SDg4VjEwMEg3NUwxMDAgNzVaIiBmaWxsPSIjOWNhM2FmIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOWNhM2FmIiBmb250LXNpemU9IjEyIj5JbWFnZSBub3QgZm91bmQ8L3RleHQ+Cjwvc3ZnPg==';
-                                    target.className = "w-full h-full object-cover opacity-50";
-                                  }}
-                                />
-                              );
-                            } else {
-                              return (
-                                <img 
-                                  src={post.id === '1' ? 'https://placehold.co/640x360/E63946/FFFFFF?text=Creator+Post+1' :
-                                       post.id === '2' ? 'https://placehold.co/640x360/457B9D/FFFFFF?text=Creator+Post+2' :
-                                       post.id === '3' ? 'https://placehold.co/640x360/1D3557/FFFFFF?text=Creator+Post+3' :
-                                       `https://placehold.co/640x360/6366F1/FFFFFF?text=Creator+Post+${post.id}`}
-                                  alt={`${creator.display_name}'s post`}
-                                  className="w-full h-full object-cover"
-                                />
-                              );
-                            }
-                          })()}
-
-                          {/* No overlays here for mobile */}
-                        </div>
-
-                        {/* Bottom section - VideoWatch Up Next style */}
-                        <div className="p-3">
-                          {/* Creator Info and Content - Fan Feed Single View Style */}
-                          <div className="flex gap-2">
-                            <Avatar className="h-9 w-9 flex-shrink-0">
-                              <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
-                              <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1 min-w-0">
-                              <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
-                                {post.content || post.title || 'Untitled Post'}
-                              </h4>
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                  <span className="truncate">{creator.display_name}</span>
-                                  <span>•</span>
-                                  <Eye className="w-3 h-3" />
-                                  <span>{Math.floor(Math.random() * 2000) + 100}</span>
-                                  <span>•</span>
-                                  <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className={`flex items-center gap-1 h-auto py-1 px-2 ${postLikes[post.id]?.liked ? 'text-red-500' : 'text-muted-foreground'}`}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleLike(post.id);
-                                    }}
-                                  >
-                                    <Heart className={`w-4 h-4 ${postLikes[post.id]?.liked ? 'fill-current' : ''}`} />
-                                    <span className="text-xs">{postLikes[post.id]?.count || 0}</span>
-                                  </Button>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleCommentClick(post.id);
-                                    }}
-                                  >
-                                    <MessageSquare className="w-4 h-4" />
-                                    <span className="text-xs">{post.comments_count || 0}</span>
-                                  </Button>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground" 
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleShare(post.id);
-                                    }}
-                                  >
-                                    <Share2 className="w-4 h-4" />
-                                  </Button>
-                                  {/* Creator Edit/Delete Actions - Only for own posts */}
-                                  {isOwnProfile && (
-                                    <>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground hover:text-foreground"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleEditPost(post.id);
-                                        }}
-                                      >
-                                        <Edit className="w-4 h-4" />
-                                      </Button>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="flex items-center gap-1 h-auto py-1 px-2 text-red-500 hover:text-red-600"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleDeletePost(post.id);
-                                        }}
-                                      >
-                                        <Trash2 className="w-4 h-4" />
-                                      </Button>
-                                    </>
-                                  )}
-                                </div>
-                              </div>
-
-
-
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Desktop: YouTube-style 16:9 card layout */}
-                <div className="hidden md:block">
-                  <div className="max-w-4xl mx-auto space-y-6">
-                    {getFilteredPosts().map((post) => (
-                      <Card key={post.id} className="bg-gradient-card border-border/50 overflow-hidden">
-                        <CardContent className="p-4">
-                          {/* Media Content - 16:9 aspect ratio */}
-                          <div 
-                            className="relative aspect-video bg-black cursor-pointer rounded-lg overflow-hidden mb-4"
-                            onClick={() => handleContentClick(post)}
-                            role="button"
-                            tabIndex={0}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter' || e.key === ' ') {
-                                e.preventDefault();
-                                handleContentClick(post);
-                              }
-                            }}
-                          >
-                            {(() => {
-                              const hasAccess = hasAccessToTier(post.tier);
-
-                              if (!hasAccess) {
-                                return (
-                                  <div className="w-full h-full bg-gradient-to-br from-accent/20 to-accent/10 flex items-center justify-center relative">
-                                    <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" />
-                                    <div className="text-center z-10 p-4">
-                                      <div className="mb-3">
-                                        <svg className="w-12 h-12 mx-auto text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                        </svg>
-                                      </div>
-                                      <h3 className="text-base font-medium text-foreground mb-2">
-                                        {post.tier === 'supporter' ? 'Supporter' : 
-                                         post.tier === 'fan' ? 'Fan' : 
-                                         post.tier === 'premium' ? 'Premium' : 
-                                         post.tier === 'superfan' ? 'Superfan' : 'Premium'} Content
-                                      </h3>
-                                      <p className="text-sm text-muted-foreground mb-3">
-                                        Subscribe to unlock
-                                      </p>
-                                      <Button 
-                                        size="sm" 
-                                        className="bg-accent hover:bg-accent/90 text-black text-sm px-4"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          if (!user) {
-                                            window.location.href = `/login?redirect=/creator/${username}`;
-                                          } else {
-                                            document.getElementById('subscription-tiers')?.scrollIntoView({ behavior: 'smooth' });
-                                          }
-                                        }}
-                                      >
-                                        {!user ? 'Login' : 'Subscribe'}
-                                      </Button>
-                                    </div>
-                                  </div>
-                                );
-                              }
-
-                              const mediaUrls = Array.isArray(post.media_urls) ? post.media_urls : [post.media_urls];
-                              const mediaUrl = mediaUrls[0];
-
-                              if (mediaUrl) {
-                                const fullUrl = mediaUrl.startsWith('/uploads/') ? mediaUrl : `/uploads/${mediaUrl}`;
-
-                                return post.media_type === 'video' ? (
-                                  <video 
-                                    src={fullUrl}
-                                    className="w-full h-full object-cover"
-                                    muted
-                                    preload="metadata"
-                                    onError={(e) => {
-                                      const target = e.target as HTMLVideoElement;
-                                      target.style.display = 'none';
-                                      const parent = target.parentElement;
-                                      if (parent) {
-                                        parent.innerHTML = `<div class="w-full h-full bg-gray-800 flex items-center justify-center">
-                                          <div class="text-white text-sm">Video unavailable</div>
-                                        </div>`;
-                                      }
-                                    }}
-                                  />
-                                ) : (
-                                  <img 
-                                    src={fullUrl}
-                                    alt={post.title}
-                                    className="w-full h-full object-cover"
-                                    onError={(e) => {
-                                      const target = e.target as HTMLImageElement;
-                                      target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy92MDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Ik0xMDAgNzVMMTI1IDEwMEgxMTJWMTI1SDg4VjEwMEg3NUwxMDAgNzVaIiBmaWxsPSIjOWNhM2FmIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOWNhM2FmIiBmb250LXNpemU9IjEyIj5JbWFnZSBub3QgZm91bmQ8L3RleHQ+Cjwvc3ZnPg==';
-                                      target.className = "w-full h-full object-cover opacity-50";
-                                    }}
-                                  />
-                                );
-                              } else {
-                                return (
-                                  <img 
-                                    src={`https://placehold.co/1280x720/6366F1/FFFFFF?text=Creator+Post+${post.id}`}
-                                    alt={`${creator.display_name}'s post`}
-                                    className="w-full h-full object-cover"
-                                  />
-                                );
-                              }
-                            })()}
-
-
-                            {/* No overlays here for desktop */}
-                          </div>
-
-                          {/* Creator Info and Content - Fan Feed Single View Style */}
-                          <div className="flex gap-2">
-                            <Avatar className="h-9 w-9 flex-shrink-0">
-                              <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
-                              <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1 min-w-0">
-                              <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
-                                {post.content || post.title || 'Untitled Post'}
-                              </h4>
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                  <span className="truncate">{creator.display_name}</span>
-                                  <span>•</span>
-                                  <Eye className="w-3 h-3" />
-                                  <span>{Math.floor(Math.random() * 2000) + 100}</span>
-                                  <span>•</span>
-                                  <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className={`flex items-center gap-1 h-auto py-1 px-2 ${postLikes[post.id]?.liked ? 'text-red-500' : 'text-muted-foreground'}`}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleLike(post.id);
-                                    }}
-                                  >
-                                    <Heart className={`w-4 h-4 ${postLikes[post.id]?.liked ? 'fill-current' : ''}`} />
-                                    <span className="text-xs">{postLikes[post.id]?.count || 0}</span>
-                                  </Button>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleCommentClick(post.id);
-                                    }}
-                                  >
-                                    <MessageSquare className="w-4 h-4" />
-                                    <span className="text-xs">{post.comments_count || 0}</span>
-                                  </Button>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground" 
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleShare(post.id);
-                                    }}
-                                  >
-                                    <Share2 className="w-4 h-4" />
-                                  </Button>
-                                  {/* Creator Edit/Delete Actions - Only for own posts */}
-                                  {isOwnProfile && (
-                                    <>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground hover:text-foreground"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleEditPost(post.id);
-                                        }}
-                                      >
-                                        <Edit className="w-4 h-4" />
-                                      </Button>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="flex items-center gap-1 h-auto py-1 px-2 text-red-500 hover:text-red-600"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleDeletePost(post.id);
-                                        }}
-                                      >
-                                        <Trash2 className="w-4 h-4" />
-                                      </Button>
-                                    </>
-                                  )}
-                                </div>
-                              </div>
-
-
-
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-                </>
-              ) : (
-                <Card className="bg-gradient-card border-border/50">
-                  <CardContent className="p-6">
-                    <div className="text-center py-4">
-                      <DollarSign className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="text-lg font-medium mb-2">No posts in this category</h3>
-                      <p className="text-muted-foreground text-sm">
-                        {activeTab === 'all' 
-                          ? (isOwnProfile ? 'Start creating content to build your audience.' : `${creator.display_name} hasn't posted any content yet.`)
-                          : activeTab === 'free'
-                          ? (isOwnProfile ? 'No free posts yet. Create some free content to attract new fans.' : `${creator.display_name} hasn't posted any free content yet.`)
-                          : (isOwnProfile ? 'No subscription content yet. Create premium posts for your subscribers.' : `${creator.display_name} hasn't posted any subscription content yet.`)
-                        }
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-              </div>
-            </TabsContent>
-
-            <TabsContent value="free" className="space-y-6">
-              {/* Free Posts Content - Same as All Posts but filtered */}
-              <div>
-            {getFilteredPosts().length > 0 ? (
-              <>
-                {/* Mobile: Edge-to-edge borderless layout like fan feed */}
-                <div className="md:hidden">
-                  <div className="w-full bg-background space-y-0 scrollbar-hide mobile-feed-container" style={{
-                    scrollbarWidth: 'none',
-                    msOverflowStyle: 'none'
-                  }}>
-                    {getFilteredPosts().map((post) => (
-                      <div key={post.id} className="w-full bg-background border-b border-border/20 overflow-hidden">
-                        <div 
-                          className="relative w-full aspect-video bg-black cursor-pointer"
-                          onClick={() => handleContentClick(post)}
-                          role="button"
-                          tabIndex={0}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                              e.preventDefault();
-                              handleContentClick(post);
-                            }
-                          }}
-                        >
-                          {(() => {
-                            const hasAccess = hasAccessToTier(post.tier);
-
-                            if (!hasAccess) {
-                              return (
-                                <div className="w-full h-full bg-gradient-to-br from-accent/20 to-accent/10 flex items-center justify-center relative">
-                                  <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" />
-                                  <div className="text-center z-10 p-4">
-                                    <div className="mb-3">
-                                      <svg className="w-8 h-8 mx-auto text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                      </svg>
-                                    </div>
-                                    <p className="text-xs text-muted-foreground mb-2">
-                                      {post.tier === 'supporter' ? 'Supporter' : 
-                                       post.tier === 'fan' ? 'Fan' : 
-                                       post.tier === 'premium' ? 'Premium' : 
-                                       post.tier === 'superfan' ? 'Superfan' : 'Premium'} Content
-                                    </p>
-                                    <Button 
-                                      size="sm" 
-                                      className="bg-accent hover:bg-accent/90 text-black text-xs px-2 py-1"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        if (!user) {
-                                          window.location.href = `/login?redirect=/creator/${username}`;
-                                        } else {
-                                          document.getElementById('subscription-tiers')?.scrollIntoView({ behavior: 'smooth' });
-                                        }
-                                      }}
-                                    >
-                                      {!user ? 'Login' : 'Subscribe'}
-                                    </Button>
-                                  </div>
-                                </div>
-                              );
-                            }
-
-                            const mediaUrls = Array.isArray(post.media_urls) ? post.media_urls : [post.media_urls];
-                            const mediaUrl = mediaUrls[0];
-
-                            if (mediaUrl) {
-                              const fullUrl = mediaUrl.startsWith('/uploads/') ? mediaUrl : `/uploads/${mediaUrl}`;
-
-                              return post.media_type === 'video' ? (
-                                <video 
-                                  src={fullUrl}
-                                  className="w-full h-full object-cover"
-                                  muted
-                                  preload="metadata"
-                                />
-                              ) : (
-                                <img 
-                                  src={fullUrl}
-                                  alt={post.title}
-                                  className="w-full h-full object-cover"
-                                  onError={(e) => {
-                                    const target = e.target as HTMLImageElement;
                                     target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Ik0xMDAgNzVMMTI1IDEwMEgxMTJWMTI1SDg4VjEwMEg3NUwxMDAgNzVaIiBmaWxsPSIjOWNhM2FmIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOWNhM2FmIiBmb250LXNpemU9IjEyIj5JbWFnZSBub3QgZm91bmQ8L3RleHQ+Cjwvc3ZnPg==';
                                     target.className = "w-full h-full object-cover opacity-50";
                                   }}
@@ -2628,74 +1772,8 @@ export const CreatorProfile: React.FC = () => {
                                   <span>•</span>
                                   <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className={`flex items-center gap-1 h-auto py-1 px-2 ${postLikes[post.id]?.liked ? 'text-red-500' : 'text-muted-foreground'}`}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleLike(post.id);
-                                    }}
-                                  >
-                                    <Heart className={`w-4 h-4 ${postLikes[post.id]?.liked ? 'fill-current' : ''}`} />
-                                    <span className="text-xs">{postLikes[post.id]?.count || 0}</span>
-                                  </Button>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleCommentClick(post.id);
-                                    }}
-                                  >
-                                    <MessageSquare className="w-4 h-4" />
-                                    <span className="text-xs">{post.comments_count || 0}</span>
-                                  </Button>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground" 
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleShare(post.id);
-                                    }}
-                                  >
-                                    <Share2 className="w-4 h-4" />
-                                  </Button>
-                                  {/* Creator Edit/Delete Actions - Only for own posts */}
-                                  {isOwnProfile && (
-                                    <>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground hover:text-foreground"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleEditPost(post.id);
-                                        }}
-                                      >
-                                        <Edit className="w-4 h-4" />
-                                      </Button>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="flex items-center gap-1 h-auto py-1 px-2 text-red-500 hover:text-red-600"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleDeletePost(post.id);
-                                        }}
-                                      >
-                                        <Trash2 className="w-4 h-4" />
-                                      </Button>
-                                    </>
-                                  )}
-                                </div>
+                                {/* Remove stats/action icons from mobile layout */}
                               </div>
-
-
-
                             </div>
                           </div>
                         </div>
@@ -2898,9 +1976,724 @@ export const CreatorProfile: React.FC = () => {
                                   )}
                                 </div>
                               </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+                </>
+              ) : (
+                <Card className="bg-gradient-card border-border/50">
+                  <CardContent className="p-6">
+                    <div className="text-center py-4">
+                      <DollarSign className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                      <h3 className="text-lg font-medium mb-2">No posts in this category</h3>
+                      <p className="text-muted-foreground text-sm">
+                        {activeTab === 'all' 
+                          ? (isOwnProfile ? 'Start creating content to build your audience.' : `${creator.display_name} hasn't posted any content yet.`)
+                          : activeTab === 'free'
+                          ? (isOwnProfile ? 'No free posts yet. Create some free content to attract new fans.' : `${creator.display_name} hasn't posted any free content yet.`)
+                          : (isOwnProfile ? 'No subscription content yet. Create premium posts for your subscribers.' : `${creator.display_name} hasn't posted any subscription content yet.`)
+                        }
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+            )}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="subscription" className="space-y-6">
+              {/* Subscription Posts Content */}
+              <div>
+            {getFilteredPosts().length > 0 ? (
+              <>
+                {/* Mobile: Edge-to-edge borderless layout like fan feed */}
+                <div className="md:hidden">
+                  <div className="w-full bg-background space-y-0 scrollbar-hide mobile-feed-container" style={{
+                    scrollbarWidth: 'none',
+                    msOverflowStyle: 'none'
+                  }}>
+                    {getFilteredPosts().map((post) => (
+                      <div key={post.id} className="w-full bg-background border-b border-border/20 overflow-hidden">
+                        <div 
+                          className="relative w-full aspect-video bg-black cursor-pointer"
+                          onClick={() => handleContentClick(post)}
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              handleContentClick(post);
+                            }
+                          }}
+                        >
+                          {(() => {
+                            const hasAccess = hasAccessToTier(post.tier);
+
+                            if (!hasAccess) {
+                              return (
+                                <div className="w-full h-full bg-gradient-to-br from-accent/20 to-accent/10 flex items-center justify-center relative">
+                                  <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" />
+                                  <div className="text-center z-10 p-4">
+                                    <div className="mb-3">
+                                      <svg className="w-8 h-8 mx-auto text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                      </svg>
+                                    </div>
+                                    <p className="text-xs text-muted-foreground mb-2">
+                                      {post.tier === 'supporter' ? 'Supporter' : 
+                                       post.tier === 'fan' ? 'Fan' : 
+                                       post.tier === 'premium' ? 'Premium' : 
+                                       post.tier === 'superfan' ? 'Superfan' : 'Premium'} Content
+                                    </p>
+                                    <Button 
+                                      size="sm" 
+                                      className="bg-accent hover:bg-accent/90 text-black text-xs px-2 py-1"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (!user) {
+                                          window.location.href = `/login?redirect=/creator/${username}`;
+                                        } else {
+                                          document.getElementById('subscription-tiers')?.scrollIntoView({ behavior: 'smooth' });
+                                        }
+                                      }}
+                                    >
+                                      {!user ? 'Login' : 'Subscribe'}
+                                    </Button>
+                                  </div>
+                                </div>
+                              );
+                            }
+
+                            const mediaUrls = Array.isArray(post.media_urls) ? post.media_urls : [post.media_urls];
+                            const mediaUrl = mediaUrls[0];
+
+                            if (mediaUrl) {
+                              const fullUrl = mediaUrl.startsWith('/uploads/') ? mediaUrl : `/uploads/${mediaUrl}`;
+
+                              return post.media_type === 'video' ? (
+                                <video 
+                                  src={fullUrl}
+                                  className="w-full h-full object-cover"
+                                  muted
+                                  preload="metadata"
+                                />
+                              ) : (
+                                <img 
+                                  src={fullUrl}
+                                  alt={post.title}
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => {
+                                    const target = e.target as HTMLImageElement;
+                                    target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Ik0xMDAgNzVMMTI1IDEwMEgxMTJWMTI1SDg4VjEwMEg3NUwxMDAgNzVaIiBmaWxsPSIjOWNhM2FmIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOWNhM2FmIiBmb250LXNpemU9IjEyIj5JbWFnZSBub3QgZm91bmQ8L3RleHQ+Cjwvc3ZnPg==';
+                                    target.className = "w-full h-full object-cover opacity-50";
+                                  }}
+                                />
+                              );
+                            } else {
+                              return (
+                                <img 
+                                  src={post.id === '1' ? 'https://placehold.co/640x360/E63946/FFFFFF?text=Creator+Post+1' :
+                                       post.id === '2' ? 'https://placehold.co/640x360/457B9D/FFFFFF?text=Creator+Post+2' :
+                                       post.id === '3' ? 'https://placehold.co/640x360/1D3557/FFFFFF?text=Creator+Post+3' :
+                                       `https://placehold.co/640x360/6366F1/FFFFFF?text=Creator+Post+${post.id}`}
+                                  alt={`${creator.display_name}'s post`}
+                                  className="w-full h-full object-cover"
+                                />
+                              );
+                            }
+                          })()}
+
+                          {/* No overlays here for mobile */}
+                        </div>
+
+                        {/* Bottom section - VideoWatch Up Next style */}
+                        <div className="p-3">
+                          {/* Creator Info and Content - Fan Feed Single View Style */}
+                          <div className="flex gap-2">
+                            <Avatar className="h-9 w-9 flex-shrink-0">
+                              <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
+                              <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
+                                {post.content || post.title || 'Untitled Post'}
+                              </h4>
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                  <span className="truncate">{creator.display_name}</span>
+                                  <span>•</span>
+                                  <Eye className="w-3 h-3" />
+                                  <span>{Math.floor(Math.random() * 2000) + 100}</span>
+                                  <span>•</span>
+                                  <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
+                                </div>
+                                {/* Remove stats/action icons from mobile layout */}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Desktop: YouTube-style 16:9 card layout */}
+                <div className="hidden md:block">
+                  <div className="max-w-4xl mx-auto space-y-6">
+                    {getFilteredPosts().map((post) => (
+                      <Card key={post.id} className="bg-gradient-card border-border/50 overflow-hidden">
+                        <CardContent className="p-4">
+                          {/* Media Content - 16:9 aspect ratio */}
+                          <div 
+                            className="relative aspect-video bg-black cursor-pointer rounded-lg overflow-hidden mb-4"
+                            onClick={() => handleContentClick(post)}
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                handleContentClick(post);
+                              }
+                            }}
+                          >
+                            {(() => {
+                              const hasAccess = hasAccessToTier(post.tier);
+
+                              if (!hasAccess) {
+                                return (
+                                  <div className="w-full h-full bg-gradient-to-br from-accent/20 to-accent/10 flex items-center justify-center relative">
+                                    <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" />
+                                    <div className="text-center z-10 p-4">
+                                      <div className="mb-3">
+                                        <svg className="w-12 h-12 mx-auto text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                        </svg>
+                                      </div>
+                                      <h3 className="text-base font-medium text-foreground mb-2">
+                                        {post.tier === 'supporter' ? 'Supporter' : 
+                                         post.tier === 'fan' ? 'Fan' : 
+                                         post.tier === 'premium' ? 'Premium' : 
+                                         post.tier === 'superfan' ? 'Superfan' : 'Premium'} Content
+                                      </h3>
+                                      <p className="text-sm text-muted-foreground mb-3">
+                                        Subscribe to unlock
+                                      </p>
+                                      <Button 
+                                        size="sm" 
+                                        className="bg-accent hover:bg-accent/90 text-black text-sm px-4"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          if (!user) {
+                                            window.location.href = `/login?redirect=/creator/${username}`;
+                                          } else {
+                                            document.getElementById('subscription-tiers')?.scrollIntoView({ behavior: 'smooth' });
+                                          }
+                                        }}
+                                      >
+                                        {!user ? 'Login' : 'Subscribe'}
+                                      </Button>
+                                    </div>
+                                  </div>
+                                );
+                              }
+
+                              const mediaUrls = Array.isArray(post.media_urls) ? post.media_urls : [post.media_urls];
+                              const mediaUrl = mediaUrls[0];
+
+                              if (mediaUrl) {
+                                const fullUrl = mediaUrl.startsWith('/uploads/') ? mediaUrl : `/uploads/${mediaUrl}`;
+
+                                return post.media_type === 'video' ? (
+                                  <video 
+                                    src={fullUrl}
+                                    className="w-full h-full object-cover"
+                                    muted
+                                    preload="metadata"
+                                    onError={(e) => {
+                                      const target = e.target as HTMLVideoElement;
+                                      target.style.display = 'none';
+                                      const parent = target.parentElement;
+                                      if (parent) {
+                                        parent.innerHTML = `<div class="w-full h-full bg-gray-800 flex items-center justify-center">
+                                          <div class="text-white text-sm">Video unavailable</div>
+                                        </div>`;
+                                      }
+                                    }}
+                                  />
+                                ) : (
+                                  <img 
+                                    src={fullUrl}
+                                    alt={post.title}
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                      const target = e.target as HTMLImageElement;
+                                      target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Ik0xMDAgNzVMMTI1IDEwMEgxMTJWMTI1SDg4VjEwMEg3NUwxMDAgNzVaIiBmaWxsPSIjOWNhM2FmIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOWNhM2FmIiBmb250LXNpemU9IjEyIj5JbWFnZSBub3QgZm91bmQ8L3RleHQ+Cjwvc3ZnPg==';
+                                      target.className = "w-full h-full object-cover opacity-50";
+                                    }}
+                                  />
+                                );
+                              } else {
+                                return (
+                                  <img 
+                                    src={`https://placehold.co/1280x720/6366F1/FFFFFF?text=Creator+Post+${post.id}`}
+                                    alt={`${creator.display_name}'s post`}
+                                    className="w-full h-full object-cover"
+                                  />
+                                );
+                              }
+                            })()}
 
 
+                            {/* No overlays here for desktop */}
+                          </div>
 
+                          {/* Creator Info and Content - Fan Feed Single View Style */}
+                          <div className="flex gap-2">
+                            <Avatar className="h-9 w-9 flex-shrink-0">
+                              <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
+                              <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
+                                {post.content || post.title || 'Untitled Post'}
+                              </h4>
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                  <span className="truncate">{creator.display_name}</span>
+                                  <span>•</span>
+                                  <Eye className="w-3 h-3" />
+                                  <span>{Math.floor(Math.random() * 2000) + 100}</span>
+                                  <span>•</span>
+                                  <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className={`flex items-center gap-1 h-auto py-1 px-2 ${postLikes[post.id]?.liked ? 'text-red-500' : 'text-muted-foreground'}`}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleLike(post.id);
+                                    }}
+                                  >
+                                    <Heart className={`w-4 h-4 ${postLikes[post.id]?.liked ? 'fill-current' : ''}`} />
+                                    <span className="text-xs">{postLikes[post.id]?.count || 0}</span>
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleCommentClick(post.id);
+                                    }}
+                                  >
+                                    <MessageSquare className="w-4 h-4" />
+                                    <span className="text-xs">{post.comments_count || 0}</span>
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground" 
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleShare(post.id);
+                                    }}
+                                  >
+                                    <Share2 className="w-4 h-4" />
+                                  </Button>
+                                  {/* Creator Edit/Delete Actions - Only for own posts */}
+                                  {isOwnProfile && (
+                                    <>
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground hover:text-foreground"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleEditPost(post.id);
+                                        }}
+                                      >
+                                        <Edit className="w-4 h-4" />
+                                      </Button>
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="flex items-center gap-1 h-auto py-1 px-2 text-red-500 hover:text-red-600"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleDeletePost(post.id);
+                                        }}
+                                      >
+                                        <Trash2 className="w-4 h-4" />
+                                      </Button>
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+                </>
+              ) : (
+                <Card className="bg-gradient-card border-border/50">
+                  <CardContent className="p-6">
+                    <div className="text-center py-4">
+                      <DollarSign className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                      <h3 className="text-lg font-medium mb-2">No posts in this category</h3>
+                      <p className="text-muted-foreground text-sm">
+                        {activeTab === 'all' 
+                          ? (isOwnProfile ? 'Start creating content to build your audience.' : `${creator.display_name} hasn't posted any content yet.`)
+                          : activeTab === 'free'
+                          ? (isOwnProfile ? 'No free posts yet. Create some free content to attract new fans.' : `${creator.display_name} hasn't posted any free content yet.`)
+                          : (isOwnProfile ? 'No subscription content yet. Create premium posts for your subscribers.' : `${creator.display_name} hasn't posted any subscription content yet.`)
+                        }
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="free" className="space-y-6">
+              {/* Free Posts Content - Same as All Posts but filtered */}
+              <div>
+            {getFilteredPosts().length > 0 ? (
+              <>
+                {/* Mobile: Edge-to-edge borderless layout like fan feed */}
+                <div className="md:hidden">
+                  <div className="w-full bg-background space-y-0 scrollbar-hide mobile-feed-container" style={{
+                    scrollbarWidth: 'none',
+                    msOverflowStyle: 'none'
+                  }}>
+                    {getFilteredPosts().map((post) => (
+                      <div key={post.id} className="w-full bg-background border-b border-border/20 overflow-hidden">
+                        <div 
+                          className="relative w-full aspect-video bg-black cursor-pointer"
+                          onClick={() => handleContentClick(post)}
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              handleContentClick(post);
+                            }
+                          }}
+                        >
+                          {(() => {
+                            const hasAccess = hasAccessToTier(post.tier);
+
+                            if (!hasAccess) {
+                              return (
+                                <div className="w-full h-full bg-gradient-to-br from-accent/20 to-accent/10 flex items-center justify-center relative">
+                                  <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" />
+                                  <div className="text-center z-10 p-4">
+                                    <div className="mb-3">
+                                      <svg className="w-8 h-8 mx-auto text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                      </svg>
+                                    </div>
+                                    <p className="text-xs text-muted-foreground mb-2">
+                                      {post.tier === 'supporter' ? 'Supporter' : 
+                                       post.tier === 'fan' ? 'Fan' : 
+                                       post.tier === 'premium' ? 'Premium' : 
+                                       post.tier === 'superfan' ? 'Superfan' : 'Premium'} Content
+                                    </p>
+                                    <Button 
+                                      size="sm" 
+                                      className="bg-accent hover:bg-accent/90 text-black text-xs px-2 py-1"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (!user) {
+                                          window.location.href = `/login?redirect=/creator/${username}`;
+                                        } else {
+                                          document.getElementById('subscription-tiers')?.scrollIntoView({ behavior: 'smooth' });
+                                        }
+                                      }}
+                                    >
+                                      {!user ? 'Login' : 'Subscribe'}
+                                    </Button>
+                                  </div>
+                                </div>
+                              );
+                            }
+
+                            const mediaUrls = Array.isArray(post.media_urls) ? post.media_urls : [post.media_urls];
+                            const mediaUrl = mediaUrls[0];
+
+                            if (mediaUrl) {
+                              const fullUrl = mediaUrl.startsWith('/uploads/') ? mediaUrl : `/uploads/${mediaUrl}`;
+
+                              return post.media_type === 'video' ? (
+                                <video 
+                                  src={fullUrl}
+                                  className="w-full h-full object-cover"
+                                  muted
+                                  preload="metadata"
+                                />
+                              ) : (
+                                <img 
+                                  src={fullUrl}
+                                  alt={post.title}
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => {
+                                    const target = e.target as HTMLImageElement;
+                                    target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Ik0xMDAgNzVMMTI1IDEwMEgxMTJWMTI1SDg4VjEwMEg3NUwxMDAgNzVaIiBmaWxsPSIjOWNhM2FmIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOWNhM2FmIiBmb250LXNpemU9IjEyIj5JbWFnZSBub3QgZm91bmQ8L3RleHQ+Cjwvc3ZnPg==';
+                                    target.className = "w-full h-full object-cover opacity-50";
+                                  }}
+                                />
+                              );
+                            } else {
+                              return (
+                                <img 
+                                  src={post.id === '1' ? 'https://placehold.co/640x360/E63946/FFFFFF?text=Creator+Post+1' :
+                                       post.id === '2' ? 'https://placehold.co/640x360/457B9D/FFFFFF?text=Creator+Post+2' :
+                                       post.id === '3' ? 'https://placehold.co/640x360/1D3557/FFFFFF?text=Creator+Post+3' :
+                                       `https://placehold.co/640x360/6366F1/FFFFFF?text=Creator+Post+${post.id}`}
+                                  alt={`${creator.display_name}'s post`}
+                                  className="w-full h-full object-cover"
+                                />
+                              );
+                            }
+                          })()}
+
+                          {/* No overlays here for mobile */}
+                        </div>
+
+                        {/* Bottom section - VideoWatch Up Next style */}
+                        <div className="p-3">
+                          {/* Creator Info and Content - Fan Feed Single View Style */}
+                          <div className="flex gap-2">
+                            <Avatar className="h-9 w-9 flex-shrink-0">
+                              <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
+                              <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
+                                {post.content || post.title || 'Untitled Post'}
+                              </h4>
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                  <span className="truncate">{creator.display_name}</span>
+                                  <span>•</span>
+                                  <Eye className="w-3 h-3" />
+                                  <span>{Math.floor(Math.random() * 2000) + 100}</span>
+                                  <span>•</span>
+                                  <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
+                                </div>
+                                {/* Remove stats/action icons from mobile layout */}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Desktop: YouTube-style 16:9 card layout */}
+                <div className="hidden md:block">
+                  <div className="max-w-4xl mx-auto space-y-6">
+                    {getFilteredPosts().map((post) => (
+                      <Card key={post.id} className="bg-gradient-card border-border/50 overflow-hidden">
+                        <CardContent className="p-4">
+                          {/* Media Content - 16:9 aspect ratio */}
+                          <div 
+                            className="relative aspect-video bg-black cursor-pointer rounded-lg overflow-hidden mb-4"
+                            onClick={() => handleContentClick(post)}
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                handleContentClick(post);
+                              }
+                            }}
+                          >
+                            {(() => {
+                              const hasAccess = hasAccessToTier(post.tier);
+
+                              if (!hasAccess) {
+                                return (
+                                  <div className="w-full h-full bg-gradient-to-br from-accent/20 to-accent/10 flex items-center justify-center relative">
+                                    <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" />
+                                    <div className="text-center z-10 p-4">
+                                      <div className="mb-3">
+                                        <svg className="w-12 h-12 mx-auto text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                        </svg>
+                                      </div>
+                                      <h3 className="text-base font-medium text-foreground mb-2">
+                                        {post.tier === 'supporter' ? 'Supporter' : 
+                                         post.tier === 'fan' ? 'Fan' : 
+                                         post.tier === 'premium' ? 'Premium' : 
+                                         post.tier === 'superfan' ? 'Superfan' : 'Premium'} Content
+                                      </h3>
+                                      <p className="text-sm text-muted-foreground mb-3">
+                                        Subscribe to unlock
+                                      </p>
+                                      <Button 
+                                        size="sm" 
+                                        className="bg-accent hover:bg-accent/90 text-black text-sm px-4"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          if (!user) {
+                                            window.location.href = `/login?redirect=/creator/${username}`;
+                                          } else {
+                                            document.getElementById('subscription-tiers')?.scrollIntoView({ behavior: 'smooth' });
+                                          }
+                                        }}
+                                      >
+                                        {!user ? 'Login' : 'Subscribe'}
+                                      </Button>
+                                    </div>
+                                  </div>
+                                );
+                              }
+
+                              const mediaUrls = Array.isArray(post.media_urls) ? post.media_urls : [post.media_urls];
+                              const mediaUrl = mediaUrls[0];
+
+                              if (mediaUrl) {
+                                const fullUrl = mediaUrl.startsWith('/uploads/') ? mediaUrl : `/uploads/${mediaUrl}`;
+
+                                return post.media_type === 'video' ? (
+                                  <video 
+                                    src={fullUrl}
+                                    className="w-full h-full object-cover"
+                                    muted
+                                    preload="metadata"
+                                    onError={(e) => {
+                                      const target = e.target as HTMLVideoElement;
+                                      target.style.display = 'none';
+                                      const parent = target.parentElement;
+                                      if (parent) {
+                                        parent.innerHTML = `<div class="w-full h-full bg-gray-800 flex items-center justify-center">
+                                          <div class="text-white text-sm">Video unavailable</div>
+                                        </div>`;
+                                      }
+                                    }}
+                                  />
+                                ) : (
+                                  <img 
+                                    src={fullUrl}
+                                    alt={post.title}
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                      const target = e.target as HTMLImageElement;
+                                      target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Ik0xMDAgNzVMMTI1IDEwMEgxMTJWMTI1SDg4VjEwMEg3NUwxMDAgNzVaIiBmaWxsPSIjOWNhM2FmIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOWNhM2FmIiBmb250LXNpemU9IjEyIj5JbWFnZSBub3QgZm91bmQ8L3RleHQ+Cjwvc3ZnPg==';
+                                      target.className = "w-full h-full object-cover opacity-50";
+                                    }}
+                                  />
+                                );
+                              } else {
+                                return (
+                                  <img 
+                                    src={`https://placehold.co/1280x720/6366F1/FFFFFF?text=Creator+Post+${post.id}`}
+                                    alt={`${creator.display_name}'s post`}
+                                    className="w-full h-full object-cover"
+                                  />
+                                );
+                              }
+                            })()}
+
+
+                            {/* No overlays here for desktop */}
+                          </div>
+
+                          {/* Creator Info and Content - Fan Feed Single View Style */}
+                          <div className="flex gap-2">
+                            <Avatar className="h-9 w-9 flex-shrink-0">
+                              <AvatarImage src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} alt={creator.username} />
+                              <AvatarFallback className="text-sm">{(creator?.display_name || creator?.username || 'U').charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
+                                {post.content || post.title || 'Untitled Post'}
+                              </h4>
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                  <span className="truncate">{creator.display_name}</span>
+                                  <span>•</span>
+                                  <Eye className="w-3 h-3" />
+                                  <span>{Math.floor(Math.random() * 2000) + 100}</span>
+                                  <span>•</span>
+                                  <span>{getTimeAgo(post.created_at || post.createdAt)}</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className={`flex items-center gap-1 h-auto py-1 px-2 ${postLikes[post.id]?.liked ? 'text-red-500' : 'text-muted-foreground'}`}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleLike(post.id);
+                                    }}
+                                  >
+                                    <Heart className={`w-4 h-4 ${postLikes[post.id]?.liked ? 'fill-current' : ''}`} />
+                                    <span className="text-xs">{postLikes[post.id]?.count || 0}</span>
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleCommentClick(post.id);
+                                    }}
+                                  >
+                                    <MessageSquare className="w-4 h-4" />
+                                    <span className="text-xs">{post.comments_count || 0}</span>
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground" 
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleShare(post.id);
+                                    }}
+                                  >
+                                    <Share2 className="w-4 h-4" />
+                                  </Button>
+                                  {/* Creator Edit/Delete Actions - Only for own posts */}
+                                  {isOwnProfile && (
+                                    <>
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="flex items-center gap-1 h-auto py-1 px-2 text-muted-foreground hover:text-foreground"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleEditPost(post.id);
+                                        }}
+                                      >
+                                        <Edit className="w-4 h-4" />
+                                      </Button>
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="flex items-center gap-1 h-auto py-1 px-2 text-red-500 hover:text-red-600"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleDeletePost(post.id);
+                                        }}
+                                      >
+                                        <Trash2 className="w-4 h-4" />
+                                      </Button>
+                                    </>
+                                  )}
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </CardContent>
