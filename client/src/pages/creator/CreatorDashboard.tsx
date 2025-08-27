@@ -559,7 +559,7 @@ export const CreatorDashboard: React.FC = () => {
                   {userPosts.length > 0 ? (
                     userPosts.length > 2 ? (
                       <ScrollArea className="h-[200px] w-full">
-                        <div className="space-y-4 pr-4 mr-1">
+                        <div className="space-y-4 pr-3">
                           {userPosts.map((post) => (
                             <div key={post.id} className="flex items-center gap-3 p-3 bg-background/50 rounded-lg">
                               <div className="flex-shrink-0">
@@ -615,7 +615,7 @@ export const CreatorDashboard: React.FC = () => {
                                   </div>
                                 )}
                               </div>
-                              <div className="flex-1 min-w-0 pr-2">
+                              <div className="flex-1 min-w-0">
                                 <h4 className="font-medium text-sm line-clamp-1">{post.caption || post.title || 'Untitled Post'}</h4>
                                 <div className="flex items-center gap-2 mt-1">
                                   <Badge variant="outline" className="text-xs">{post.tier}</Badge>
