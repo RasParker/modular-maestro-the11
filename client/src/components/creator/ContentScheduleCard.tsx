@@ -102,21 +102,10 @@ export const ContentScheduleCard: React.FC<ContentScheduleCardProps> = ({
         <h4 className="font-medium text-sm line-clamp-1 break-words overflow-hidden truncate">{title || description || 'Untitled Post'}</h4>
         <div className="flex items-center gap-2 mt-1">
           <Badge variant="outline" className="text-xs">{tier}</Badge>
-          <span className="text-xs text-muted-foreground truncate">
-            {scheduledFor 
-              ? new Date(scheduledFor).toLocaleDateString() + ' at ' + new Date(scheduledFor).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
-              : date
-            }
-          </span>
-        </div>
-        <div className="flex items-center gap-4 mt-2">
-          <Badge variant="secondary" className="text-xs">
-            {type === 'Image' ? 'Image' : type === 'Video' ? 'Video' : 'Text'}
-          </Badge>
           {status === 'Scheduled' && (
             <CountdownTimer 
               targetDate={scheduledFor}
-              className="text-xs font-medium"
+              className="text-xs font-medium text-primary"
             />
           )}
         </div>
