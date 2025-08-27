@@ -375,10 +375,10 @@ export const CreatorDashboard: React.FC = () => {
                   {scheduledContent.length > 0 ? (
                     scheduledContent.length > 2 ? (
                       <div>
-                        <ScrollArea className="h-[200px] w-full">
-                          <div className="space-y-4 pr-1">
+                        <ScrollArea className="h-[200px] w-full" style={{ paddingRight: '8px' }}>
+                          <div className="space-y-4">
                             {scheduledContent.map((content) => (
-                              <div key={content.id} className="flex items-center gap-3 p-3 bg-background/50 rounded-lg mr-2">
+                              <div key={content.id} className="flex items-center gap-3 p-3 bg-background/50 rounded-lg">
                                 <div className="flex-shrink-0">
                                   {content.media_urls && content.media_urls.length > 0 ? (
                                     (() => {
@@ -558,10 +558,10 @@ export const CreatorDashboard: React.FC = () => {
                 <CardContent>
                   {userPosts.length > 0 ? (
                     userPosts.length > 2 ? (
-                      <ScrollArea className="h-[200px] w-full">
-                        <div className="space-y-4 pr-1">
+                      <ScrollArea className="h-[200px] w-full" style={{ paddingRight: '8px' }}>
+                        <div className="space-y-4">
                           {userPosts.map((post) => (
-                            <div key={post.id} className="flex items-center gap-3 p-3 bg-background/50 rounded-lg mr-2">
+                            <div key={post.id} className="flex items-center gap-3 p-3 bg-background/50 rounded-lg">
                               <div className="flex-shrink-0">
                                 {post.media_urls && post.media_urls.length > 0 ? (
                                   (() => {
