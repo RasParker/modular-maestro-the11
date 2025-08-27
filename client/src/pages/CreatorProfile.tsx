@@ -2676,39 +2676,52 @@ export const CreatorProfile: React.FC = () => {
                           {/* Creator actions (edit/delete) for own posts */}
                           {isOwnProfile && (
                             <div className="flex gap-2 mt-3 pt-3 border-t border-border/50">
-                              <CreatorPostActions 
-                                post={post} 
-                                onEdit={(postData) => {
-                                  setEditingPost(postData);
-                                  setEditCaption(postData.content || postData.title);
-                                  setIsEditModalOpen(true);
-                                }}
-                                onDelete={async (postId) => {
-                                  try {
-                                    const response = await fetch(`/api/posts/${postId}`, {
-                                      method: 'DELETE',
-                                    });
-                                    if (response.ok) {
-                                      toast({
-                                        title: "Post deleted",
-                                        description: "Your post has been deleted successfully.",
+                              <div className="flex gap-2">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setEditingPost(post);
+                                    setEditCaption(post.content || post.title);
+                                    setIsEditModalOpen(true);
+                                  }}
+                                >
+                                  <Edit className="w-4 h-4" />
+                                </Button>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  onClick={async (e) => {
+                                    e.stopPropagation();
+                                    try {
+                                      const response = await fetch(`/api/posts/${post.id}`, {
+                                        method: 'DELETE',
                                       });
-                                      if (creator?.id) {
-                                        fetchUserPosts(creator.id);
+                                      if (response.ok) {
+                                        toast({
+                                          title: "Post deleted",
+                                          description: "Your post has been deleted successfully.",
+                                        });
+                                        if (creator?.id) {
+                                          fetchUserPosts(creator.id);
+                                        }
+                                      } else {
+                                        throw new Error('Failed to delete post');
                                       }
-                                    } else {
-                                      throw new Error('Failed to delete post');
+                                    } catch (error) {
+                                      console.error('Error deleting post:', error);
+                                      toast({
+                                        title: "Error",
+                                        description: "Failed to delete post. Please try again.",
+                                        variant: "destructive"
+                                      });
                                     }
-                                  } catch (error) {
-                                    console.error('Error deleting post:', error);
-                                    toast({
-                                      title: "Error",
-                                      description: "Failed to delete post. Please try again.",
-                                      variant: "destructive"
-                                    });
-                                  }
-                                }}
-                              />
+                                  }}
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </div>
                             </div>
                           )}
 
@@ -2830,48 +2843,61 @@ export const CreatorProfile: React.FC = () => {
                               <div className="flex items-center gap-3">
                                 <PostActions 
                                   post={post}
-                                  liked={postLikes[post.id]?.liked || false}
-                                  likeCount={postLikes[post.id]?.count || 0}
-                                  onLike={() => handleLike(post.id)}
-                                  onComment={() => handleCommentClick(post.id)}
-                                  onShare={() => handleShare(post.id)}
+                                  postLikes={postLikes}
+                                  isOwnProfile={isOwnProfile}
+                                  onLike={handleLike}
+                                  onComment={handleCommentClick}
+                                  onShare={handleShare}
                                 />
                               </div>
                               {/* Creator actions for own posts */}
                               {isOwnProfile && (
-                                <CreatorPostActions 
-                                  post={post} 
-                                  onEdit={(postData) => {
-                                    setEditingPost(postData);
-                                    setEditCaption(postData.content || postData.title);
-                                    setIsEditModalOpen(true);
-                                  }}
-                                  onDelete={async (postId) => {
-                                    try {
-                                      const response = await fetch(`/api/posts/${postId}`, {
-                                        method: 'DELETE',
-                                      });
-                                      if (response.ok) {
-                                        toast({
-                                          title: "Post deleted",
-                                          description: "Your post has been deleted successfully.",
+                                <div className="flex gap-2">
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setEditingPost(post);
+                                      setEditCaption(post.content || post.title);
+                                      setIsEditModalOpen(true);
+                                    }}
+                                  >
+                                    <Edit className="w-4 h-4" />
+                                  </Button>
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    onClick={async (e) => {
+                                      e.stopPropagation();
+                                      try {
+                                        const response = await fetch(`/api/posts/${post.id}`, {
+                                          method: 'DELETE',
                                         });
-                                        if (creator?.id) {
-                                          fetchUserPosts(creator.id);
+                                        if (response.ok) {
+                                          toast({
+                                            title: "Post deleted",
+                                            description: "Your post has been deleted successfully.",
+                                          });
+                                          if (creator?.id) {
+                                            fetchUserPosts(creator.id);
+                                          }
+                                        } else {
+                                          throw new Error('Failed to delete post');
                                         }
-                                      } else {
-                                        throw new Error('Failed to delete post');
+                                      } catch (error) {
+                                        console.error('Error deleting post:', error);
+                                        toast({
+                                          title: "Error",
+                                          description: "Failed to delete post. Please try again.",
+                                          variant: "destructive"
+                                        });
                                       }
-                                    } catch (error) {
-                                      console.error('Error deleting post:', error);
-                                      toast({
-                                        title: "Error",
-                                        description: "Failed to delete post. Please try again.",
-                                        variant: "destructive"
-                                      });
-                                    }
-                                  }}
-                                />
+                                    }}
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </div>
                               )}
                             </div>
 
