@@ -419,8 +419,8 @@ export const CreatorDashboard: React.FC = () => {
                                           }}
                                         />
                                       );
-                                    })()
-                                  ) : (
+                                    })())
+                                  : (
                                     <div className="w-16 h-16 bg-gradient-to-br from-accent/20 to-accent/10 rounded-lg flex items-center justify-center">
                                       {content.media_type === 'image' ? (
                                         <Image className="w-6 h-6 text-muted-foreground" />
@@ -497,8 +497,8 @@ export const CreatorDashboard: React.FC = () => {
                                           }}
                                         />
                                       );
-                                    })()
-                                  ) : (
+                                    })())
+                                  : (
                                     <div className="w-16 h-16 bg-gradient-to-br from-accent/20 to-accent/10 rounded-lg flex items-center justify-center">
                                       {content.media_type === 'image' ? (
                                         <Image className="w-6 h-6 text-muted-foreground" />
@@ -604,8 +604,8 @@ export const CreatorDashboard: React.FC = () => {
                                         }}
                                       />
                                     );
-                                  })()
-                                ) : (
+                                  })())
+                                : (
                                   <div className="w-16 h-16 bg-gradient-to-br from-accent/20 to-accent/10 rounded-lg flex items-center justify-center">
                                     {post.media_type === 'image' ? (
                                       <Image className="w-6 h-6 text-muted-foreground" />
@@ -692,8 +692,8 @@ export const CreatorDashboard: React.FC = () => {
                                       }}
                                     />
                                   );
-                                })()
-                              ) : (
+                                })())
+                              : (
                                 <div className="w-16 h-16 bg-gradient-to-br from-accent/20 to-accent/10 rounded-lg flex items-center justify-center">
                                   {post.media_type === 'image' ? (
                                     <Image className="w-6 h-6 text-muted-foreground" />
