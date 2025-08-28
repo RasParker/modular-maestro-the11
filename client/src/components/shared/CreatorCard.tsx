@@ -28,9 +28,9 @@ export const CreatorCard: React.FC<CreatorCardProps> = ({ creator }) => {
         <div className="flex items-start gap-3">
           <div className="relative">
             <Avatar className="w-12 h-12">
-              <AvatarImage 
-                src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined} 
-                alt={creator.username} 
+              <AvatarImage
+                src={creator.avatar ? (creator.avatar.startsWith('/uploads/') ? creator.avatar : `/uploads/${creator.avatar}`) : undefined}
+                alt={creator.username}
               />
               <AvatarFallback className="bg-primary text-primary-foreground">
                 {(creator.display_name || creator.username).charAt(0).toUpperCase()}
@@ -53,7 +53,7 @@ export const CreatorCard: React.FC<CreatorCardProps> = ({ creator }) => {
             <p className="text-xs text-muted-foreground">@{creator.username}</p>
             {creator.bio && (
               <div className="mt-1">
-                <BioDisplay 
+                <BioDisplay
                   bio={creator.bio}
                   context="card"
                   className="text-xs text-muted-foreground line-clamp-2 leading-tight max-h-[2.2em] overflow-hidden"
@@ -72,9 +72,9 @@ export const CreatorCard: React.FC<CreatorCardProps> = ({ creator }) => {
         </div>
         <div className="mt-3">
           <Link to={`/creator/${encodeURIComponent(creator.username)}`}>
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               className="w-full view-profile-btn"
               style={{
                 '--hover-bg': '#22222a'

@@ -45,6 +45,30 @@
     width: calc(100% - 2rem);
   }
 
+  /* Subscription amount text styling */
+  .subscription-amount {
+    color: white !important;
+  }
+
+  /* Creator card subscription pricing - make white */
+  .creator-subscription-price {
+    color: white !important;
+    font-weight: 600;
+  }
+
+  /* Ensure subscription pricing is white in all contexts */
+  .font-semibold.text-accent,
+  .text-accent {
+    color: white !important;
+  }
+
+  /* Active tab styling - white background with black text */
+  .tab-trigger[data-state="active"] {
+    background-color: white !important;
+    color: black !important;
+    border-radius: 6px;
+  }
+
   /* On desktop, make indicator match text width more precisely */
   @media (min-width: 768px) {
     .tab-trigger[data-state="active"]::after {
@@ -237,7 +261,8 @@
   }
 
   .tab-trigger[data-state="active"] {
-    @apply text-foreground;
+    @apply text-black;
+    background-color: white !important;
   }
 
   .tab-trigger[data-state="active"]::after {
