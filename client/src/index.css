@@ -136,61 +136,61 @@
 
 @layer base {
   :root {
-    /* Light theme colors */
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    /* YouTube-inspired dark monochrome palette */
+    /* Background colors - Deep grays matching your existing palette */
+    --background: 8 8 12; /* #08080c - Deepest background */
+    --foreground: 255 255 255; /* #ffffff - Pure white text */
 
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    /* Card backgrounds - Subtle variations of your existing grays */
+    --card: 15 15 21; /* #0f0f15 - Card background */
+    --card-foreground: 255 255 255; /* #ffffff */
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
+    /* Popover backgrounds */
+    --popover: 14 14 18; /* #0e0e12 */
+    --popover-foreground: 255 255 255; /* #ffffff */
 
-    /* Primary brand - Deep purple for exclusivity */
-    --primary: 262 80% 50%;
-    --primary-foreground: 210 40% 98%;
-    --primary-glow: 262 90% 60%;
+    /* Primary colors - YouTube Red as the hero */
+    --primary: 255 0 0; /* #ff0000 - YouTube Red */
+    --primary-foreground: 255 255 255; /* #ffffff */
 
-    /* Secondary - Light gray */
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
+    /* Secondary colors - Subtle grays for hierarchy */
+    --secondary: 16 16 21; /* #101015 */
+    --secondary-foreground: 255 255 255; /* #ffffff */
 
-    /* Muted tones */
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted colors - Mid-tone grays */
+    --muted: 13 13 18; /* #0d0d12 */
+    --muted-foreground: 163 163 163; /* #a3a3a3 - Softer gray text */
 
-    /* Accent - Gold for premium features */
-    --accent: 45 90% 60%;
-    --accent-foreground: 0 0% 0%;
+    /* Accent colors - Light gray for subtle accents */
+    --accent: 16 16 20; /* #101014 */
+    --accent-foreground: 255 255 255; /* #ffffff */
 
-    /* Destructive */
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Destructive colors - Keep red but differentiate from primary */
+    --destructive: 220 38 38; /* #dc2626 - Darker red for destructive actions */
+    --destructive-foreground: 255 255 255; /* #ffffff */
 
-    /* Borders and inputs */
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 262 80% 50%;
+    /* Success colors - Muted green to not compete with red */
+    --success: 34 197 94; /* #22c55e */
+    --success-foreground: 255 255 255; /* #ffffff */
 
-    --radius: 0.75rem;
+    /* Warning colors - Subtle orange */
+    --warning: 245 158 11; /* #f59e0b */
+    --warning-foreground: 255 255 255; /* #ffffff */
 
-    /* Custom gradients for premium feel */
-    --gradient-primary: linear-gradient(135deg, hsl(262 80% 50%), hsl(262 90% 60%));
-    --gradient-gold: linear-gradient(135deg, hsl(45 90% 60%), hsl(45 100% 70%));
-    --gradient-card: linear-gradient(135deg, hsl(var(--card)), hsl(210 40% 98%));
+    /* Border colors - Very subtle separation */
+    --border: 30 30 35; /* #1e1e23 - Subtle border */
+    --input: 16 16 21; /* #101015 */
+    --ring: 255 0 0; /* #ff0000 - YouTube Red focus ring */
 
-    /* Success and warning */
-    --success: 142 76% 36%;
-    --success-foreground: 355.7 100% 97.3%;
-    --warning: 38 92% 50%;
-    --warning-foreground: 240 20% 10%;
+    /* Chart colors - Red-based palette with tints and shades */
+    --chart-1: 255 0 0; /* Primary red */
+    --chart-2: 255 51 51; /* Light red */
+    --chart-3: 204 0 0; /* Dark red */
+    --chart-4: 255 102 102; /* Very light red */
+    --chart-5: 153 0 0; /* Very dark red */
 
-    /* Chart colors */
-    --chart-1: 262 80% 50%;
-    --chart-2: 45 90% 60%;
-    --chart-3: 142 76% 36%;
-    --chart-4: 0 84.2% 60.2%;
-    --chart-5: 38 92% 50%;
+    /* radius */
+    --radius: 0.5rem;
   }
 
   .dark {
@@ -632,4 +632,64 @@
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
   text-overflow: ellipsis;
+}
+
+/* Custom scrollbar with YouTube red accent */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary));
+}
+
+/* YouTube-inspired gradient backgrounds */
+@layer utilities {
+  .bg-gradient-card {
+    background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--muted)) 100%);
+  }
+
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #cc0000 100%);
+  }
+
+  .bg-gradient-subtle {
+    background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--card)) 100%);
+  }
+
+  .border-gradient-primary {
+    border-image: linear-gradient(135deg, hsl(var(--primary)) 0%, transparent 100%) 1;
+  }
+
+  /* Hover effects for interactive elements */
+  .hover-lift {
+    transition: all 0.2s ease-in-out;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.15);
+  }
+
+  /* Red accent glow effect */
+  .glow-red {
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+  }
+
+  /* Premium text gradient */
+  .text-gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #ff3333 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 }
