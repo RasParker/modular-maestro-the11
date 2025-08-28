@@ -228,7 +228,7 @@
 
   /* Global button hover state */
   .btn-hover-dark:hover {
-    background-color: #22222a !important;
+    background-color: #1e1e24 !important;
   }
 
   .tab-trigger::after {
@@ -328,7 +328,7 @@
   }
 
   .btn-gold-gradient:hover {
-    background: #22222a;
+    background: #1e1e24;
     border-color: hsl(var(--primary));
   }
 
