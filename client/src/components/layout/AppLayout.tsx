@@ -2,6 +2,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { MinimalNavbar } from './MinimalNavbar';
+import { SidebarNavigation } from './SidebarNavigation';
 import { BottomNavigation } from './BottomNavigation';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -16,9 +17,6 @@ export const AppLayout: React.FC<AppLayoutProps> = React.memo(({ children }) => 
   // Don't show navigation on auth pages
   const isAuthPage = location.pathname === '/login' || location.pathname === '/signup';
 
-  // Pages that need edge-to-edge layout (no top padding for mobile)
-  const isEdgeToEdgePage = false; // Removed video watch to restore normal layout
-
   if (isAuthPage) {
     return <div className="min-h-screen">{children}</div>;
   }
@@ -28,11 +26,22 @@ export const AppLayout: React.FC<AppLayoutProps> = React.memo(({ children }) => 
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Top Navigation - Always shown, but positioned differently for edge-to-edge pages */}
-      <MinimalNavbar />
+      {/* Desktop: Sidebar Navigation for logged in users, MinimalNavbar for guests */}
+      {!isMobile && user && <SidebarNavigation />}
+      {!isMobile && !user && <MinimalNavbar />}
+      
+      {/* Mobile: Top Navigation */}
+      {isMobile && <MinimalNavbar />}
 
-      {/* Main Content - Conditional padding */}
-      <main className={`${isMobile ? 'pb-16' : ''} ${isEdgeToEdgePage ? '' : 'pt-16'}`} style={{ minHeight: '100vh' }}>
+      {/* Main Content */}
+      <main 
+        className={`
+          ${isMobile ? 'pb-16 pt-16' : ''} 
+          ${!isMobile && user ? 'ml-64' : ''}
+          ${!isMobile && !user ? 'pt-16' : ''}
+        `} 
+        style={{ minHeight: '100vh' }}
+      >
         {children}
       </main>
 
