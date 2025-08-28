@@ -152,7 +152,7 @@
     --secondary-foreground: 255 255 255;
     --muted: 14 14 19;
     --muted-foreground: 163 163 163;
-    --accent: 16 16 20;
+    --accent: 34 34 42;
     --accent-foreground: 255 255 255;
     --destructive: 255 0 0;
     --destructive-foreground: 255 255 255;
@@ -184,7 +184,7 @@
     --secondary-foreground: 240 5% 90%;
     --muted: 240 10% 10%;
     --muted-foreground: 240 5% 65%;
-    --accent: 240 10% 15%;
+    --accent: 240 10% 13%;
     --accent-foreground: 240 5% 90%;
     --destructive: 255 0 0;
     --destructive-foreground: 240 5% 96%;
@@ -224,6 +224,11 @@
 @layer components {
   .tab-trigger {
     @apply relative text-muted-foreground hover:text-foreground transition-colors;
+  }
+
+  /* Global button hover state */
+  .btn-hover-dark:hover {
+    background-color: #22222a !important;
   }
 
   .tab-trigger::after {
@@ -323,7 +328,7 @@
   }
 
   .btn-gold-gradient:hover {
-    background: hsl(var(--accent));
+    background: #22222a;
     border-color: hsl(var(--primary));
   }
 
