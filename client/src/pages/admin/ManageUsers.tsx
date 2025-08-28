@@ -130,8 +130,8 @@ export const ManageUsers: React.FC = () => {
   return (
     <AppLayout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        <div className="mb-6 sm:mb-8 text-center">
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2 justify-center">
+        <div className="mb-6 sm:mb-8 text-center sm:text-left">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2 justify-center sm:justify-start">
             <Users className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
             Manage Users
           </h1>
@@ -183,14 +183,14 @@ export const ManageUsers: React.FC = () => {
 
         {/* Users List */}
         <Card className="bg-gradient-card border-border/50">
-          <CardHeader className="text-center">
+          <CardHeader className="text-center sm:text-left">
             <CardTitle className="text-base sm:text-xl">Platform Users ({filteredUsers.length})</CardTitle>
             <CardDescription className="text-sm">Manage user accounts and permissions</CardDescription>
           </CardHeader>
           <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           {/* Tab Navigation */}
-            <TabsList className="mb-6 mx-auto">
+            <TabsList className="mb-6 mx-auto sm:mx-0">
               <TabsTrigger value="all" onClick={() => { setRoleFilter('all'); setStatusFilter('all'); }}>
                 All Users
                 <span className="ml-2 text-xs opacity-70">
