@@ -245,13 +245,15 @@ export const ManageSubscriptions: React.FC = () => {
           {/* Tab Navigation */}
             <TabsList className="mb-6">
               <TabsTrigger value="active">
-                Active Subscriptions
+                <span className="sm:hidden">Active Subs</span>
+                <span className="hidden sm:inline">Active Subscriptions</span>
                 <span className="ml-2 text-xs opacity-70">
                   {activeSubscriptions.length}
                 </span>
               </TabsTrigger>
               <TabsTrigger value="inactive">
-                Inactive Subscriptions
+                <span className="sm:hidden">Inactive Subs</span>
+                <span className="hidden sm:inline">Inactive Subscriptions</span>
                 <span className="ml-2 text-xs opacity-70">
                   {inactiveSubscriptions.length}
                 </span>

@@ -225,7 +225,7 @@ export const Subscribers: React.FC = () => {
         <div className="pb-safe px-4 sm:px-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         {/* Tab Navigation */}
-            <TabsList className="mb-6">
+            <TabsList className="mb-6 justify-center sm:justify-start">
               <TabsTrigger value="all">
                 All Subs
                 <span className="ml-2 text-xs opacity-70">
