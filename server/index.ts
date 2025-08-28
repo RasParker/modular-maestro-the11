@@ -104,6 +104,17 @@ app.use((req, res, next) => {
     // It is the only port that is not firewalled.
     const port = 5000;
     console.log(`Starting server on port ${port}...`);
+    
+    server.on('error', (err: any) => {
+      if (err.code === 'EADDRINUSE') {
+        console.error(`Port ${port} is already in use. Please stop any existing server instances and try again.`);
+        process.exit(1);
+      } else {
+        console.error('Server error:', err);
+        process.exit(1);
+      }
+    });
+    
     server.listen({
       port,
       host: "0.0.0.0",
