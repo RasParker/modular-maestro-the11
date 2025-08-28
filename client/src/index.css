@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,7 +9,8 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    max-height: 2.4em; /* Very strict 2-line enforcement */
+    max-height: 2.4em;
+    /* Very strict 2-line enforcement */
     line-height: 1.2;
     word-break: break-word;
   }
@@ -20,7 +20,8 @@
     .line-clamp-2 {
       max-height: 2.2em;
       line-height: 1.1;
-      font-size: 0.875rem; /* Force smaller text on mobile */
+      font-size: 0.875rem;
+      /* Force smaller text on mobile */
     }
   }
 
@@ -77,12 +78,15 @@
 
   /* Invisible scrollbar for mobile */
   .scrollbar-hide {
-    -ms-overflow-style: none;  /* Internet Explorer 10+ */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+    scrollbar-width: none;
+    /* Firefox */
   }
 
   .scrollbar-hide::-webkit-scrollbar {
-    display: none;  /* Safari and Chrome */
+    display: none;
+    /* Safari and Chrome */
   }
 
   /* TikTok/Instagram Reels Style Feed */
@@ -136,62 +140,38 @@
 /* YouTube-Inspired Monochrome Design System */
 @layer base {
   :root {
-    /* Background Hierarchy - Using your existing deep gray palette */
-    --background: 8 8 12; /* #08080c - Main background (darkest) */
-    --foreground: 255 255 255; /* #ffffff - High contrast white text */
-
-    /* Card backgrounds - Subtle depth layers */
-    --card: 11 11 15; /* #0b0b0f - Card backgrounds (medium dark) */
-    --card-foreground: 255 255 255; /* #ffffff */
-
-    /* Popover/Modal backgrounds - Elevated elements */
-    --popover: 15 15 21; /* #0f0f15 - Elevated elements like modals/dropdowns */
-    --popover-foreground: 255 255 255; /* #ffffff */
-
-    /* PRIMARY - YouTube Red as the hero accent - FORCED VISIBILITY */
-    --primary: 255 0 0; /* #ff0000 - YouTube Red */
-    --primary-foreground: 255 255 255; /* #ffffff */
-
-    /* Secondary - Hover states and interactive elements */
-    --secondary: 16 16 21; /* #101015 - Hover states and interactive elements */
-    --secondary-foreground: 255 255 255; /* #ffffff */
-
-    /* Muted - Mid-tone grays for hierarchy */
-    --muted: 16 16 21; /* #101015 - Same as secondary for active menu state */
-    --muted-foreground: 163 163 163; /* #a3a3a3 - Medium gray for secondary text */
-
-    /* Accent - Same gray as hover/active states */
-    --accent: 16 16 21; /* #101015 - Same as secondary and muted for consistency */
-    --accent-foreground: 255 255 255; /* #ffffff */
-
-    /* State colors - Monochrome with red accent approach */
-    --destructive: 255 0 0; /* #ff0000 - Use same red for consistency */
-    --destructive-foreground: 255 255 255; /* #ffffff */
-
-    --success: 34 197 94; /* #22c55e - Muted green, won't compete with red */
-    --success-foreground: 255 255 255; /* #ffffff */
-
-    --warning: 245 158 11; /* #f59e0b - Subtle orange */
-    --warning-foreground: 255 255 255; /* #ffffff */
-
-    /* Borders and inputs - Very subtle separation */
-    --border: 30 30 35; /* #1e1e23 - Subtle borders */
-    --input: 16 16 21; /* #101015 - Input backgrounds */
-    --ring: 255 0 0; /* #ff0000 - YouTube Red focus rings */
-
-    /* Chart colors - Red-based palette */
-    --chart-1: 255 0 0; /* Primary red */
-    --chart-2: 255 51 51; /* Light red */
-    --chart-3: 204 0 0; /* Dark red */
-    --chart-4: 255 102 102; /* Very light red */
-    --chart-5: 153 0 0; /* Very dark red */
-
-    /* Maintain your existing radius */
+    --background: 8 8 12;
+    --foreground: 255 255 255;
+    --card: 11 11 15;
+    --card-foreground: 255 255 255;
+    --popover: 15 15 21;
+    --popover-foreground: 255 255 255;
+    --primary: 255 0 0;
+    --primary-foreground: 255 255 255;
+    --secondary: 16 16 21;
+    --secondary-foreground: 255 255 255;
+    --muted: 14 14 19;
+    --muted-foreground: 163 163 163;
+    --accent: 16 16 20;
+    --accent-foreground: 255 255 255;
+    --destructive: 255 0 0;
+    --destructive-foreground: 255 255 255;
+    --success: 34 197 94;
+    --success-foreground: 255 255 255;
+    --warning: 245 158 11;
+    --warning-foreground: 255 255 255;
+    --border: 30 30 35;
+    --input: 16 16 21;
+    --ring: 255 0 0;
+    --chart-1: 255 0 0;
+    --chart-2: 255 51 51;
+    --chart-3: 204 0 0;
+    --chart-4: 255 102 102;
+    --chart-5: 153 0 0;
     --radius: 0.5rem;
   }
 
   .dark {
-    /* Keep existing dark theme as fallback */
     --background: 240 20% 4%;
     --foreground: 240 5% 96%;
     --card: 240 15% 6%;
@@ -227,23 +207,21 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
-    /* Remove any background gradients for pure monochrome */
   }
-  
-  /* Force YouTube red visibility */
+
   html.dark {
-    --primary: 255 0 0; /* Ensure YouTube red is always visible in dark mode */
+    --primary: 255 0 0;
   }
-  
+
   html {
-    --primary: 255 0 0; /* Ensure YouTube red is always visible */
+    --primary: 255 0 0;
   }
 }
 
 @layer components {
-  /* Tab indicator styling - YouTube red accent */
   .tab-trigger {
     @apply relative text-muted-foreground hover:text-foreground transition-colors;
   }
@@ -261,7 +239,6 @@
     @apply bg-primary;
   }
 
-  /* Navigation styling - Remove colored icons, use grayscale + red accent */
   .nav-item {
     @apply text-muted-foreground hover:text-foreground transition-colors;
   }
@@ -270,27 +247,22 @@
     @apply text-primary;
   }
 
-  /* Card styling - Clean with maintained rounded corners */
   .youtube-card {
-    @apply bg-card border border-border rounded-lg; /* Keeping your rounded corners */
+    @apply bg-card border border-border rounded-lg;
     @apply hover:border-primary/20 transition-all duration-200;
-    /* Remove any gradient backgrounds */
   }
 
-  /* Ensure consistent tab spacing */
   .tab-trigger {
     @apply px-4 min-w-0 flex-1;
   }
 }
 
 @layer utilities {
-  /* Flat YouTube red backgrounds - no gradients */
   .bg-gradient-primary {
-    background: hsl(var(--primary)); /* Flat YouTube red */
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #cc0000 100%);
   }
 
   .bg-gradient-card {
-    /* Subtle monochrome gradient for cards */
     background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--muted)) 100%);
   }
 
@@ -298,22 +270,24 @@
     background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--card)) 100%);
   }
 
-  /* Flat red background - no gradients */
   .bg-gradient-gold {
-    background: hsl(var(--primary)); /* Flat YouTube red */
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #ff3333 100%);
   }
 
-  /* Flat red text - no gradients */
   .text-gradient-primary {
-    color: hsl(var(--primary)); /* Flat YouTube red text */
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #ff3333 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
-  /* Flat red text - no gradients */
   .text-gradient-gold {
-    color: hsl(var(--primary)); /* Flat YouTube red text */
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #ff3333 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
-  /* Brand logo styling - YouTube red accent */
   .brand-logo {
     background: hsl(var(--primary));
     color: white;
@@ -325,22 +299,22 @@
     justify-content: center;
   }
 
-  /* CTA Button styling - Flat red primary, grayscale variants */
+  /* ✅ Cleaned conflict */
   .btn-primary-gradient {
-    background: hsl(var(--primary)) !important; /* Flat YouTube red - FORCED */
-    background: #ff0000 !important; /* Fallback direct red */
+    background: hsl(var(--primary)) !important;
+    /* Uses theme */
+    background: #ff0000 !important;
+    /* Fallback red */
     color: white;
     border: none;
     transition: all 0.2s ease;
   }
 
   .btn-primary-gradient:hover {
-    background: hsl(var(--primary)); /* Keep same flat red on hover */
-    opacity: 0.9; /* Subtle opacity change instead of color change */
+    background: #cc0000;
     transform: translateY(-1px);
   }
 
-  /* Replace gold buttons with red or grayscale */
   .btn-gold-gradient {
     background: hsl(var(--secondary));
     color: hsl(var(--secondary-foreground));
@@ -353,12 +327,10 @@
     border-color: hsl(var(--primary));
   }
 
-  /* Stats card enhancements - Monochrome with red accents */
   .stats-card {
     border: 1px solid hsl(var(--border));
     background: hsl(var(--card));
     transition: all 0.2s ease;
-    /* Maintain rounded corners */
     border-radius: var(--radius);
   }
 
@@ -381,7 +353,6 @@
     color: hsl(var(--primary));
   }
 
-  /* YouTube-style hover effects */
   .hover-lift {
     transition: all 0.2s ease-in-out;
   }
@@ -391,7 +362,6 @@
     box-shadow: 0 4px 12px rgba(255, 0, 0, 0.15);
   }
 
-  /* Red accent glow effect */
   .glow-red {
     box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
   }
@@ -401,7 +371,6 @@
     -webkit-line-clamp: unset;
   }
 
-  /* Video aspect ratio handling */
   .video-post-container {
     position: relative;
     background-color: #000;
@@ -419,7 +388,6 @@
     object-fit: cover;
   }
 
-  /* YouTube-style Video Watch Page */
   .video-player-wrapper {
     position: relative;
     width: 100%;
@@ -427,11 +395,10 @@
     overflow: hidden;
   }
 
-  /* Mobile: Video takes natural aspect ratio with letterboxing */
   @media (max-width: 768px) {
     .video-player-wrapper {
       aspect-ratio: 16 / 9;
-      max-height: 40vh; /* Slightly larger for better viewing */
+      max-height: 40vh;
     }
   }
 
@@ -446,15 +413,13 @@
     background: hsl(var(--background));
   }
 
-  /* Mobile content wrapper adjustments */
   @media (max-width: 768px) {
     .content-wrapper {
-      height: calc(100vh - 40vh); /* Match video player height */
-      padding-bottom: 2rem; /* Extra padding for better scrolling */
+      height: calc(100vh - 40vh);
+      padding-bottom: 2rem;
     }
   }
 
-  /* Desktop video watch page styles */
   @media (min-width: 769px) {
     .video-watch-desktop {
       max-width: 1800px;
@@ -470,12 +435,10 @@
     }
   }
 
-  /* Custom width utility */
   .w-70 {
-    width: 17.5rem; /* 280px */
+    width: 17.5rem;
   }
 
-  /* Line clamp utility for video titles */
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -483,7 +446,6 @@
     overflow: hidden;
   }
 
-  /* Immersive Mode for Portrait Videos */
   .is-immersive .video-player-wrapper {
     position: fixed;
     top: 0;
@@ -498,7 +460,6 @@
     display: none;
   }
 
-  /* YouTube-style Grid Card Layout - MAINTAIN ROUNDED CORNERS */
   .youtube-grid-card {
     display: flex;
     flex-direction: column;
@@ -506,7 +467,7 @@
     max-width: 280px;
     background: hsl(var(--card));
     border: 1px solid hsl(var(--border));
-    border-radius: var(--radius); /* KEEP rounded corners */
+    border-radius: var(--radius);
     overflow: hidden;
   }
 
@@ -516,7 +477,6 @@
     box-shadow: 0 4px 12px rgba(255, 0, 0, 0.1);
   }
 
-  /* Remove rounded corners on mobile for up next cards ONLY */
   @media (max-width: 768px) {
     .youtube-grid-card.mobile-no-radius {
       border-radius: 0 !important;
@@ -527,14 +487,6 @@
     }
   }
 
-  /* Line clamp utilities */
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
   .line-clamp-none {
     display: block;
     -webkit-line-clamp: unset;
@@ -542,14 +494,13 @@
     overflow: visible;
   }
 
-  /* Feed Card Layout - MAINTAIN ROUNDED CORNERS */
   .feed-card {
     display: flex;
     flex-direction: column;
     overflow: hidden;
     background: hsl(var(--card));
     border: 1px solid hsl(var(--border));
-    border-radius: var(--radius); /* KEEP rounded corners */
+    border-radius: var(--radius);
     transition: all 0.2s ease;
   }
 
@@ -598,12 +549,10 @@
     gap: 4px;
   }
 
-  /* Single View Styles */
   .feed-single-view .aspect-video {
     max-height: 60vh;
   }
 
-  /* Invisible scrollbar utility */
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -613,7 +562,6 @@
     display: none;
   }
 
-  /* Mobile responsive adjustments */
   @media (max-width: 768px) {
     .content-wrapper {
       max-height: calc(100vh - 56.25vw);
@@ -631,12 +579,10 @@
       font-size: 11px;
     }
 
-    /* Hide view toggle on mobile */
     .view-toggle {
       display: none !important;
     }
 
-    /* Apply invisible scrollbar to mobile feed */
     .mobile-feed-container {
       -ms-overflow-style: none;
       scrollbar-width: none;
