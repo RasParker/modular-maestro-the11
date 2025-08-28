@@ -625,3 +625,8 @@
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--primary));
 }
+
+/* Specific override for View Profile button hover color */
+.view-profile-btn:hover {
+  background-color: #22222a !important;
+}
