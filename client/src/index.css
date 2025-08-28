@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -148,7 +147,7 @@
     --popover: 15 15 21; /* #0f0f15 - Elevated elements like modals/dropdowns */
     --popover-foreground: 255 255 255; /* #ffffff */
 
-    /* PRIMARY - YouTube Red as the hero accent - FORCED VISIBILITY */
+    /* PRIMARY - YouTube Red as the hero accent */
     --primary: 255 0 0; /* #ff0000 - YouTube Red */
     --primary-foreground: 255 255 255; /* #ffffff */
 
@@ -157,11 +156,11 @@
     --secondary-foreground: 255 255 255; /* #ffffff */
 
     /* Muted - Mid-tone grays for hierarchy */
-    --muted: 16 16 21; /* #101015 - Same as secondary for active menu state */
+    --muted: 14 14 19; /* #0e0e13 - Subtle borders/dividers */
     --muted-foreground: 163 163 163; /* #a3a3a3 - Medium gray for secondary text */
 
-    /* Accent - Same gray as hover/active states */
-    --accent: 16 16 21; /* #101015 - Same as secondary and muted for consistency */
+    /* Accent - Light gray for subtle accents */
+    --accent: 16 16 20; /* #101014 - Light gray accents */
     --accent-foreground: 255 255 255; /* #ffffff */
 
     /* State colors - Monochrome with red accent approach */
@@ -231,12 +230,12 @@
     @apply bg-background text-foreground;
     /* Remove any background gradients for pure monochrome */
   }
-  
+
   /* Force YouTube red visibility */
   html.dark {
     --primary: 255 0 0; /* Ensure YouTube red is always visible in dark mode */
   }
-  
+
   html {
     --primary: 255 0 0; /* Ensure YouTube red is always visible */
   }
@@ -284,36 +283,33 @@
 }
 
 @layer utilities {
-  /* Flat YouTube red backgrounds - no gradients */
+  /* Solid color backgrounds - no gradients */
   .bg-gradient-primary {
-    background: hsl(var(--primary)); /* Flat YouTube red */
+    background: hsl(var(--primary));
   }
 
   .bg-gradient-card {
-    /* Subtle monochrome gradient for cards */
-    background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--muted)) 100%);
+    background: hsl(var(--card));
   }
 
   .bg-gradient-subtle {
-    background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--card)) 100%);
+    background: hsl(var(--background));
   }
 
-  /* Flat red background - no gradients */
   .bg-gradient-gold {
-    background: hsl(var(--primary)); /* Flat YouTube red */
+    background: hsl(var(--primary));
   }
 
-  /* Flat red text - no gradients */
+  /* Solid text colors - no gradients */
   .text-gradient-primary {
-    color: hsl(var(--primary)); /* Flat YouTube red text */
+    color: hsl(var(--primary));
   }
 
-  /* Flat red text - no gradients */
   .text-gradient-gold {
-    color: hsl(var(--primary)); /* Flat YouTube red text */
+    color: hsl(var(--primary));
   }
 
-  /* Brand logo styling - YouTube red accent */
+  /* Brand logo styling - YouTube red solid */
   .brand-logo {
     background: hsl(var(--primary));
     color: white;
@@ -325,22 +321,20 @@
     justify-content: center;
   }
 
-  /* CTA Button styling - Flat red primary, grayscale variants */
+  /* CTA Button styling - Solid red primary */
   .btn-primary-gradient {
-    background: hsl(var(--primary)) !important; /* Flat YouTube red - FORCED */
-    background: #ff0000 !important; /* Fallback direct red */
+    background: hsl(var(--primary));
     color: white;
     border: none;
     transition: all 0.2s ease;
   }
 
   .btn-primary-gradient:hover {
-    background: hsl(var(--primary)); /* Keep same flat red on hover */
-    opacity: 0.9; /* Subtle opacity change instead of color change */
+    background: rgb(204 0 0);
     transform: translateY(-1px);
   }
 
-  /* Replace gold buttons with red or grayscale */
+  /* Solid background buttons */
   .btn-gold-gradient {
     background: hsl(var(--secondary));
     color: hsl(var(--secondary-foreground));
