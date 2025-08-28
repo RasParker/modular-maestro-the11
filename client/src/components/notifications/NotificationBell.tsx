@@ -266,7 +266,7 @@ export const NotificationBell: React.FC = React.memo(() => {
       </Button>
 
       {isOpen && (
-        <Card className="fixed top-16 left-1/2 -translate-x-1/2 w-80 sm:w-96 sm:absolute sm:top-12 sm:left-auto sm:translate-x-0 sm:right-0 max-w-[calc(100vw-2rem)] shadow-lg border z-50 bg-background flex flex-col max-h-96">
+        <Card className="absolute left-12 top-0 w-80 sm:w-96 max-w-[calc(100vw-2rem)] shadow-lg border z-50 bg-background flex flex-col max-h-96">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base">Notifications</CardTitle>
