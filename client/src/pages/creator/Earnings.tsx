@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -117,14 +116,14 @@ export const Earnings: React.FC = () => {
   const fetchPayoutData = async () => {
     try {
       setLoading(true);
-      
+
       // Fetch current month earnings
       const earningsResponse = await fetch(`/api/payouts/creator/${user.id}/current-earnings`);
       if (earningsResponse.ok) {
         const earningsData = await earningsResponse.json();
         setCurrentEarnings(earningsData.data);
       }
-      
+
       // Fetch payout history
       const historyResponse = await fetch(`/api/payouts/creator/${user.id}/history?limit=10`);
       if (historyResponse.ok) {
@@ -150,7 +149,7 @@ export const Earnings: React.FC = () => {
       const tierPerformanceResponse = await fetch(`/api/creator/${user.id}/tier-performance`);
       if (tierPerformanceResponse.ok) {
         const tierPerformanceData = await tierPerformanceResponse.json();
-        
+
         // Calculate tier breakdown with real data
         const breakdown = tierPerformanceData.map((tier) => {
           const monthlyRevenue = tier.revenue || 0;
@@ -162,14 +161,14 @@ export const Earnings: React.FC = () => {
             percentage: 0 // Will calculate after getting total
           };
         });
-        
+
         // Calculate percentages
         const totalRevenue = breakdown.reduce((sum, tier) => sum + tier.monthlyRevenue, 0);
         const breakdownWithPercentages = breakdown.map(tier => ({
           ...tier,
           percentage: totalRevenue > 0 ? (tier.monthlyRevenue / totalRevenue) * 100 : 0
         }));
-        
+
         setTierBreakdown(breakdownWithPercentages);
       }
     } catch (error) {
@@ -187,40 +186,14 @@ export const Earnings: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-        <div className="mb-6 sm:mb-8">
-          <Button variant="outline" size="sm" asChild className="mb-4 w-10 h-10 p-0 sm:w-auto sm:h-auto sm:p-2 sm:px-4">
-            <Link to="/creator/dashboard">
-              <ArrowLeft className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">Back to Dashboard</span>
-            </Link>
-          </Button>
-          
-          <div className="space-y-4 sm:space-y-0 sm:flex sm:items-center sm:justify-between">
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">Earnings Dashboard</h1>
-              <p className="text-muted-foreground text-sm sm:text-base">
-                Track your revenue and financial performance
-              </p>
-            </div>
-            
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-                <SelectTrigger className="w-full sm:w-40">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all-time">All Time</SelectItem>
-                  <SelectItem value="this-year">This Year</SelectItem>
-                  <SelectItem value="this-month">This Month</SelectItem>
-                  <SelectItem value="last-month">Last Month</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button variant="outline" className="w-full sm:w-auto">
-                <Download className="w-4 h-4 mr-2" />
-                Export
-              </Button>
-            </div>
-          </div>
+        <div className="mb-8 text-center sm:text-left">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2 justify-center sm:justify-start">
+            <DollarSign className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+            Earnings Overview
+          </h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
+            Track your revenue and financial performance
+          </p>
         </div>
 
         {/* Main Stats Cards - Mobile Optimized */}
@@ -280,7 +253,7 @@ export const Earnings: React.FC = () => {
                 </div>
               </CollapsibleTrigger>
             </CardHeader>
-            
+
             <CollapsibleContent>
               <CardContent>
                 {/* Desktop Table View */}
@@ -351,7 +324,7 @@ export const Earnings: React.FC = () => {
                       {tierBreakdown.map((tier, index) => (
                         <TierCard key={index} tier={tier} />
                       ))}
-                      
+
                       {/* Total Summary Card */}
                       <Card className="bg-muted/20 border-border/50">
                         <CardContent className="p-4">
@@ -414,7 +387,7 @@ export const Earnings: React.FC = () => {
                 </div>
               </CollapsibleTrigger>
             </CardHeader>
-            
+
             <CollapsibleContent>
               <CardContent>
                 <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6 rounded-r">

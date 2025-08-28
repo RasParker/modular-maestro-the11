@@ -73,7 +73,7 @@ export const ManageUsers: React.FC = () => {
                          user.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesRole = roleFilter === 'all' || user.role === roleFilter;
     const matchesStatus = statusFilter === 'all' || user.status === statusFilter;
-    
+
     // Apply tab filtering
     let matchesTab = true;
     if (activeTab === 'creators') {
@@ -84,7 +84,7 @@ export const ManageUsers: React.FC = () => {
       matchesTab = user.status === 'suspended';
     }
     // 'all' tab shows all users, so no additional filtering needed
-    
+
     return matchesSearch && matchesRole && matchesStatus && matchesTab;
   });
 
@@ -130,13 +130,7 @@ export const ManageUsers: React.FC = () => {
   return (
     <AppLayout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        <div className="mb-6 sm:mb-8 text-left">
-          <Button variant="outline" size="sm" asChild className="mb-4 w-10 h-10 p-0 sm:w-auto sm:h-auto sm:p-2 sm:px-4">
-            <Link to="/admin/dashboard">
-              <ArrowLeft className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">Back to Dashboard</span>
-            </Link>
-          </Button>
+        <div className="mb-6 sm:mb-8 text-center sm:text-left">
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2 justify-center sm:justify-start">
             <Users className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
             Manage Users
@@ -244,7 +238,7 @@ export const ManageUsers: React.FC = () => {
                     </p>
                   )}
                 </TabsContent>
-                
+
                 <TabsContent value="creators" className="space-y-4">
                   {filteredUsers.length > 0 ? (
                     filteredUsers.map((user) => (
@@ -260,7 +254,7 @@ export const ManageUsers: React.FC = () => {
                     </p>
                   )}
                 </TabsContent>
-                
+
                 <TabsContent value="fans" className="space-y-4">
                   {filteredUsers.length > 0 ? (
                     filteredUsers.map((user) => (
@@ -276,7 +270,7 @@ export const ManageUsers: React.FC = () => {
                     </p>
                   )}
                 </TabsContent>
-                
+
                 <TabsContent value="banned" className="space-y-4">
                   {filteredUsers.length > 0 ? (
                     filteredUsers.map((user) => (

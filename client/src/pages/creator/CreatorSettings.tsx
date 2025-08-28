@@ -9,7 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Save, Upload, Shield, Key, Smartphone, Eye, EyeOff, Trash2, Camera, Image } from 'lucide-react';
+import { ArrowLeft, Save, Upload, Shield, Key, Smartphone, Eye, EyeOff, Trash2, Camera, Image, Settings } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { setLocalStorageItem, getLocalStorageItem } from '@/lib/storage-utils';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
@@ -152,7 +152,7 @@ export const CreatorSettings: React.FC = () => {
 
     const loadSubscriptionTiers = async () => {
       if (!user?.id) return;
-      
+
       try {
         const response = await fetch(`/api/creators/${user.id}/tiers`);
         if (response.ok) {
@@ -626,25 +626,14 @@ export const CreatorSettings: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="mb-8">
-            <Button variant="outline" size="sm" asChild className="mb-4 w-10 h-10 p-0 sm:w-auto sm:h-auto sm:p-2 sm:px-4">
-              <Link to="/creator/dashboard">
-                <ArrowLeft className="w-4 h-4 sm:mr-2" />
-                <span className="hidden sm:inline">Back to Dashboard</span>
-              </Link>
-            </Button>
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">Creator Settings</h1>
-                <p className="text-muted-foreground text-sm sm:text-base">
-                  Manage your account preferences and settings
-                </p>
-              </div>
-              <Button onClick={handleSave} className="w-full sm:w-auto">
-                <Save className="w-4 h-4 mr-2" />
-                Save Changes
-              </Button>
-            </div>
+          <div className="mb-8 text-center sm:text-left">
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2 justify-center sm:justify-start">
+              <Settings className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+              Creator Settings
+            </h1>
+            <p className="text-sm sm:text-base text-muted-foreground">
+              Manage your creator profile and preferences
+            </p>
           </div>
 
           <div className="space-y-6">

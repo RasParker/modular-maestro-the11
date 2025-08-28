@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 
-import { ArrowLeft, Plus, Edit, Trash2, DollarSign, Users } from 'lucide-react';
+import { ArrowLeft, Plus, Edit, Trash2, DollarSign, Users, Crown } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -200,28 +200,14 @@ export const ManageTiers: React.FC = () => {
     <div className="min-h-screen bg-background">
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <Button variant="outline" size="sm" asChild className="mb-4 w-10 h-10 p-0 sm:w-auto sm:h-auto sm:p-2 sm:px-4">
-            <Link to="/creator/dashboard">
-              <ArrowLeft className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">Back to Dashboard</span>
-            </Link>
-          </Button>
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2">
-                <DollarSign className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
-                <span className="break-words">Manage Subscription Tiers</span>
-              </h1>
-              <p className="text-muted-foreground text-sm sm:text-base">
-                Create and manage your subscription tiers and pricing
-              </p>
-            </div>
-            <Button onClick={handleCreateTier} className="w-full sm:w-auto">
-              <Plus className="w-4 h-4 mr-2" />
-              Create New Tier
-            </Button>
-          </div>
+        <div className="mb-8 text-center sm:text-left">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2 justify-center sm:justify-start">
+            <DollarSign className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+            Manage Subscription Tiers
+          </h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
+            Set up and customize your subscription offerings
+          </p>
         </div>
 
         <div className="grid gap-6">

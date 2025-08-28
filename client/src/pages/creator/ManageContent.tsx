@@ -238,27 +238,25 @@ export const ManageContent: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <Button variant="outline" size="sm" asChild className="mb-4 w-10 h-10 p-0 sm:w-auto sm:h-auto sm:p-2 sm:px-4">
-            <Link to="/creator/dashboard">
-              <ArrowLeft className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">Back to Dashboard</span>
+        
+        <div className="mb-8 text-center sm:text-left">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2 justify-center sm:justify-start">
+            <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+            Manage Content
+          </h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
+            View and edit all your published posts
+          </p>
+        </div>
+        
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          
+          <Button asChild className="w-full sm:w-auto">
+            <Link to="/creator/upload">
+              <Plus className="w-4 h-4 mr-2" />
+              Create Content
             </Link>
           </Button>
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">Content Manager</h1>
-              <p className="text-sm sm:text-base text-muted-foreground">
-                Manage and organize your content
-              </p>
-            </div>
-            <Button asChild className="w-full sm:w-auto">
-              <Link to="/creator/upload">
-                <Plus className="w-4 h-4 mr-2" />
-                Create Content
-              </Link>
-            </Button>
-          </div>
         </div>
 
         {loading ? (

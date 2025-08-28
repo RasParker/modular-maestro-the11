@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 import { Users, FileText, DollarSign, TrendingUp } from 'lucide-react';
+import { BarChart3 } from 'lucide-react';
 
 const AdminAnalytics = () => {
   const stats = [
@@ -47,8 +48,15 @@ const AdminAnalytics = () => {
   return (
     <div className="p-6 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Analytics Dashboard</h1>
-        <p className="text-muted-foreground">Platform performance and insights</p>
+        <div className="mb-8 text-center sm:text-left">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2 justify-center sm:justify-start">
+            <BarChart3 className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+            Platform Analytics
+          </h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
+            Comprehensive platform performance metrics
+          </p>
+        </div>
       </div>
 
       {/* Stats Cards */}

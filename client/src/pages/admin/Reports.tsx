@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { ArrowLeft, Flag, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
+import { ArrowLeft, Flag, AlertTriangle, CheckCircle, Clock, FileText } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export const Reports: React.FC = () => {
@@ -54,8 +54,8 @@ export const Reports: React.FC = () => {
       });
 
       if (response.ok) {
-        setReports(reports.map(report => 
-          report.id === parseInt(reportId) 
+        setReports(reports.map(report =>
+          report.id === parseInt(reportId)
             ? { ...report, status: newStatus, updated_at: new Date().toISOString() }
             : report
         ));
@@ -113,19 +113,13 @@ export const Reports: React.FC = () => {
   return (
     <AppLayout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <Button variant="outline" size="sm" asChild className="mb-4 w-10 h-10 p-0 sm:w-auto sm:h-auto sm:p-2 sm:px-4">
-            <Link to="/admin/dashboard">
-              <ArrowLeft className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">Back to Dashboard</span>
-            </Link>
-          </Button>
-          <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-2">
-            <Flag className="w-8 h-8 text-primary" />
-            Reports Management
+        <div className="mb-8 text-center sm:text-left">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2 justify-center sm:justify-start">
+            <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+            Reports & Analytics
           </h1>
-          <p className="text-muted-foreground">
-            View and manage user reports and violations
+          <p className="text-sm sm:text-base text-muted-foreground">
+            View platform reports and user activity
           </p>
         </div>
 
@@ -229,7 +223,7 @@ export const Reports: React.FC = () => {
                       </Badge>
                     </div>
                   </div>
-                  
+
                   <div className="flex flex-wrap gap-2">
                     {report.status === 'pending' && (
                       <Button
@@ -248,8 +242,8 @@ export const Reports: React.FC = () => {
                         Resolve
                       </Button>
                     )}
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       size="sm"
                       onClick={() => handleViewDetails(report.id)}
                     >

@@ -162,44 +162,14 @@ export const Notifications: React.FC = () => {
     <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-4 py-6">
         {/* Header */}
-        <div className="mb-6">
-          <Button variant="outline" size="sm" asChild className="mb-4 w-10 h-10 p-0 sm:w-auto sm:h-auto sm:p-2 sm:px-4">
-            <Link to={getDashboardLink()}>
-              <ArrowLeft className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">Back to Dashboard</span>
-            </Link>
-          </Button>
-          
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-2">
-                <Bell className="w-8 h-8 text-primary" />
-                Notifications
-              </h1>
-              <p className="text-muted-foreground">
-                Stay updated with your latest activity
-              </p>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <Link to={getSettingsLink()}>
-                <Button variant="outline" size="sm">
-                  <Settings className="w-4 h-4 mr-2" />
-                  Settings
-                </Button>
-              </Link>
-              {unreadCount > 0 && (
-                <Button
-                  onClick={() => markAllAsReadMutation.mutate()}
-                  disabled={markAllAsReadMutation.isPending}
-                  size="sm"
-                >
-                  <CheckCheck className="w-4 h-4 mr-2" />
-                  Mark all read
-                </Button>
-              )}
-            </div>
-          </div>
+        <div className="mb-6 sm:mb-8 text-center sm:text-left">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2 justify-center sm:justify-start">
+            <Bell className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+            Notifications
+          </h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
+            Stay updated with your latest activity
+          </p>
         </div>
 
         {/* Filters */}

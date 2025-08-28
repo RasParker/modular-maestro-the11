@@ -126,8 +126,8 @@ export const FanSettings: React.FC = () => {
       if (response.ok) {
         // Invalidate the online status query for the current user to update the OnlineStatusIndicator component
         if (user?.id) {
-          await queryClient.invalidateQueries({ 
-            queryKey: getOnlineStatusQueryKey(Number(user.id)) 
+          await queryClient.invalidateQueries({
+            queryKey: getOnlineStatusQueryKey(Number(user.id))
           });
         }
 
@@ -162,9 +162,9 @@ export const FanSettings: React.FC = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      updateUser({ 
+      updateUser({
         username: formData.username,
-        email: formData.email 
+        email: formData.email
       });
 
       toast({
@@ -373,25 +373,14 @@ export const FanSettings: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <Button variant="outline" size="sm" asChild className="mb-4 w-10 h-10 p-0 sm:w-auto sm:h-auto sm:p-2 sm:px-4">
-            <Link to="/fan/dashboard">
-              <ArrowLeft className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">Back to Dashboard</span>
-            </Link>
-          </Button>
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">Fan Settings</h1>
-              <p className="text-muted-foreground text-sm sm:text-base">
-                Manage your account preferences and subscription settings
-              </p>
-            </div>
-            <Button onClick={handleSave} className="w-full sm:w-auto">
-              <Save className="w-4 h-4 mr-2" />
-              Save Changes
-            </Button>
-          </div>
+        <div className="mb-6 sm:mb-8 text-center sm:text-left">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2 justify-center sm:justify-start">
+            <Settings className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+            Fan Settings
+          </h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
+            Manage your account preferences and privacy settings
+          </p>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
@@ -434,9 +423,9 @@ export const FanSettings: React.FC = () => {
                         <div className="relative">
                           <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-background bg-background">
                             {user?.avatar ? (
-                              <img 
-                                src={user.avatar} 
-                                alt="Profile photo" 
+                              <img
+                                src={user.avatar}
+                                alt="Profile photo"
                                 className="w-full h-full object-cover"
                               />
                             ) : (
@@ -515,7 +504,7 @@ export const FanSettings: React.FC = () => {
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label>Content Filtering</Label>
-                      <select 
+                      <select
                         className="w-full p-2 border rounded-md bg-background"
                         value={contentSettings.contentFiltering}
                         onChange={(e) => setContentSettings(prev => ({ ...prev, contentFiltering: e.target.value }))}
@@ -537,7 +526,7 @@ export const FanSettings: React.FC = () => {
                       </div>
                       <Switch
                         checked={contentSettings.adultContent}
-                        onCheckedChange={(checked) => 
+                        onCheckedChange={(checked) =>
                           setContentSettings(prev => ({ ...prev, adultContent: checked }))
                         }
                       />
@@ -554,7 +543,7 @@ export const FanSettings: React.FC = () => {
                       </div>
                       <Switch
                         checked={contentSettings.autoplayVideos}
-                        onCheckedChange={(checked) => 
+                        onCheckedChange={(checked) =>
                           setContentSettings(prev => ({ ...prev, autoplayVideos: checked }))
                         }
                       />
@@ -674,8 +663,8 @@ export const FanSettings: React.FC = () => {
                           <p className="text-sm text-muted-foreground">
                             Send a test notification to verify everything is working
                           </p>
-                          <Button 
-                            variant="outline" 
+                          <Button
+                            variant="outline"
                             size="sm"
                             onClick={async () => {
                               try {
@@ -747,7 +736,7 @@ export const FanSettings: React.FC = () => {
                       </div>
                       <Switch
                         checked={subscriptionSettings.autoRenew}
-                        onCheckedChange={(checked) => 
+                        onCheckedChange={(checked) =>
                           setSubscriptionSettings(prev => ({ ...prev, autoRenew: checked }))
                         }
                       />
@@ -761,9 +750,9 @@ export const FanSettings: React.FC = () => {
                         id="spendingLimit"
                         type="number"
                         value={subscriptionSettings.monthlySpendingLimit}
-                        onChange={(e) => setSubscriptionSettings(prev => ({ 
-                          ...prev, 
-                          monthlySpendingLimit: parseInt(e.target.value) || 0 
+                        onChange={(e) => setSubscriptionSettings(prev => ({
+                          ...prev,
+                          monthlySpendingLimit: parseInt(e.target.value) || 0
                         }))}
                       />
                       <p className="text-xs text-muted-foreground">
@@ -782,7 +771,7 @@ export const FanSettings: React.FC = () => {
                       </div>
                       <Switch
                         checked={subscriptionSettings.renewalReminders}
-                        onCheckedChange={(checked) => 
+                        onCheckedChange={(checked) =>
                           setSubscriptionSettings(prev => ({ ...prev, renewalReminders: checked }))
                         }
                       />
@@ -799,7 +788,7 @@ export const FanSettings: React.FC = () => {
                       </div>
                       <Switch
                         checked={subscriptionSettings.paymentFailureNotifications}
-                        onCheckedChange={(checked) => 
+                        onCheckedChange={(checked) =>
                           setSubscriptionSettings(prev => ({ ...prev, paymentFailureNotifications: checked }))
                         }
                       />
@@ -857,7 +846,7 @@ export const FanSettings: React.FC = () => {
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label>Profile Visibility</Label>
-                      <select 
+                      <select
                         className="w-full p-2 border rounded-md bg-background"
                         value={privacySettings.profileVisibility}
                         onChange={async (e) => {
@@ -922,7 +911,7 @@ export const FanSettings: React.FC = () => {
 
                     <div className="space-y-2">
                       <Label>Who can message you</Label>
-                      <select 
+                      <select
                         className="w-full p-2 border rounded-md bg-background"
                         value={privacySettings.allowDirectMessages}
                         onChange={async (e) => {
@@ -1096,7 +1085,7 @@ export const FanSettings: React.FC = () => {
                       <div className="flex items-center gap-2">
                         <Switch
                           checked={securitySettings.twoFactorEnabled}
-                          onCheckedChange={(checked) => 
+                          onCheckedChange={(checked) =>
                             setSecuritySettings(prev => ({ ...prev, twoFactorEnabled: checked }))
                           }
                         />
@@ -1166,7 +1155,7 @@ export const FanSettings: React.FC = () => {
                               </AlertDialogTitle>
                               <AlertDialogDescription className="space-y-3">
                                 <p>
-                                  This action cannot be undone. This will permanently delete your 
+                                  This action cannot be undone. This will permanently delete your
                                   account and remove all your data from our servers.
                                 </p>
                                 <p>

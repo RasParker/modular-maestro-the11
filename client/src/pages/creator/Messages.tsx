@@ -297,12 +297,6 @@ export const Messages: React.FC = () => {
       <div className="hidden lg:block">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="mb-6">
-            <Button variant="outline" size="sm" asChild className="mb-4 w-10 h-10 p-0 sm:w-auto sm:h-auto sm:p-2 sm:px-4">
-            <Link to="/creator/dashboard">
-              <ArrowLeft className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">Back to Dashboard</span>
-            </Link>
-          </Button>
             <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2">
               <MessageSquare className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
               Messages
@@ -487,11 +481,6 @@ export const Messages: React.FC = () => {
             <div className="sticky top-0 z-10 bg-background border-b border-border/50 p-4">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <Button variant="ghost" size="sm" asChild>
-                    <Link to="/creator/dashboard">
-                      <ArrowLeft className="w-4 h-4" />
-                    </Link>
-                  </Button>
                   <h1 className="text-xl sm:text-2xl font-bold text-foreground">Messages</h1>
                 </div>
               </div>

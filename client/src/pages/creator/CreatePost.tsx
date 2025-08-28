@@ -293,14 +293,11 @@ export const CreatePost: React.FC = () => {
     <div className="min-h-screen bg-background">
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <Button variant="outline" size="sm" asChild className="mb-4 w-10 h-10 p-0 sm:w-auto sm:h-auto sm:p-2 sm:px-4">
-            <Link to="/creator/dashboard">
-              <ArrowLeft className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">Back to Dashboard</span>
-            </Link>
-          </Button>
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">Create New Post</h1>
+        <div className="mb-6 sm:mb-8 text-center sm:text-left">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2 justify-center sm:justify-start">
+            <Upload className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+            Create New Post
+          </h1>
           <p className="text-sm sm:text-base text-muted-foreground">
             Share exclusive content with your subscribers
           </p>

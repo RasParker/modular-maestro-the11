@@ -328,13 +328,7 @@ export const Messages: React.FC = () => {
       {/* Desktop View */}
       <div className="hidden lg:block">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="mb-6">
-            <Button variant="outline" size="sm" asChild className="mb-4 w-10 h-10 p-0 sm:w-auto sm:h-auto sm:p-2 sm:px-4">
-              <Link to="/fan/dashboard">
-                <ArrowLeft className="w-4 h-4 sm:mr-2" />
-                <span className="hidden sm:inline">Back to Dashboard</span>
-              </Link>
-            </Button>
+          <div className="mb-6 sm:mb-8">
             <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-2">
               <MessageSquare className="w-8 h-8 text-primary" />
               Messages
@@ -458,13 +452,13 @@ export const Messages: React.FC = () => {
                           >
                             <p className="text-sm break-words">{message.content}</p>
                             <p className={`text-xs mt-1 ${
-                              message.type === 'sent' 
-                                ? 'text-primary-foreground/70' 
+                              message.type === 'sent'
+                                ? 'text-primary-foreground/70'
                                 : 'text-muted-foreground'
                             }`}>
-                              {new Date(message.timestamp).toLocaleTimeString([], { 
-                                hour: '2-digit', 
-                                minute: '2-digit' 
+                              {new Date(message.timestamp).toLocaleTimeString([], {
+                                hour: '2-digit',
+                                minute: '2-digit'
                               })}
                             </p>
                           </div>
@@ -485,7 +479,7 @@ export const Messages: React.FC = () => {
                         className="flex-1"
                         disabled={sendMessageMutation.isPending}
                       />
-                      <Button 
+                      <Button
                         onClick={handleSendMessage}
                         disabled={!newMessage.trim() || sendMessageMutation.isPending}
                         className="px-4"
@@ -518,15 +512,14 @@ export const Messages: React.FC = () => {
           // Mobile Conversation List
           <div className="min-h-screen bg-background">
             <div className="sticky top-0 z-10 bg-background border-b border-border/50 p-4">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <Button variant="ghost" size="sm" asChild>
-                    <Link to="/fan/dashboard">
-                      <ArrowLeft className="w-4 h-4" />
-                    </Link>
-                  </Button>
-                  <h1 className="text-xl font-bold text-foreground">Messages</h1>
-                </div>
+              <div className="mb-6 sm:mb-8 text-center sm:text-left">
+                <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2 justify-center sm:justify-start">
+                  <MessageSquare className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+                  Messages
+                </h1>
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  Chat with your favorite creators
+                </p>
               </div>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -644,13 +637,13 @@ export const Messages: React.FC = () => {
                     >
                       <p className="text-sm break-words">{message.content}</p>
                       <p className={`text-xs mt-1 ${
-                        message.type === 'sent' 
-                          ? 'text-primary-foreground/70' 
+                        message.type === 'sent'
+                          ? 'text-primary-foreground/70'
                           : 'text-muted-foreground'
                       }`}>
-                        {new Date(message.timestamp).toLocaleTimeString([], { 
-                          hour: '2-digit', 
-                          minute: '2-digit' 
+                        {new Date(message.timestamp).toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit'
                         })}
                       </p>
                     </div>
@@ -671,7 +664,7 @@ export const Messages: React.FC = () => {
                   className="flex-1"
                   disabled={sendMessageMutation.isPending}
                 />
-                <Button 
+                <Button
                   onClick={handleSendMessage}
                   disabled={!newMessage.trim() || sendMessageMutation.isPending}
                   className="px-4"
