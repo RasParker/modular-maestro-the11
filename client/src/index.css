@@ -40,7 +40,7 @@
     transform: translateX(-50%);
     height: 2px;
     background-color: hsl(var(--primary));
-    border-radius: 0; /* Remove rounded corners */
+    border-radius: 2px;
     width: calc(100% - 2rem);
   }
 
@@ -54,7 +54,7 @@
   /* Custom scrollbar styles */
   .scrollbar-thin {
     scrollbar-width: thin;
-    scrollbar-color: hsl(var(--muted-foreground)) transparent;
+    scrollbar-color: hsl(var(--muted)) transparent;
   }
 
   .scrollbar-thin::-webkit-scrollbar {
@@ -66,13 +66,13 @@
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background-color: hsl(var(--muted-foreground));
-    border-radius: 0; /* Remove rounded corners */
-    border: none;
+    background-color: hsl(var(--muted));
+    border-radius: 3px;
+    border: 1px solid transparent;
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background-color: hsl(var(--primary));
+    background-color: hsl(var(--muted-foreground));
   }
 
   /* Invisible scrollbar for mobile */
@@ -96,7 +96,7 @@
     max-width: 470px;
     width: 100%;
     position: relative;
-    border-radius: 0; /* Remove rounded corners */
+    border-radius: 8px;
     overflow: hidden;
   }
 
@@ -112,7 +112,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(to top, rgba(8, 8, 12, 0.9), transparent, transparent);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent, transparent);
   }
 
   .post-overlay p {
@@ -133,108 +133,93 @@
   }
 }
 
-/* YouTube Studio Inspired Monochrome Design System */
-
+/* YouTube-Inspired Monochrome Design System */
 @layer base {
   :root {
-    /* Monochrome Background Hierarchy - Your existing perfect dark colors */
+    /* Background Hierarchy - Using your existing deep gray palette */
     --background: 8 8 12; /* #08080c - Main background (darkest) */
     --foreground: 255 255 255; /* #ffffff - High contrast white text */
 
-    /* Card and elevated surfaces */
+    /* Card backgrounds - Subtle depth layers */
     --card: 11 11 15; /* #0b0b0f - Card backgrounds (medium dark) */
     --card-foreground: 255 255 255; /* #ffffff */
 
-    /* Elevated elements like modals/dropdowns */
-    --popover: 15 15 21; /* #0f0f15 - Elevated elements */
+    /* Popover/Modal backgrounds - Elevated elements */
+    --popover: 15 15 21; /* #0f0f15 - Elevated elements like modals/dropdowns */
     --popover-foreground: 255 255 255; /* #ffffff */
 
-    /* Single Accent Color - YouTube Red */
-    --primary: 255 0 0; /* #ff0000 - YouTube Red (only color accent) */
+    /* PRIMARY - YouTube Red as the hero accent */
+    --primary: 255 0 0; /* #ff0000 - YouTube Red */
     --primary-foreground: 255 255 255; /* #ffffff */
 
-    /* Interactive element backgrounds - hover states */
+    /* Secondary - Hover states and interactive elements */
     --secondary: 16 16 21; /* #101015 - Hover states and interactive elements */
     --secondary-foreground: 255 255 255; /* #ffffff */
 
-    /* Subtle variations for hierarchy */
+    /* Muted - Mid-tone grays for hierarchy */
     --muted: 14 14 19; /* #0e0e13 - Subtle borders/dividers */
     --muted-foreground: 163 163 163; /* #a3a3a3 - Medium gray for secondary text */
 
-    /* Accent backgrounds (same as secondary for monochrome) */
-    --accent: 16 16 20; /* #101014 - Same as secondary */
+    /* Accent - Light gray for subtle accents */
+    --accent: 16 16 20; /* #101014 - Light gray accents */
     --accent-foreground: 255 255 255; /* #ffffff */
 
-    /* Status colors - Monochrome approach */
-    --destructive: 185 28 28; /* #b91c1c - Darker red for destructive actions */
+    /* State colors - Monochrome with red accent approach */
+    --destructive: 255 0 0; /* #ff0000 - Use same red for consistency */
     --destructive-foreground: 255 255 255; /* #ffffff */
 
-    --success: 82 82 82; /* #525252 - Gray for success (monochrome) */
+    --success: 34 197 94; /* #22c55e - Muted green, won't compete with red */
     --success-foreground: 255 255 255; /* #ffffff */
 
-    --warning: 115 115 115; /* #737373 - Light gray for warning */
+    --warning: 245 158 11; /* #f59e0b - Subtle orange */
     --warning-foreground: 255 255 255; /* #ffffff */
 
-    /* Borders and inputs - subtle separation */
-    --border: 20 20 25; /* #141419 - Very subtle border */
+    /* Borders and inputs - Very subtle separation */
+    --border: 30 30 35; /* #1e1e23 - Subtle borders */
     --input: 16 16 21; /* #101015 - Input backgrounds */
-    --ring: 255 0 0; /* #ff0000 - YouTube Red focus ring */
+    --ring: 255 0 0; /* #ff0000 - YouTube Red focus rings */
 
-    /* Monochrome chart colors - Single accent with opacity variations */
+    /* Chart colors - Red-based palette */
     --chart-1: 255 0 0; /* Primary red */
-    --chart-2: 163 163 163; /* Medium gray */
-    --chart-3: 115 115 115; /* Light gray */
-    --chart-4: 82 82 82; /* Darker gray */
-    --chart-5: 64 64 64; /* Very dark gray */
+    --chart-2: 255 51 51; /* Light red */
+    --chart-3: 204 0 0; /* Dark red */
+    --chart-4: 255 102 102; /* Very light red */
+    --chart-5: 153 0 0; /* Very dark red */
 
-    /* Remove radius for sharp, clean edges */
-    --radius: 0rem;
+    /* Maintain your existing radius */
+    --radius: 0.5rem;
   }
 
   .dark {
-    /* Keep the same monochrome system for dark mode */
-    --background: 8 8 12;
-    --foreground: 255 255 255;
-
-    --card: 11 11 15;
-    --card-foreground: 255 255 255;
-
-    --popover: 15 15 21;
-    --popover-foreground: 255 255 255;
-
-    /* Single accent - YouTube Red */
+    /* Keep existing dark theme as fallback */
+    --background: 240 20% 4%;
+    --foreground: 240 5% 96%;
+    --card: 240 15% 6%;
+    --card-foreground: 240 5% 96%;
+    --popover: 240 15% 6%;
+    --popover-foreground: 240 5% 96%;
     --primary: 255 0 0;
-    --primary-foreground: 255 255 255;
-
-    --secondary: 16 16 21;
-    --secondary-foreground: 255 255 255;
-
-    --muted: 14 14 19;
-    --muted-foreground: 163 163 163;
-
-    --accent: 16 16 20;
-    --accent-foreground: 255 255 255;
-
-    /* Monochrome status colors */
-    --destructive: 185 28 28;
-    --destructive-foreground: 255 255 255;
-
-    --success: 82 82 82;
-    --success-foreground: 255 255 255;
-
-    --warning: 115 115 115;
-    --warning-foreground: 255 255 255;
-
-    --border: 20 20 25;
-    --input: 16 16 21;
+    --primary-foreground: 240 5% 96%;
+    --secondary: 240 15% 12%;
+    --secondary-foreground: 240 5% 90%;
+    --muted: 240 10% 10%;
+    --muted-foreground: 240 5% 65%;
+    --accent: 240 10% 15%;
+    --accent-foreground: 240 5% 90%;
+    --destructive: 255 0 0;
+    --destructive-foreground: 240 5% 96%;
+    --success: 142 70% 50%;
+    --success-foreground: 240 5% 96%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 240 20% 10%;
+    --border: 240 10% 15%;
+    --input: 240 10% 12%;
     --ring: 255 0 0;
-
-    /* Monochrome chart colors */
     --chart-1: 255 0 0;
-    --chart-2: 163 163 163;
-    --chart-3: 115 115 115;
-    --chart-4: 82 82 82;
-    --chart-5: 64 64 64;
+    --chart-2: 255 51 51;
+    --chart-3: 204 0 0;
+    --chart-4: 255 102 102;
+    --chart-5: 153 0 0;
   }
 }
 
@@ -244,13 +229,14 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* Remove any background gradients for pure monochrome */
   }
 }
 
 @layer components {
-  /* Tab indicator styling - clean, sharp */
+  /* Tab indicator styling - YouTube red accent */
   .tab-trigger {
-    @apply relative;
+    @apply relative text-muted-foreground hover:text-foreground transition-colors;
   }
 
   .tab-trigger::after {
@@ -258,8 +244,28 @@
     @apply absolute bottom-0 left-0 right-0 h-0.5 bg-transparent transition-all duration-200;
   }
 
+  .tab-trigger[data-state="active"] {
+    @apply text-foreground;
+  }
+
   .tab-trigger[data-state="active"]::after {
     @apply bg-primary;
+  }
+
+  /* Navigation styling - Remove colored icons, use grayscale + red accent */
+  .nav-item {
+    @apply text-muted-foreground hover:text-foreground transition-colors;
+  }
+
+  .nav-item.active {
+    @apply text-primary;
+  }
+
+  /* Card styling - Clean with maintained rounded corners */
+  .youtube-card {
+    @apply bg-card border border-border rounded-lg; /* Keeping your rounded corners */
+    @apply hover:border-primary/20 transition-all duration-200;
+    /* Remove any gradient backgrounds */
   }
 
   /* Ensure consistent tab spacing */
@@ -269,121 +275,120 @@
 }
 
 @layer utilities {
-  /* Remove all gradient utilities - pure monochrome approach */
-  .bg-monochrome-card {
-    background-color: hsl(var(--card));
+  /* Remove colorful gradients, replace with monochrome versions */
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #cc0000 100%);
   }
 
-  .bg-monochrome-elevated {
-    background-color: hsl(var(--popover));
+  .bg-gradient-card {
+    /* Subtle monochrome gradient for cards */
+    background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--muted)) 100%);
   }
 
-  .bg-monochrome-interactive {
-    background-color: hsl(var(--secondary));
+  .bg-gradient-subtle {
+    background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--card)) 100%);
   }
 
-  /* Single accent color utility */
-  .text-accent-red {
-    color: hsl(var(--primary));
+  /* Remove gold gradients, replace with red-based or monochrome */
+  .bg-gradient-gold {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #ff3333 100%);
   }
 
-  .bg-accent-red {
-    background-color: hsl(var(--primary));
+  /* Text gradients - Red accent only */
+  .text-gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #ff3333 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
-  /* YouTube-style typography hierarchy */
-  .text-primary-bold {
+  /* Remove gold text gradient */
+  .text-gradient-gold {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #ff3333 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Brand logo styling - YouTube red accent */
+  .brand-logo {
+    background: hsl(var(--primary));
     color: white;
-    font-weight: 700;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .text-secondary-medium {
-    color: hsl(var(--muted-foreground));
-    font-weight: 500;
-  }
-
-  .text-metadata-light {
-    color: hsl(var(--muted-foreground));
-    font-weight: 400;
-    opacity: 0.8;
-  }
-
-  /* Clean rectangular cards - no rounded corners */
-  .youtube-card {
-    background: hsl(var(--card));
-    border: 1px solid hsl(var(--border));
-    border-radius: 0; /* Sharp, clean edges */
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    transition: all 0.2s ease;
-  }
-
-  .youtube-card:hover {
-    background: hsl(var(--secondary));
-    border-color: hsl(var(--muted));
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  }
-
-  /* Button styling - monochrome with single accent */
-  .btn-monochrome {
-    background: hsl(var(--secondary));
-    color: white;
-    border: 1px solid hsl(var(--border));
-    border-radius: 0;
-    transition: all 0.2s ease;
-  }
-
-  .btn-monochrome:hover {
-    background: hsl(var(--muted));
-    border-color: hsl(var(--muted-foreground));
-  }
-
-  .btn-accent {
+  /* CTA Button styling - Red primary, grayscale variants */
+  .btn-primary-gradient {
     background: hsl(var(--primary));
     color: white;
     border: none;
-    border-radius: 0;
     transition: all 0.2s ease;
   }
 
-  .btn-accent:hover {
-    background: #cc0000; /* Slightly darker red */
+  .btn-primary-gradient:hover {
+    background: #cc0000;
+    transform: translateY(-1px);
   }
 
-  /* Navigation styling */
-  .nav-item {
-    color: hsl(var(--muted-foreground));
-    transition: color 0.2s ease;
-  }
-
-  .nav-item:hover {
-    color: white;
-  }
-
-  .nav-item.active {
-    color: hsl(var(--primary));
-  }
-
-  /* Stats and data visualization - monochrome with accent highlights */
-  .stats-card {
-    background: hsl(var(--card));
+  /* Replace gold buttons with red or grayscale */
+  .btn-gold-gradient {
+    background: hsl(var(--secondary));
+    color: hsl(var(--secondary-foreground));
     border: 1px solid hsl(var(--border));
-    border-radius: 0;
+    font-weight: 600;
+  }
+
+  .btn-gold-gradient:hover {
+    background: hsl(var(--accent));
+    border-color: hsl(var(--primary));
+  }
+
+  /* Stats card enhancements - Monochrome with red accents */
+  .stats-card {
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--card));
     transition: all 0.2s ease;
+    /* Maintain rounded corners */
+    border-radius: var(--radius);
   }
 
   .stats-card:hover {
-    background: hsl(var(--secondary));
-    border-color: hsl(var(--muted));
+    border-color: hsl(var(--primary));
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.1);
   }
 
   .stats-value {
-    color: hsl(var(--primary)); /* YouTube red for key metrics */
+    color: hsl(var(--primary));
     font-weight: 700;
   }
 
-  .stats-label {
-    color: hsl(var(--muted-foreground));
-    font-weight: 400;
+  .stats-growth {
+    color: hsl(var(--success));
+    font-size: 0.875rem;
+  }
+
+  .stats-icon {
+    color: hsl(var(--primary));
+  }
+
+  /* YouTube-style hover effects */
+  .hover-lift {
+    transition: all 0.2s ease-in-out;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.15);
+  }
+
+  /* Red accent glow effect */
+  .glow-red {
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
   }
 
   .truncated-bio.expanded {
@@ -395,7 +400,6 @@
   .video-post-container {
     position: relative;
     background-color: #000;
-    border-radius: 0; /* Sharp corners */
   }
 
   .video-post-container video[data-aspect-ratio="portrait"] {
@@ -416,7 +420,6 @@
     width: 100%;
     background-color: #000;
     overflow: hidden;
-    border-radius: 0; /* Sharp corners */
   }
 
   /* Mobile: Video takes natural aspect ratio with letterboxing */
@@ -490,33 +493,33 @@
     display: none;
   }
 
-  /* YouTube-style Grid Card Layout - Clean rectangular design */
+  /* YouTube-style Grid Card Layout - MAINTAIN ROUNDED CORNERS */
   .youtube-grid-card {
     display: flex;
     flex-direction: column;
     transition: all 0.2s ease;
-    max-width: 280px; /* Reduced for tighter layout */
-    border-radius: 0; /* Sharp corners */
-    overflow: hidden;
+    max-width: 280px;
     background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius); /* KEEP rounded corners */
+    overflow: hidden;
   }
 
   .youtube-grid-card:hover {
-    background: hsl(var(--secondary));
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+    border-color: hsl(var(--primary));
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.1);
   }
 
-  /* Remove ALL rounded corners for clean, sharp YouTube aesthetic */
-  .youtube-grid-card *,
-  .youtube-card *,
-  .feed-card *,
-  .aspect-video,
-  .rounded,
-  .rounded-lg,
-  .rounded-md,
-  .rounded-sm {
-    border-radius: 0 !important;
+  /* Remove rounded corners on mobile for up next cards ONLY */
+  @media (max-width: 768px) {
+    .youtube-grid-card.mobile-no-radius {
+      border-radius: 0 !important;
+    }
+
+    .feed-card.mobile-no-radius {
+      border-radius: 0 !important;
+    }
   }
 
   /* Line clamp utilities */
@@ -534,22 +537,21 @@
     overflow: visible;
   }
 
-  /* Feed Card Layout - Sharp, clean design */
+  /* Feed Card Layout - MAINTAIN ROUNDED CORNERS */
   .feed-card {
     display: flex;
     flex-direction: column;
     overflow: hidden;
     background: hsl(var(--card));
-    transition: all 0.2s ease;
-    border-radius: 0; /* Sharp corners */
     border: 1px solid hsl(var(--border));
+    border-radius: var(--radius); /* KEEP rounded corners */
+    transition: all 0.2s ease;
   }
 
   .feed-card:hover {
-    background: hsl(var(--secondary));
-    transform: translateY(-1px);
-    border-color: hsl(var(--muted));
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+    border-color: hsl(var(--primary));
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.1);
   }
 
   .feed-card-thumbnail {
@@ -558,7 +560,6 @@
     aspect-ratio: 16 / 9;
     overflow: hidden;
     background: #000;
-    border-radius: 0; /* Sharp corners */
   }
 
   .feed-card-thumbnail img,
@@ -577,7 +578,7 @@
     font-size: 14px;
     line-height: 1.3;
     margin-bottom: 4px;
-    color: white;
+    color: hsl(var(--foreground));
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -651,9 +652,9 @@
   text-overflow: ellipsis;
 }
 
-/* Custom scrollbar with YouTube red accent - clean, sharp design */
+/* Custom scrollbar with YouTube red accent */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -662,27 +663,9 @@
 
 ::-webkit-scrollbar-thumb {
   background: hsl(var(--muted-foreground));
-  border-radius: 0; /* Sharp corners */
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--primary)); /* YouTube red on hover */
-}
-
-/* Clean, minimal hover effects */
-@layer utilities {
-  .hover-lift {
-    transition: all 0.2s ease-in-out;
-  }
-
-  .hover-lift:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* Subtle shadow, no color */
-  }
-
-  /* Minimal red accent glow - very subtle */
-  .focus-accent {
-    outline: 2px solid hsl(var(--primary));
-    outline-offset: 2px;
-  }
+  background: hsl(var(--primary));
 }
