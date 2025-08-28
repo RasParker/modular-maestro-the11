@@ -12,12 +12,15 @@ console.log('Using PostgreSQL database');
 
 export const pool = new Pool({ 
   connectionString: process.env.DATABASE_URL,
-  max: 10, // Increased pool size for better performance
-  idleTimeoutMillis: 60000,
-  connectionTimeoutMillis: 15000, // Increased for Replit environment
-  statement_timeout: 30000, // Increased for complex operations
-  query_timeout: 30000, // Increased for complex queries
+  max: 15, // Increased pool size for better performance
+  min: 2, // Maintain minimum connections
+  idleTimeoutMillis: 120000, // 2 minutes
+  connectionTimeoutMillis: 20000, // 20 seconds for Replit environment
+  statement_timeout: 45000, // 45 seconds for complex operations
+  query_timeout: 45000, // 45 seconds for complex queries
   allowExitOnIdle: true, // Allow pool to exit when idle
+  keepAlive: true, // Enable TCP keep-alive
+  keepAliveInitialDelayMillis: 10000, // 10 seconds
 });
 
 export const db = drizzle({ client: pool, schema });
