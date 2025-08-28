@@ -175,7 +175,7 @@
     --radius: 0.75rem;
 
     /* Custom gradients for premium feel */
-    --gradient-primary: linear-gradient(135deg, hsl(262 80% 50%), hsl(262 90% 60%));
+    --gradient-primary: linear-gradient(135deg, hsl(11 85% 60%), hsl(11 95% 65%));
     --gradient-gold: linear-gradient(135deg, hsl(45 90% 60%), hsl(45 100% 70%));
     --gradient-card: linear-gradient(135deg, hsl(var(--card)), hsl(210 40% 98%));
 
@@ -186,7 +186,7 @@
     --warning-foreground: 240 20% 10%;
 
     /* Chart colors */
-    --chart-1: 262 80% 50%;
+    --chart-1: 11 85% 60%;
     --chart-2: 45 90% 60%;
     --chart-3: 142 76% 36%;
     --chart-4: 0 84.2% 60.2%;
@@ -231,7 +231,7 @@
     --ring: 11 85% 60%;
 
     /* Custom gradients for premium feel */
-    --gradient-primary: linear-gradient(135deg, hsl(262 80% 50%), hsl(262 90% 60%));
+    --gradient-primary: linear-gradient(135deg, hsl(11 85% 60%), hsl(11 95% 65%));
     --gradient-gold: linear-gradient(135deg, hsl(45 90% 60%), hsl(45 100% 70%));
     --gradient-card: linear-gradient(135deg, hsl(var(--card)), hsl(240 15% 8%));
 
@@ -242,7 +242,7 @@
     --warning-foreground: 240 20% 10%;
 
     /* Chart colors */
-    --chart-1: 262 80% 50%;
+    --chart-1: 11 85% 60%;
     --chart-2: 45 90% 60%;
     --chart-3: 142 70% 50%;
     --chart-4: 0 70% 60%;
