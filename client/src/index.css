@@ -69,10 +69,15 @@
     border-radius: 6px;
   }
 
+  /* Remove the indicator line for active tabs when they have white background */
+  .tab-trigger[data-state="active"]::after {
+    display: none !important;
+  }
+
   /* On desktop, make indicator match text width more precisely */
   @media (min-width: 768px) {
     .tab-trigger[data-state="active"]::after {
-      width: calc(100% - 3rem);
+      display: none !important;
     }
   }
 
@@ -260,10 +265,7 @@
     @apply absolute bottom-0 left-0 right-0 h-0.5 bg-transparent transition-all duration-200;
   }
 
-  .tab-trigger[data-state="active"] {
-    @apply text-black;
-    background-color: white !important;
-  }
+  /* Removed conflicting rule - handled above */
 
   .tab-trigger[data-state="active"]::after {
     @apply bg-primary;
