@@ -148,7 +148,7 @@
     --popover: 15 15 21; /* #0f0f15 - Elevated elements like modals/dropdowns */
     --popover-foreground: 255 255 255; /* #ffffff */
 
-    /* PRIMARY - YouTube Red as the hero accent */
+    /* PRIMARY - YouTube Red as the hero accent - FORCED VISIBILITY */
     --primary: 255 0 0; /* #ff0000 - YouTube Red */
     --primary-foreground: 255 255 255; /* #ffffff */
 
@@ -230,6 +230,15 @@
   body {
     @apply bg-background text-foreground;
     /* Remove any background gradients for pure monochrome */
+  }
+  
+  /* Force YouTube red visibility */
+  html.dark {
+    --primary: 255 0 0; /* Ensure YouTube red is always visible in dark mode */
+  }
+  
+  html {
+    --primary: 255 0 0; /* Ensure YouTube red is always visible */
   }
 }
 
@@ -318,7 +327,8 @@
 
   /* CTA Button styling - Flat red primary, grayscale variants */
   .btn-primary-gradient {
-    background: hsl(var(--primary)); /* Flat YouTube red */
+    background: hsl(var(--primary)) !important; /* Flat YouTube red - FORCED */
+    background: #ff0000 !important; /* Fallback direct red */
     color: white;
     border: none;
     transition: all 0.2s ease;
