@@ -170,7 +170,7 @@
     /* Borders and inputs */
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 262 80% 50%;
+    --ring: 11 85% 60%;
 
     --radius: 0.75rem;
 
@@ -228,7 +228,7 @@
     /* Borders and inputs */
     --border: 240 10% 15%;
     --input: 240 10% 12%;
-    --ring: 262 80% 50%;
+    --ring: 11 85% 60%;
 
     /* Custom gradients for premium feel */
     --gradient-primary: linear-gradient(135deg, hsl(262 80% 50%), hsl(262 90% 60%));
