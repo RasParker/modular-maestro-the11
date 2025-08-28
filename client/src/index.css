@@ -627,6 +627,17 @@
 }
 
 /* Specific override for View Profile button hover color */
-.view-profile-btn:hover {
+.view-profile-btn:hover,
+button.view-profile-btn:hover,
+a button.view-profile-btn:hover,
+.view-profile-btn:hover *,
+button[class*="view-profile-btn"]:hover {
+  background-color: #22222a !important;
+  background: #22222a !important;
+}
+
+/* Additional specific targeting for outline buttons */
+button[class*="outline"]:hover,
+.inline-flex.items-center.justify-center[class*="outline"]:hover {
   background-color: #22222a !important;
 }

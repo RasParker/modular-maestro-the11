@@ -72,7 +72,20 @@ export const CreatorCard: React.FC<CreatorCardProps> = ({ creator }) => {
         </div>
         <div className="mt-3">
           <Link to={`/creator/${encodeURIComponent(creator.username)}`}>
-            <Button variant="outline" size="sm" className="w-full view-profile-btn">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="w-full view-profile-btn"
+              style={{
+                '--hover-bg': '#22222a'
+              } as React.CSSProperties}
+              onMouseEnter={(e) => {
+                (e.target as HTMLElement).style.backgroundColor = '#22222a';
+              }}
+              onMouseLeave={(e) => {
+                (e.target as HTMLElement).style.backgroundColor = '';
+              }}
+            >
               View Profile
             </Button>
           </Link>
