@@ -76,6 +76,7 @@ app.use((req, res, next) => {
     }
 
     // Start cron service for automated post publishing (non-blocking)
+    // Delay to allow database initialization to complete
     console.log('Starting cron service in background...');
     setTimeout(() => {
       try {
@@ -84,7 +85,7 @@ app.use((req, res, next) => {
       } catch (error) {
         console.error('Error starting cron service:', error);
       }
-    }, 1000); // Delay cron service start by 1 second
+    }, 5000); // Delay cron service start by 5 seconds to allow DB init
 
     // Graceful shutdown
     process.on('SIGINT', () => {
@@ -107,13 +108,8 @@ app.use((req, res, next) => {
     
     server.on('error', (err: any) => {
       if (err.code === 'EADDRINUSE') {
-        console.error(`Port ${port} is already in use. Attempting to kill existing processes...`);
-        try {
-          require('child_process').execSync(`pkill -f "tsx server/index.ts" && pkill -f "npm run dev"`, { stdio: 'ignore' });
-          console.log('Killed existing processes. Please restart the server.');
-        } catch (e) {
-          console.error('Could not kill existing processes. Please manually stop other server instances.');
-        }
+        console.error(`Port ${port} is already in use. This should be handled by the Clean Start workflow.`);
+        console.error('If the problem persists, please run the Clean Start workflow again.');
         process.exit(1);
       } else {
         console.error('Server error:', err);

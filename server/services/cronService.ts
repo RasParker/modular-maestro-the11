@@ -87,13 +87,15 @@ export class CronService {
     try {
       // Check if database tables exist first
       const result = await db.execute(sql`
-        SELECT table_name 
-        FROM information_schema.tables 
-        WHERE table_schema = 'public' AND table_name = 'posts'
+        SELECT EXISTS (
+          SELECT FROM information_schema.tables 
+          WHERE table_schema = 'public' AND table_name = 'posts'
+        );
       `);
       
-      if (!result || (result as any).rows?.length === 0) {
-        // Tables don't exist yet, skip this execution
+      const tableExists = (result as any).rows?.[0]?.exists;
+      if (!tableExists) {
+        // Tables don't exist yet, skip this execution silently
         return;
       }
 
@@ -129,7 +131,13 @@ export class CronService {
         console.log(`Successfully published ${scheduledPosts.length} scheduled posts`);
       }
     } catch (error) {
-      // Only log the error once every 10 minutes to avoid spam
+      // Check if it's a relation does not exist error
+      if (error instanceof Error && error.message.includes('relation "posts" does not exist')) {
+        // Skip silently if tables don't exist yet
+        return;
+      }
+      
+      // Only log other errors once every 10 minutes to avoid spam
       if (!this.lastErrorLog || Date.now() - this.lastErrorLog > 600000) {
         console.error('Error publishing scheduled posts:', error instanceof Error ? error.message : 'Unknown error');
         this.lastErrorLog = Date.now();
