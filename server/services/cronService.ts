@@ -3,11 +3,10 @@ import * as cron from 'node-cron';
 import { payoutService } from './payoutService';
 import { db } from '../db';
 import { posts } from '../../shared/schema';
-import { eq, and, lte, sql } from 'drizzle-orm';
+import { eq, and, lte } from 'drizzle-orm';
 
 export class CronService {
   private jobs: Map<string, cron.ScheduledTask> = new Map();
-  private lastErrorLog: number = 0;
 
   // Start all scheduled jobs
   start(): void {
@@ -85,20 +84,6 @@ export class CronService {
   // Publish scheduled posts that are due
   private async publishScheduledPosts(): Promise<void> {
     try {
-      // Check if database tables exist first
-      const result = await db.execute(sql`
-        SELECT EXISTS (
-          SELECT FROM information_schema.tables 
-          WHERE table_schema = 'public' AND table_name = 'posts'
-        );
-      `);
-      
-      const tableExists = (result as any).rows?.[0]?.exists;
-      if (!tableExists) {
-        // Tables don't exist yet, skip this execution silently
-        return;
-      }
-
       const now = new Date();
       
       // Find all scheduled posts where scheduled_for <= now
@@ -131,17 +116,7 @@ export class CronService {
         console.log(`Successfully published ${scheduledPosts.length} scheduled posts`);
       }
     } catch (error) {
-      // Check if it's a relation does not exist error
-      if (error instanceof Error && error.message.includes('relation "posts" does not exist')) {
-        // Skip silently if tables don't exist yet
-        return;
-      }
-      
-      // Only log other errors once every 10 minutes to avoid spam
-      if (!this.lastErrorLog || Date.now() - this.lastErrorLog > 600000) {
-        console.error('Error publishing scheduled posts:', error instanceof Error ? error.message : 'Unknown error');
-        this.lastErrorLog = Date.now();
-      }
+      console.error('Error publishing scheduled posts:', error);
     }
   }
 

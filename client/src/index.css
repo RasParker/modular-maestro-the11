@@ -157,11 +157,11 @@
     --secondary-foreground: 255 255 255; /* #ffffff */
 
     /* Muted - Mid-tone grays for hierarchy */
-    --muted: 16 16 21; /* #101015 - Same as secondary for active menu state */
+    --muted: 14 14 19; /* #0e0e13 - Subtle borders/dividers */
     --muted-foreground: 163 163 163; /* #a3a3a3 - Medium gray for secondary text */
 
-    /* Accent - Same gray as hover/active states */
-    --accent: 16 16 21; /* #101015 - Same as secondary and muted for consistency */
+    /* Accent - Light gray for subtle accents */
+    --accent: 16 16 20; /* #101014 - Light gray accents */
     --accent-foreground: 255 255 255; /* #ffffff */
 
     /* State colors - Monochrome with red accent approach */
@@ -275,9 +275,9 @@
 }
 
 @layer utilities {
-  /* Flat YouTube red backgrounds - no gradients */
+  /* Remove colorful gradients, replace with monochrome versions */
   .bg-gradient-primary {
-    background: hsl(var(--primary)); /* Flat YouTube red */
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #cc0000 100%);
   }
 
   .bg-gradient-card {
@@ -289,19 +289,25 @@
     background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--card)) 100%);
   }
 
-  /* Flat red background - no gradients */
+  /* Remove gold gradients, replace with red-based or monochrome */
   .bg-gradient-gold {
-    background: hsl(var(--primary)); /* Flat YouTube red */
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #ff3333 100%);
   }
 
-  /* Flat red text - no gradients */
+  /* Text gradients - Red accent only */
   .text-gradient-primary {
-    color: hsl(var(--primary)); /* Flat YouTube red text */
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #ff3333 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
-  /* Flat red text - no gradients */
+  /* Remove gold text gradient */
   .text-gradient-gold {
-    color: hsl(var(--primary)); /* Flat YouTube red text */
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #ff3333 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   /* Brand logo styling - YouTube red accent */
@@ -316,17 +322,16 @@
     justify-content: center;
   }
 
-  /* CTA Button styling - Flat red primary, grayscale variants */
+  /* CTA Button styling - Red primary, grayscale variants */
   .btn-primary-gradient {
-    background: hsl(var(--primary)); /* Flat YouTube red */
+    background: hsl(var(--primary));
     color: white;
     border: none;
     transition: all 0.2s ease;
   }
 
   .btn-primary-gradient:hover {
-    background: hsl(var(--primary)); /* Keep same flat red on hover */
-    opacity: 0.9; /* Subtle opacity change instead of color change */
+    background: #cc0000;
     transform: translateY(-1px);
   }
 
