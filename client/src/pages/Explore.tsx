@@ -391,7 +391,7 @@ export const Explore: React.FC = () => {
                       </Button>
                       {creator.tiers.length > 0 ? (
                         <Button
-                          className="w-full bg-[#1e1e24] hover:bg-[#1e1e24]/90 text-white"
+                          className="w-full"
                           onClick={() => handleSubscribe(creator.display_name, Math.min(...creator.tiers.map(t => t.price)))}
                         >
                           Subscribe from GHS {Math.min(...creator.tiers.map(t => t.price))}/month
