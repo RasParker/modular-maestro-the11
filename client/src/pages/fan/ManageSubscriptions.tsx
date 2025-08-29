@@ -207,7 +207,7 @@ export const ManageSubscriptions: React.FC = () => {
                     {subscriptions.filter(sub => sub.status === 'active').length}
                   </p>
                 </div>
-                <Heart className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+                <Heart className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
               </div>
             </CardContent>
           </Card>
@@ -219,7 +219,7 @@ export const ManageSubscriptions: React.FC = () => {
                   <p className="text-sm font-medium text-muted-foreground">Monthly Spending</p>
                   <p className="text-2xl font-bold text-foreground">GHS {totalMonthlySpend}</p>
                 </div>
-                <CreditCard className="h-8 w-8 text-accent" />
+                <CreditCard className="h-8 w-8 text-white" />
               </div>
             </CardContent>
           </Card>
@@ -231,7 +231,7 @@ export const ManageSubscriptions: React.FC = () => {
                   <p className="text-sm font-medium text-muted-foreground">Member Since</p>
                   <p className="text-2xl font-bold text-foreground">Jan 2024</p>
                 </div>
-                <Calendar className="h-8 w-8 text-success" />
+                <Calendar className="h-8 w-8 text-white" />
               </div>
             </CardContent>
           </Card>

@@ -149,7 +149,7 @@ export const BottomNavigation: React.FC = () => {
               to={item.href}
               className={`flex flex-col items-center justify-center space-y-1 px-2 py-3 rounded-lg transition-colors min-w-0 ${
                 item.active 
-                  ? 'text-primary' 
+                  ? 'text-white' 
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >

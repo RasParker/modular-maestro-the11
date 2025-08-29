@@ -114,7 +114,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
               <Button
                 variant="outline"
                 size="sm"
-                className="text-destructive hover:text-destructive"
+                className="text-white hover:text-white bg-destructive hover:bg-destructive/90 border-destructive"
                 onClick={() => onCancel(subscription.id)}
               >
                 <X className="w-4 h-4 mr-1" />
@@ -217,7 +217,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
                 <Button
                   variant="outline"
                   size="sm"
-                  className="text-destructive hover:text-destructive flex-1"
+                  className="text-white hover:text-white bg-destructive hover:bg-destructive/90 border-destructive flex-1"
                   onClick={(e) => {
                     e.stopPropagation();
                     onCancel(subscription.id);
