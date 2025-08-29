@@ -1,46 +1,667 @@
-/* Reset some defaults */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Line clamp utilities for text truncation */
+@layer utilities {
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    max-height: 2.4em;
+    /* Very strict 2-line enforcement */
+    line-height: 1.2;
+    word-break: break-word;
+  }
+
+  /* Extra strict mobile enforcement */
+  @media (max-width: 768px) {
+    .line-clamp-2 {
+      max-height: 2.2em;
+      line-height: 1.1;
+      font-size: 0.875rem;
+      /* Force smaller text on mobile */
+    }
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Tab trigger indicator that matches text width */
+  .tab-trigger[data-state="active"]::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 2px;
+    background-color: hsl(var(--primary));
+    border-radius: 2px;
+    width: calc(100% - 2rem);
+  }
+
+  /* Subscription amount text styling */
+  .subscription-amount {
+    color: white !important;
+  }
+
+  /* Creator card subscription pricing - make white */
+  .creator-subscription-price {
+    color: white !important;
+    font-weight: 600;
+  }
+
+  /* Ensure subscription pricing is white in all contexts */
+  .font-semibold.text-accent,
+  .text-accent {
+    color: white !important;
+  }
+
+  /* On desktop, make indicator match text width more precisely */
+  @media (min-width: 768px) {
+    .tab-trigger[data-state="active"]::after {
+      width: calc(100% - 3rem);
+    }
+  }
+
+  /* Custom scrollbar styles */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted)) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted));
+    border-radius: 3px;
+    border: 1px solid transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground));
+  }
+
+  /* Invisible scrollbar for mobile */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+    /* Safari and Chrome */
+  }
+
+  /* TikTok/Instagram Reels Style Feed */
+  .feed-container {
+    max-width: 470px;
+    margin: 0 auto;
+  }
+
+  .media-post {
+    aspect-ratio: 9 / 16;
+    max-width: 470px;
+    width: 100%;
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .media-post img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .post-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent, transparent);
+  }
+
+  .post-overlay p {
+    color: white;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  }
+
+  /* Mobile responsiveness */
+  @media (max-width: 640px) {
+    .feed-container {
+      max-width: 100vw;
+      padding: 0 16px;
+    }
+
+    .media-post {
+      max-width: 100%;
+    }
+  }
 }
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-  background-color: #f5f5f5;
-  color: #333;
-  line-height: 1.6;
+/* YouTube-Inspired Monochrome Design System */
+@layer base {
+  :root {
+    --background: 8 8 12;
+    --foreground: 255 255 255;
+    --card: 11 11 15;
+    --card-foreground: 255 255 255;
+    --popover: 15 15 21;
+    --popover-foreground: 255 255 255;
+    --primary: 255 0 0;
+    --primary-foreground: 255 255 255;
+    --secondary: 16 16 21;
+    --secondary-foreground: 255 255 255;
+    --muted: 14 14 19;
+    --muted-foreground: 163 163 163;
+    --accent: 34 34 42;
+    --accent-foreground: 255 255 255;
+    --destructive: 255 0 0;
+    --destructive-foreground: 255 255 255;
+    --success: 34 197 94;
+    --success-foreground: 255 255 255;
+    --warning: 245 158 11;
+    --warning-foreground: 255 255 255;
+    --border: 30 30 35;
+    --input: 16 16 21;
+    --ring: 255 0 0;
+    --chart-1: 255 0 0;
+    --chart-2: 255 51 51;
+    --chart-3: 204 0 0;
+    --chart-4: 255 102 102;
+    --chart-5: 153 0 0;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 240 20% 4%;
+    --foreground: 240 5% 96%;
+    --card: 240 15% 6%;
+    --card-foreground: 240 5% 96%;
+    --popover: 240 15% 6%;
+    --popover-foreground: 240 5% 96%;
+    --primary: 255 0 0;
+    --primary-foreground: 240 5% 96%;
+    --secondary: 240 15% 12%;
+    --secondary-foreground: 240 5% 90%;
+    --muted: 240 10% 10%;
+    --muted-foreground: 240 5% 65%;
+    --accent: 240 10% 13%;
+    --accent-foreground: 240 5% 90%;
+    --destructive: 255 0 0;
+    --destructive-foreground: 240 5% 96%;
+    --success: 142 70% 50%;
+    --success-foreground: 240 5% 96%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 240 20% 10%;
+    --border: 240 10% 15%;
+    --input: 240 10% 12%;
+    --ring: 255 0 0;
+    --chart-1: 255 0 0;
+    --chart-2: 255 51 51;
+    --chart-3: 204 0 0;
+    --chart-4: 255 102 102;
+    --chart-5: 153 0 0;
+  }
 }
 
-/* Container for the app */
-#root {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  html.dark {
+    --primary: 255 0 0;
+  }
+
+  html {
+    --primary: 255 0 0;
+  }
 }
 
-/* Example utility classes */
-.container {
-  width: 90%;
-  max-width: 1200px;
-  margin: auto;
+@layer components {
+  .tab-trigger {
+    @apply relative text-muted-foreground hover:text-foreground transition-colors;
+    background: transparent !important;
+  }
+  
+  .tab-trigger:hover {
+    background: transparent !important;
+    background-color: transparent !important;
+  }
+
+  /* Global button hover state */
+  .btn-hover-dark:hover {
+    background-color: #1e1e24 !important;
+  }
+
+  .tab-trigger::after {
+    content: '';
+    @apply absolute bottom-0 left-0 right-0 h-0.5 bg-transparent transition-all duration-200;
+  }
+
+  .tab-trigger[data-state="active"] {
+    @apply text-foreground;
+  }
+
+  .tab-trigger[data-state="active"]::after {
+    @apply bg-white;
+  }
+
+  .nav-item {
+    @apply text-muted-foreground hover:text-foreground transition-colors;
+  }
+
+  .nav-item.active {
+    @apply text-primary;
+  }
+
+  .youtube-card {
+    @apply bg-card border border-border rounded-lg;
+    @apply hover:border-primary/20 transition-all duration-200;
+  }
+
+  .tab-trigger {
+    @apply px-4 min-w-0 flex-1;
+  }
 }
 
-.text-center {
-  text-align: center;
+@layer utilities {
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #cc0000 100%);
+  }
+
+  .bg-gradient-card {
+    background: hsl(var(--card));
+  }
+
+  .bg-gradient-subtle {
+    background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--card)) 100%);
+  }
+
+  .bg-gradient-gold {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #ff3333 100%);
+  }
+
+  .text-gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #ff3333 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-gold {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #ff3333 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .brand-logo {
+    background: hsl(var(--primary));
+    color: white;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ✅ Cleaned conflict */
+  .btn-primary-gradient {
+    background: hsl(var(--primary)) !important;
+    /* Uses theme */
+    background: #ff0000 !important;
+    /* Fallback red */
+    color: white;
+    border: none;
+    transition: all 0.2s ease;
+  }
+
+  .btn-primary-gradient:hover {
+    background: #cc0000;
+    transform: translateY(-1px);
+  }
+
+  .btn-gold-gradient {
+    background: hsl(var(--secondary));
+    color: hsl(var(--secondary-foreground));
+    border: 1px solid hsl(var(--border));
+    font-weight: 600;
+  }
+
+  .btn-gold-gradient:hover {
+    background: #1e1e24;
+    border-color: hsl(var(--primary));
+  }
+
+  .stats-card {
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--card));
+    transition: all 0.2s ease;
+    border-radius: var(--radius);
+  }
+
+  .stats-card:hover {
+    border-color: hsl(var(--primary));
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.1);
+  }
+
+  .stats-value {
+    color: hsl(var(--primary));
+    font-weight: 700;
+  }
+
+  .stats-growth {
+    color: hsl(var(--success));
+    font-size: 0.875rem;
+  }
+
+  .stats-icon {
+    color: white;
+    opacity: 0.7;
+  }
+
+  .hover-lift {
+    transition: all 0.2s ease-in-out;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.15);
+  }
+
+  .glow-red {
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+  }
+
+  .truncated-bio.expanded {
+    display: block;
+    -webkit-line-clamp: unset;
+  }
+
+  .video-post-container {
+    position: relative;
+    background-color: #000;
+  }
+
+  .video-post-container video[data-aspect-ratio="portrait"] {
+    object-fit: cover;
+  }
+
+  .video-post-container video[data-aspect-ratio="landscape"] {
+    object-fit: contain;
+  }
+
+  .video-post-container video[data-aspect-ratio="unknown"] {
+    object-fit: cover;
+  }
+
+  .video-player-wrapper {
+    position: relative;
+    width: 100%;
+    background-color: #000;
+    overflow: hidden;
+  }
+
+  @media (max-width: 768px) {
+    .video-player-wrapper {
+      aspect-ratio: 16 / 9;
+      max-height: 40vh;
+    }
+  }
+
+  .video-player-wrapper .video-element {
+    width: 100%;
+    height: 100%;
+  }
+
+  .content-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    background: hsl(var(--background));
+  }
+
+  @media (max-width: 768px) {
+    .content-wrapper {
+      height: calc(100vh - 40vh);
+      padding-bottom: 2rem;
+    }
+  }
+
+  @media (min-width: 769px) {
+    .video-watch-desktop {
+      max-width: 1800px;
+      margin: 0 auto;
+    }
+
+    .video-watch-main {
+      max-width: 1440px;
+    }
+
+    .video-watch-sidebar {
+      width: 280px;
+    }
+  }
+
+  .w-70 {
+    width: 17.5rem;
+  }
+
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .is-immersive .video-player-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    aspect-ratio: unset;
+  }
+
+  .is-immersive .content-wrapper {
+    display: none;
+  }
+
+  .youtube-grid-card {
+    display: flex;
+    flex-direction: column;
+    transition: all 0.2s ease;
+    max-width: 280px;
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .youtube-grid-card:hover {
+    transform: translateY(-2px);
+    border-color: hsl(var(--primary));
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.1);
+  }
+
+  @media (max-width: 768px) {
+    .youtube-grid-card.mobile-no-radius {
+      border-radius: 0 !important;
+    }
+
+    .feed-card.mobile-no-radius {
+      border-radius: 0 !important;
+    }
+  }
+
+  .line-clamp-none {
+    display: block;
+    -webkit-line-clamp: unset;
+    -webkit-box-orient: unset;
+    overflow: visible;
+  }
+
+  .feed-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    transition: all 0.2s ease;
+  }
+
+  .feed-card:hover {
+    transform: translateY(-2px);
+    border-color: hsl(var(--primary));
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.1);
+  }
+
+  .feed-card-thumbnail {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .feed-card-thumbnail img,
+  .feed-card-thumbnail video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .feed-card-content {
+    padding: 12px;
+  }
+
+  .feed-card-title {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1.3;
+    margin-bottom: 4px;
+    color: hsl(var(--foreground));
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .feed-card-meta {
+    font-size: 12px;
+    color: hsl(var(--muted-foreground));
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .feed-single-view .aspect-video {
+    max-height: 60vh;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .content-wrapper {
+      max-height: calc(100vh - 56.25vw);
+    }
+
+    .feed-card-content {
+      padding: 8px;
+    }
+
+    .feed-card-title {
+      font-size: 13px;
+    }
+
+    .feed-card-meta {
+      font-size: 11px;
+    }
+
+    .view-toggle {
+      display: none !important;
+    }
+
+    .mobile-feed-container {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .mobile-feed-container::-webkit-scrollbar {
+      display: none;
+    }
+  }
 }
 
-button {
-  cursor: pointer;
-  padding: 0.6em 1.2em;
-  border: none;
-  border-radius: 6px;
-  background: #007bff;
-  color: white;
-  font-size: 1rem;
-  transition: background 0.3s;
+/* Line clamp utilities for text truncation */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  text-overflow: ellipsis;
 }
 
-button:hover {
-  background: #0056b3;
+/* Custom scrollbar with YouTube red accent */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary));
+}
+
+/* Specific override for View Profile button hover color */
+.view-profile-btn:hover,
+button.view-profile-btn:hover,
+a button.view-profile-btn:hover,
+.view-profile-btn:hover *,
+button[class*="view-profile-btn"]:hover {
+  background-color: #22222a !important;
+  background: #22222a !important;
+}
+
+/* Additional specific targeting for outline buttons */
+button[class*="outline"]:hover,
+.inline-flex.items-center.justify-center[class*="outline"]:hover {
+  background-color: #22222a !important;
 }
