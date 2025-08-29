@@ -287,7 +287,7 @@
 
 @layer utilities {
   .bg-gradient-primary {
-    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #cc0000 100%);
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #e60000 50%, #d40000 100%);
   }
 
   .bg-gradient-card {
@@ -299,18 +299,18 @@
   }
 
   .bg-gradient-gold {
-    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #ff3333 100%);
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #ff1a1a 50%, #ff0d0d 100%);
   }
 
   .text-gradient-primary {
-    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #ff3333 100%);
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #ff1a1a 50%, #ff0d0d 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .text-gradient-gold {
-    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #ff3333 100%);
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #ff1a1a 50%, #ff0d0d 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
