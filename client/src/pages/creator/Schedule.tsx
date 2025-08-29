@@ -355,7 +355,7 @@ export const Schedule: React.FC = () => {
                               {stat.value}
                             </p>
                           </div>
-                          <Icon className="h-6 w-6 text-primary" />
+                          <Icon className="h-6 w-6 text-white opacity-70" />
                         </div>
                       </CardContent>
                     </Card>

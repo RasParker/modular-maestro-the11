@@ -17,7 +17,7 @@ export const SubscriberStats: React.FC<SubscriberStatsProps> = ({
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
       <div className="flex items-center gap-3 p-4 rounded-lg bg-card border border-border/50">
         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-          <Users className="w-5 h-5 text-primary" />
+          <Users className="w-5 h-5 text-white opacity-70" />
         </div>
         <div>
           <p className="text-2xl font-bold text-foreground">{totalCount}</p>
@@ -27,7 +27,7 @@ export const SubscriberStats: React.FC<SubscriberStatsProps> = ({
       
       <div className="flex items-center gap-3 p-4 rounded-lg bg-card border border-border/50">
         <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center">
-          <TrendingUp className="w-5 h-5 text-green-600" />
+          <TrendingUp className="w-5 h-5 text-white opacity-70" />
         </div>
         <div>
           <p className="text-2xl font-bold text-foreground">{activeCount}</p>
@@ -37,7 +37,7 @@ export const SubscriberStats: React.FC<SubscriberStatsProps> = ({
       
       <div className="flex items-center gap-3 p-4 rounded-lg bg-card border border-border/50">
         <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center">
-          <Calendar className="w-5 h-5 text-blue-600" />
+          <Calendar className="w-5 h-5 text-white opacity-70" />
         </div>
         <div>
           <p className="text-2xl font-bold text-foreground">{recentCount}</p>

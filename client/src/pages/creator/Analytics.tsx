@@ -136,7 +136,7 @@ export const Analytics: React.FC = () => {
                   <p className="text-2xl font-bold text-foreground">{analytics.subscribers.toLocaleString()}</p>
                   <p className="text-xs text-success">+{analytics.growthRate}% this month</p>
                 </div>
-                <Users className="h-8 w-8 text-primary" />
+                <Users className="h-8 w-8 text-white opacity-70" />
               </div>
             </CardContent>
           </Card>
@@ -149,7 +149,7 @@ export const Analytics: React.FC = () => {
                   <p className="text-2xl font-bold text-foreground">{analytics.engagementRate}%</p>
                   <p className="text-xs text-success">+5.2% this month</p>
                 </div>
-                <Heart className="h-8 w-8 text-accent" />
+                <Heart className="h-8 w-8 text-white opacity-70" />
               </div>
             </CardContent>
           </Card>
@@ -162,7 +162,7 @@ export const Analytics: React.FC = () => {
                   <p className="text-2xl font-bold text-foreground">{analytics.postsThisMonth}</p>
                   <p className="text-xs text-success">+{Math.round((analytics.postsThisMonth / Math.max(analytics.postsThisMonth - 2, 1)) * 100 - 100)}% vs last month</p>
                 </div>
-                <FileText className="h-8 w-8 text-primary" />
+                <FileText className="h-8 w-8 text-white opacity-70" />
               </div>
             </CardContent>
           </Card>
@@ -175,7 +175,7 @@ export const Analytics: React.FC = () => {
                   <p className="text-2xl font-bold text-foreground">GHS {parseFloat(analytics.monthlyEarnings || 0).toFixed(2)}</p>
                   <p className="text-xs text-success">+{analytics.growthRate}% vs last month</p>
                 </div>
-                <DollarSign className="h-8 w-8 text-success" />
+                <DollarSign className="h-8 w-8 text-white opacity-70" />
               </div>
             </CardContent>
           </Card>
