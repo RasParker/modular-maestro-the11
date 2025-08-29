@@ -309,20 +309,20 @@ export const Explore: React.FC = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCreators.map((creator) => {
             return (
-              <Card key={creator.id} className="overflow-hidden bg-gradient-card border-border/50 hover:border-primary/50 transition-all duration-300 group">
+              <Card key={creator.id} className="overflow-hidden bg-gradient-card border-border/50"></Card>
                 <div className="relative">
                   {creator.cover ? (
                     <img
                       src={creator.cover}
                       alt={creator.display_name}
-                      className="w-full h-32 object-cover transition-transform duration-300 group-hover:scale-105"
+                      className="w-full h-32 object-cover"
                       onError={(e) => {
                         e.currentTarget.style.display = 'none';
                         e.currentTarget.nextElementSibling?.classList.remove('hidden');
                       }}
                     />
                   ) : null}
-                  <div className={`w-full h-32 bg-gradient-to-r from-primary/20 via-accent/10 to-primary/20 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 ${creator.cover ? 'hidden' : ''}`}>
+                  <div className={`w-full h-32 bg-gradient-to-r from-primary/20 via-accent/10 to-primary/20 flex items-center justify-center ${creator.cover ? 'hidden' : ''}`}>
                     <Image className="w-8 h-8 text-muted-foreground" />
                   </div>
                   <div className="absolute -bottom-6 left-4">
@@ -382,7 +382,7 @@ export const Explore: React.FC = () => {
                     <div className="space-y-2">
                       <Button
                         variant="outline"
-                        className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+                        className="w-full"
                         asChild
                       >
                         <Link to={`/creator/${creator.username}`}>
