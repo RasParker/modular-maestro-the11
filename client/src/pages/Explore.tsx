@@ -431,12 +431,15 @@ export const Explore: React.FC = () => {
       {/* Tier Selection Modal */}
       {selectedCreator && (
         <Dialog open={tierSelectionModalOpen} onOpenChange={setTierSelectionModalOpen}>
-          <DialogContent className="sm:max-w-lg max-h-[85vh] flex flex-col">
-            <DialogHeader className="flex-shrink-0 pb-4">
-              <DialogTitle className="text-xl font-bold">
+          <DialogContent className="sm:max-w-lg max-h-[85vh] flex flex-col bg-gradient-to-br from-slate-900/95 to-slate-800/95 backdrop-blur-xl border border-slate-700/50">
+            <DialogHeader className="flex-shrink-0 pb-4 text-center space-y-3">
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 mx-auto">
+                <Star className="h-6 w-6 text-white" />
+              </div>
+              <DialogTitle className="text-xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
                 Choose Your Subscription
               </DialogTitle>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-slate-400">
                 Select a tier to unlock exclusive content from {selectedCreator.display_name}
               </p>
             </DialogHeader>
@@ -467,30 +470,30 @@ export const Explore: React.FC = () => {
                     return (
                       <div
                         key={tier.id}
-                        className="p-4 border border-border rounded-xl hover:border-accent/60 cursor-pointer transition-all duration-200 hover:bg-accent/5 hover:shadow-sm group"
+                        className="p-4 border border-slate-700/50 bg-slate-800/50 backdrop-blur-sm rounded-xl hover:border-blue-500/60 cursor-pointer transition-all duration-200 hover:bg-slate-700/50 hover:shadow-lg hover:shadow-blue-500/10 group"
                         onClick={() => handleTierSelected(tier)}
                       >
                         <div className="space-y-3">
                           {/* Tier Header */}
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
-                              <h4 className="font-bold text-foreground group-hover:text-accent transition-colors">
+                              <h4 className="font-bold text-slate-100 group-hover:text-blue-400 transition-colors">
                                 {tier.name}
                               </h4>
-                              <div className="font-bold text-accent text-lg mt-0.5">
+                              <div className="font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent text-lg mt-0.5">
                                 GHS {typeof tier.price === 'string' ? parseFloat(tier.price).toFixed(2) : tier.price.toFixed(2)}
-                                <span className="text-sm font-normal text-muted-foreground ml-1">/month</span>
+                                <span className="text-sm font-normal text-slate-400 ml-1">/month</span>
                               </div>
                             </div>
-                            <div className="text-xs text-muted-foreground bg-muted/50 px-2 py-1 rounded-full">
+                            <div className="text-xs text-slate-400 bg-slate-700/50 px-2 py-1 rounded-full">
                               Monthly
                             </div>
                           </div>
                           
                           {/* Description */}
                           {tier.description && (
-                            <div className="bg-muted/30 p-3 rounded-lg">
-                              <p className="text-sm text-foreground leading-relaxed">
+                            <div className="bg-slate-800/30 p-3 rounded-lg border border-slate-700/30">
+                              <p className="text-sm text-slate-200 leading-relaxed">
                                 {tier.description}
                               </p>
                             </div>
@@ -499,18 +502,18 @@ export const Explore: React.FC = () => {
                           {/* Benefits */}
                           {benefits.length > 0 && (
                             <div className="space-y-2">
-                              <h5 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                              <h5 className="text-xs font-semibold text-slate-400 uppercase tracking-wide">
                                 What's included:
                               </h5>
                               <div className="space-y-1.5">
                                 {benefits.slice(0, 3).map((benefit: string, index: number) => (
                                   <div key={index} className="flex items-start gap-2">
-                                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0" />
-                                    <span className="text-sm text-foreground leading-relaxed">{benefit}</span>
+                                    <div className="w-1.5 h-1.5 bg-blue-400 rounded-full mt-2 flex-shrink-0" />
+                                    <span className="text-sm text-slate-200 leading-relaxed">{benefit}</span>
                                   </div>
                                 ))}
                                 {benefits.length > 3 && (
-                                  <div className="text-xs text-muted-foreground pl-3.5">
+                                  <div className="text-xs text-slate-400 pl-3.5">
                                     +{benefits.length - 3} more benefits
                                   </div>
                                 )}
@@ -520,7 +523,7 @@ export const Explore: React.FC = () => {
 
                           {/* Action Button */}
                           <div className="pt-2">
-                            <div className="w-full bg-primary/10 group-hover:bg-primary group-hover:text-primary-foreground text-primary font-medium py-2.5 px-4 rounded-lg text-center transition-all duration-200 text-sm">
+                            <div className="w-full bg-gradient-to-r from-blue-500/20 to-blue-600/20 group-hover:from-blue-500 group-hover:to-blue-600 group-hover:text-white text-blue-400 font-medium py-2.5 px-4 rounded-lg text-center transition-all duration-200 text-sm border border-blue-500/30 group-hover:border-blue-500">
                               Select {tier.name} →
                             </div>
                           </div>
@@ -536,8 +539,8 @@ export const Explore: React.FC = () => {
               </div>
             </div>
             
-            <div className="flex-shrink-0 pt-4 border-t border-border/50">
-              <p className="text-xs text-center text-muted-foreground">
+            <div className="flex-shrink-0 pt-4 border-t border-slate-700/50">
+              <p className="text-xs text-center text-slate-500">
                 Cancel anytime • Secure payments via Paystack
               </p>
             </div>
