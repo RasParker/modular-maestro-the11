@@ -200,14 +200,24 @@ export const ManageTiers: React.FC = () => {
     <div className="min-h-screen bg-background">
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8 text-center sm:text-left">
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2 justify-center sm:justify-start">
-            <DollarSign className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
-            Manage Subscription Tiers
-          </h1>
-          <p className="text-sm sm:text-base text-muted-foreground">
-            Set up and customize your subscription offerings
-          </p>
+        <div className="mb-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
+            <div className="text-center sm:text-left">
+              <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2 justify-center sm:justify-start">
+                <DollarSign className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+                Manage Subscription Tiers
+              </h1>
+              <p className="text-sm sm:text-base text-muted-foreground">
+                Set up and customize your subscription offerings
+              </p>
+            </div>
+            {!isCreating && !editingTier && (
+              <Button onClick={handleCreateTier} className="bg-primary hover:bg-primary/90">
+                <Plus className="w-4 h-4 mr-2" />
+                Create Tier
+              </Button>
+            )}
+          </div>
         </div>
 
         <div className="grid gap-6">

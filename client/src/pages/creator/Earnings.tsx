@@ -186,9 +186,8 @@ export const Earnings: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-        <div className="mb-8 text-center sm:text-left">
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2 justify-center sm:justify-start">
-            <DollarSign className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+        <div className="mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
             Earnings Overview
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground">
@@ -205,7 +204,7 @@ export const Earnings: React.FC = () => {
                   <p className="text-green-100 text-xs sm:text-sm mb-1">Total Monthly Revenue</p>
                   <p className="text-2xl sm:text-3xl font-bold">GHS {currentEarnings?.gross_revenue?.toFixed(2) || '0.00'}</p>
                 </div>
-                <DollarSign className="w-6 h-6 sm:w-8 sm:h-8 text-green-200" />
+                <DollarSign className="w-6 h-6 sm:w-8 sm:h-8 text-white opacity-70" />
               </div>
             </CardContent>
           </Card>
@@ -217,7 +216,7 @@ export const Earnings: React.FC = () => {
                   <p className="text-blue-100 text-xs sm:text-sm mb-1">Total Active Subscribers</p>
                   <p className="text-2xl sm:text-3xl font-bold">{analytics.subscribers || 0}</p>
                 </div>
-                <Users className="w-6 h-6 sm:w-8 sm:h-8 text-blue-200" />
+                <Users className="w-6 h-6 sm:w-8 sm:h-8 text-white opacity-70" />
               </div>
             </CardContent>
           </Card>

@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from '@/lib/queryClient';
@@ -50,9 +50,14 @@ const PaymentTest = React.lazy(() => import('@/pages/PaymentTest'));
 const NotFound = React.lazy(() => import('@/pages/NotFound'));
 
 function App() {
+  useEffect(() => {
+    // Force dark theme on app initialization to ensure YouTube red colors show
+    document.documentElement.classList.add('dark');
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="theme">
+      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} storageKey="xclusive-theme">
         <AuthProvider>
           <NotificationProvider>
             <Router>

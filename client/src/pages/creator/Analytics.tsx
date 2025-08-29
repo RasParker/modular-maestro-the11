@@ -51,7 +51,7 @@ export const Analytics: React.FC = () => {
 
           // Calculate monthly growth from subscriber data
           const currentDate = new Date();
-          const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+          const months = ['January', 'February', 'March', 'April', 'May', 'June',
                          'July', 'August', 'September', 'October', 'November', 'December'];
 
           const monthlyGrowth = [];
@@ -60,7 +60,7 @@ export const Analytics: React.FC = () => {
             const monthName = months[targetMonth.getMonth()];
             const monthlySubscribers = subscribersData.filter((sub: any) => {
               const subDate = new Date(sub.created_at);
-              return subDate.getMonth() === targetMonth.getMonth() && 
+              return subDate.getMonth() === targetMonth.getMonth() &&
                      subDate.getFullYear() === targetMonth.getFullYear();
             }).length;
 
@@ -103,7 +103,7 @@ export const Analytics: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8 text-center sm:text-left">
+        <div className="mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">Analytics Dashboard</h1>
           <p className="text-sm sm:text-base text-muted-foreground">
             Track your performance and growth
@@ -136,7 +136,7 @@ export const Analytics: React.FC = () => {
                   <p className="text-2xl font-bold text-foreground">{analytics.subscribers.toLocaleString()}</p>
                   <p className="text-xs text-success">+{analytics.growthRate}% this month</p>
                 </div>
-                <Users className="h-8 w-8 text-primary" />
+                <Users className="h-8 w-8 text-white opacity-70" />
               </div>
             </CardContent>
           </Card>
@@ -149,7 +149,7 @@ export const Analytics: React.FC = () => {
                   <p className="text-2xl font-bold text-foreground">{analytics.engagementRate}%</p>
                   <p className="text-xs text-success">+5.2% this month</p>
                 </div>
-                <Heart className="h-8 w-8 text-accent" />
+                <Heart className="h-8 w-8 text-white opacity-70" />
               </div>
             </CardContent>
           </Card>
@@ -162,7 +162,7 @@ export const Analytics: React.FC = () => {
                   <p className="text-2xl font-bold text-foreground">{analytics.postsThisMonth}</p>
                   <p className="text-xs text-success">+{Math.round((analytics.postsThisMonth / Math.max(analytics.postsThisMonth - 2, 1)) * 100 - 100)}% vs last month</p>
                 </div>
-                <FileText className="h-8 w-8 text-primary" />
+                <FileText className="h-8 w-8 text-white opacity-70" />
               </div>
             </CardContent>
           </Card>
@@ -175,7 +175,7 @@ export const Analytics: React.FC = () => {
                   <p className="text-2xl font-bold text-foreground">GHS {parseFloat(analytics.monthlyEarnings || 0).toFixed(2)}</p>
                   <p className="text-xs text-success">+{analytics.growthRate}% vs last month</p>
                 </div>
-                <DollarSign className="h-8 w-8 text-success" />
+                <DollarSign className="h-8 w-8 text-white opacity-70" />
               </div>
             </CardContent>
           </Card>

@@ -174,7 +174,7 @@ export const SidebarNavigation: React.FC = () => {
             to={item.href}
             className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
               item.active 
-                ? 'bg-primary text-primary-foreground shadow-sm' 
+                ? 'bg-accent text-foreground shadow-sm' 
                 : 'text-muted-foreground hover:text-foreground hover:bg-accent'
             }`}
             data-testid={`nav-${item.label.toLowerCase().replace(' ', '-')}`}

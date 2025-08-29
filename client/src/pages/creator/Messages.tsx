@@ -298,7 +298,6 @@ export const Messages: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="mb-6 text-center sm:text-left">
             <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2 justify-center sm:justify-start">
-              <MessageSquare className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
               Messages
             </h1>
             <p className="text-sm sm:text-base text-muted-foreground">

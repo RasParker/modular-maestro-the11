@@ -241,7 +241,6 @@ export const CreatorDashboard: React.FC = () => {
         <EdgeToEdgeContainer maxWidth="7xl" enablePadding enableTopPadding>
           <div className="text-center">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <Crown className="w-10 h-10 text-primary" />
               <h1 className="text-4xl sm:text-5xl font-bold text-foreground">
                 Creator Dashboard
               </h1>
@@ -267,7 +266,7 @@ export const CreatorDashboard: React.FC = () => {
                     <p className="text-xl sm:text-2xl font-bold text-foreground">{analytics.subscribers.toLocaleString()}</p>
                     <p className="text-xs text-success">+{analytics.growthRate}% this month</p>
                   </div>
-                  <Users className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+                  <Users className="h-6 w-6 sm:h-8 sm:w-8 text-white opacity-70" />
                 </div>
               </CardContent>
             </Card>
@@ -280,7 +279,7 @@ export const CreatorDashboard: React.FC = () => {
                     <p className="text-xl sm:text-2xl font-bold text-foreground">GHS {analytics.monthlyEarnings.toLocaleString()}</p>
                     <p className="text-xs text-success">+{analytics.growthRate}% vs last month</p>
                   </div>
-                  <DollarSign className="h-6 w-6 sm:h-8 sm:w-8 text-accent" />
+                  <DollarSign className="h-6 w-6 sm:h-8 sm:w-8 text-white opacity-70" />
                 </div>
               </CardContent>
             </Card>
@@ -293,7 +292,7 @@ export const CreatorDashboard: React.FC = () => {
                     <p className="text-xl sm:text-2xl font-bold text-foreground">GHS {analytics.totalEarnings.toLocaleString()}</p>
                     <p className="text-xs text-success">All time</p>
                   </div>
-                  <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-success" />
+                  <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-white opacity-70" />
                 </div>
               </CardContent>
             </Card>
@@ -306,7 +305,7 @@ export const CreatorDashboard: React.FC = () => {
                     <p className="text-xl sm:text-2xl font-bold text-foreground">{analytics.engagementRate}%</p>
                     <p className="text-xs text-success">Above average</p>
                   </div>
-                  <Heart className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+                  <Heart className="h-6 w-6 sm:h-8 sm:w-8 text-white opacity-70" />
                 </div>
               </CardContent>
             </Card>

@@ -2929,7 +2929,11 @@ app.post('/api/conversations', async (req, res) => {
     verifyClient: (info: any) => {
       // Basic verification - you could add session validation here
       return true;
-    }
+    },
+    // Add ping/pong to maintain connection
+    clientTracking: true,
+    perMessageDeflate: false,
+    maxPayload: 16 * 1024 * 1024 // 16MB
   });
 
   // Store active WebSocket connections by user ID
@@ -2939,6 +2943,23 @@ app.post('/api/conversations', async (req, res) => {
     console.log('WebSocket client connected');
 
     let userId: number | null = null;
+    let pingInterval: NodeJS.Timeout | null = null;
+
+    // Start ping/pong heartbeat
+    const startHeartbeat = () => {
+      pingInterval = setInterval(() => {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.ping();
+        } else {
+          if (pingInterval) clearInterval(pingInterval);
+        }
+      }, 30000); // Ping every 30 seconds
+    };
+
+    // Handle pong responses
+    ws.on('pong', () => {
+      // Connection is alive
+    });
 
     // Handle incoming messages from client
     ws.on('message', async (data) => {
@@ -2969,11 +2990,17 @@ app.post('/api/conversations', async (req, res) => {
 
           console.log(`User ${userId} connected via WebSocket`);
 
+          // Start heartbeat after authentication
+          startHeartbeat();
+
           // Send confirmation
           ws.send(JSON.stringify({
             type: 'auth_success',
             message: 'Authentication successful'
           }));
+        } else if (message.type === 'ping') {
+          // Respond to client ping
+          ws.send(JSON.stringify({ type: 'pong' }));
         }
       } catch (error) {
         console.error('Error parsing WebSocket message:', error);
@@ -2981,8 +3008,14 @@ app.post('/api/conversations', async (req, res) => {
     });
 
     // Handle connection close
-    ws.on('close', async () => {
-      console.log('WebSocket client disconnected');
+    ws.on('close', async (code, reason) => {
+      console.log('WebSocket client disconnected', { code, reason: reason.toString() });
+
+      // Clean up heartbeat
+      if (pingInterval) {
+        clearInterval(pingInterval);
+        pingInterval = null;
+      }
 
       if (userId && activeConnections.has(userId)) {
         activeConnections.get(userId)!.delete(ws);
@@ -3010,6 +3043,12 @@ app.post('/api/conversations', async (req, res) => {
     // Handle errors
     ws.on('error', (error) => {
       console.error('WebSocket error:', error);
+      
+      // Clean up heartbeat on error
+      if (pingInterval) {
+        clearInterval(pingInterval);
+        pingInterval = null;
+      }
     });
   });
 

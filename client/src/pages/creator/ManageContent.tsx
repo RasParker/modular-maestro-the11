@@ -241,7 +241,6 @@ export const ManageContent: React.FC = () => {
         
         <div className="mb-8 text-center sm:text-left">
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2 justify-center sm:justify-start">
-            <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
             Manage Content
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground">
