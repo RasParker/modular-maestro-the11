@@ -240,7 +240,13 @@
 
 @layer components {
   .tab-trigger {
-    @apply relative text-muted-foreground hover:text-foreground transition-colors hover:bg-transparent;
+    @apply relative text-muted-foreground hover:text-foreground transition-colors;
+    background: transparent !important;
+  }
+  
+  .tab-trigger:hover {
+    background: transparent !important;
+    background-color: transparent !important;
   }
 
   /* Global button hover state */
