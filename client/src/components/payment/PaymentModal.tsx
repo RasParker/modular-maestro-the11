@@ -207,14 +207,14 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, tie
                   <CardDescription className="text-slate-400 text-sm">{tier.description}</CardDescription>
                 </div>
                 <div className="text-right">
-                  <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">GHS {tier.price}</div>
+                  <div className="text-2xl font-bold text-gradient-primary">GHS {tier.price}</div>
                   <div className="text-sm text-slate-400">per month</div>
                 </div>
               </div>
             </CardHeader>
             <CardContent className="pt-0">
               <div className="flex items-center gap-2 text-sm text-slate-300">
-                <Check className="h-4 w-4 text-blue-400" />
+                <Check className="h-4 w-4 text-green-400" />
                 <span>Cancel anytime</span>
               </div>
             </CardContent>
@@ -229,7 +229,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, tie
                 onClick={() => setPaymentMethod('card')}
                 className={`h-20 flex flex-col items-center gap-2 transition-all duration-200 ${
                   paymentMethod === 'card' 
-                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white border-0 shadow-lg shadow-blue-500/25' 
+                    ? 'bg-gradient-primary text-white border-0 shadow-lg shadow-blue-500/25' 
                     : 'border-slate-600 bg-slate-800/50 text-slate-300 hover:bg-slate-700/50 hover:border-slate-500'
                 }`}
               >
@@ -241,7 +241,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, tie
                 onClick={() => setPaymentMethod('mobile_money')}
                 className={`h-20 flex flex-col items-center gap-2 transition-all duration-200 ${
                   paymentMethod === 'mobile_money' 
-                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white border-0 shadow-lg shadow-blue-500/25' 
+                    ? 'bg-gradient-primary text-white border-0 shadow-lg shadow-blue-500/25' 
                     : 'border-slate-600 bg-slate-800/50 text-slate-300 hover:bg-slate-700/50 hover:border-slate-500'
                 }`}
               >
@@ -291,8 +291,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, tie
 
           {/* Security Notice */}
           <div className="flex items-start gap-3 p-4 bg-slate-800/30 rounded-xl border border-slate-700/50">
-            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-500/20 flex-shrink-0">
-              <Shield className="h-4 w-4 text-blue-400" />
+            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-green-500/20 flex-shrink-0">
+              <Shield className="h-4 w-4 text-green-400" />
             </div>
             <div className="space-y-1">
               <p className="font-medium text-slate-200 text-sm">Secure Payment</p>
@@ -306,7 +306,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, tie
           <Button
             onClick={handlePayment}
             disabled={isLoading || (paymentMethod === 'mobile_money' && (!phoneNumber || !isValidPhoneNumber(phoneNumber)))}
-            className="w-full py-6 text-lg font-semibold bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white border-0 shadow-lg shadow-blue-500/25 transition-all duration-200 hover:shadow-blue-500/30 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            className="w-full py-6 text-lg font-semibold bg-gradient-primary hover:opacity-90 text-white border-0 shadow-lg shadow-blue-500/25 transition-all duration-200 hover:shadow-blue-500/30 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             size="lg"
           >
             {isLoading ? (
