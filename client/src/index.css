@@ -685,4 +685,3 @@ button[class*="bg-[#1e1e24]"]:hover,
 [data-state="unchecked"] {
   background-color: hsl(var(--input)) !important;
 }
-}
