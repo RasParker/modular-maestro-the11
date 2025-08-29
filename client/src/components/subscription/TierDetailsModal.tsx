@@ -43,12 +43,9 @@ export const TierDetailsModal: React.FC<TierDetailsModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto bg-gradient-to-br from-slate-900/95 to-slate-800/95 backdrop-blur-xl border border-slate-700/50">
-        <DialogHeader className="text-center space-y-3">
-          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-primary mx-auto">
-            <Star className="h-6 w-6 text-white" />
-          </div>
-          <DialogTitle className="text-xl font-semibold text-gradient-primary">
+      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="text-left">
             Subscribe to {creatorName}
           </DialogTitle>
         </DialogHeader>
@@ -58,18 +55,18 @@ export const TierDetailsModal: React.FC<TierDetailsModalProps> = ({
           <div className="text-center space-y-3">
             <div className="space-y-2">
               <div className="flex justify-center">
-                <Badge className="text-xs bg-gradient-primary border-0 text-white">
+                <Badge variant="secondary" className="text-xs">
                   <Star className="h-3 w-3 mr-1" />
                   Popular
                 </Badge>
               </div>
-              <h2 className="text-2xl font-bold uppercase text-slate-100">{tier.name}</h2>
+              <h2 className="text-2xl font-bold uppercase">{tier.name}</h2>
             </div>
-            <div className="text-3xl font-bold text-gradient-primary">
+            <div className="text-3xl font-bold text-accent">
               GHS {tier.price}
-              <span className="text-base font-normal text-slate-400 ml-1">per month</span>
+              <span className="text-base font-normal text-muted-foreground ml-1">per month</span>
             </div>
-            <p className="text-slate-400 max-w-sm mx-auto">
+            <p className="text-muted-foreground max-w-sm mx-auto">
               {tier.description || 'Get access to exclusive content and support your favorite creator.'}
             </p>
           </div>
@@ -128,7 +125,7 @@ export const TierDetailsModal: React.FC<TierDetailsModalProps> = ({
           {/* Subscribe Button */}
           <Button 
             onClick={handleSubscribe}
-            className="w-full bg-gradient-primary hover:opacity-90 text-white py-6 text-lg font-semibold shadow-lg shadow-blue-500/25 transition-all duration-200 hover:shadow-blue-500/30 hover:scale-[1.02]"
+            className="w-full bg-red-600 hover:bg-red-700 text-white py-6 text-lg font-semibold"
             size="lg"
           >
             Subscribe for GHS {tier.price}/month
