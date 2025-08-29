@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -132,121 +133,93 @@
   }
 }
 
-/* Xclusive Design System - Premium Creator Platform */
-
+/* YouTube-Inspired Monochrome Design System */
 @layer base {
   :root {
-    /* Light theme colors */
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    /* Background Hierarchy - Using your existing deep gray palette */
+    --background: 8 8 12; /* #08080c - Main background (darkest) */
+    --foreground: 255 255 255; /* #ffffff - High contrast white text */
 
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    /* Card backgrounds - Subtle depth layers */
+    --card: 11 11 15; /* #0b0b0f - Card backgrounds (medium dark) */
+    --card-foreground: 255 255 255; /* #ffffff */
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
+    /* Popover/Modal backgrounds - Elevated elements */
+    --popover: 15 15 21; /* #0f0f15 - Elevated elements like modals/dropdowns */
+    --popover-foreground: 255 255 255; /* #ffffff */
 
-    /* Primary brand - Deep purple for exclusivity */
-    --primary: 262 80% 50%;
-    --primary-foreground: 210 40% 98%;
-    --primary-glow: 262 90% 60%;
+    /* PRIMARY - YouTube Red as the hero accent */
+    --primary: 255 0 0; /* #ff0000 - YouTube Red */
+    --primary-foreground: 255 255 255; /* #ffffff */
 
-    /* Secondary - Light gray */
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
+    /* Secondary - Hover states and interactive elements */
+    --secondary: 16 16 21; /* #101015 - Hover states and interactive elements */
+    --secondary-foreground: 255 255 255; /* #ffffff */
 
-    /* Muted tones */
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted - Mid-tone grays for hierarchy */
+    --muted: 16 16 21; /* #101015 - Same as secondary for active menu state */
+    --muted-foreground: 163 163 163; /* #a3a3a3 - Medium gray for secondary text */
 
-    /* Accent - Gold for premium features */
-    --accent: 45 90% 60%;
-    --accent-foreground: 0 0% 0%;
+    /* Accent - Same gray as hover/active states */
+    --accent: 16 16 21; /* #101015 - Same as secondary and muted for consistency */
+    --accent-foreground: 255 255 255; /* #ffffff */
 
-    /* Destructive */
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* State colors - Monochrome with red accent approach */
+    --destructive: 255 0 0; /* #ff0000 - Use same red for consistency */
+    --destructive-foreground: 255 255 255; /* #ffffff */
 
-    /* Borders and inputs */
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 262 80% 50%;
+    --success: 34 197 94; /* #22c55e - Muted green, won't compete with red */
+    --success-foreground: 255 255 255; /* #ffffff */
 
-    --radius: 0.75rem;
+    --warning: 245 158 11; /* #f59e0b - Subtle orange */
+    --warning-foreground: 255 255 255; /* #ffffff */
 
-    /* Custom gradients for premium feel */
-    --gradient-primary: linear-gradient(135deg, hsl(262 80% 50%), hsl(262 90% 60%));
-    --gradient-gold: linear-gradient(135deg, hsl(45 90% 60%), hsl(45 100% 70%));
-    --gradient-card: linear-gradient(135deg, hsl(var(--card)), hsl(210 40% 98%));
+    /* Borders and inputs - Very subtle separation */
+    --border: 30 30 35; /* #1e1e23 - Subtle borders */
+    --input: 16 16 21; /* #101015 - Input backgrounds */
+    --ring: 255 0 0; /* #ff0000 - YouTube Red focus rings */
 
-    /* Success and warning */
-    --success: 142 76% 36%;
-    --success-foreground: 355.7 100% 97.3%;
-    --warning: 38 92% 50%;
-    --warning-foreground: 240 20% 10%;
+    /* Chart colors - Red-based palette */
+    --chart-1: 255 0 0; /* Primary red */
+    --chart-2: 255 51 51; /* Light red */
+    --chart-3: 204 0 0; /* Dark red */
+    --chart-4: 255 102 102; /* Very light red */
+    --chart-5: 153 0 0; /* Very dark red */
 
-    /* Chart colors */
-    --chart-1: 262 80% 50%;
-    --chart-2: 45 90% 60%;
-    --chart-3: 142 76% 36%;
-    --chart-4: 0 84.2% 60.2%;
-    --chart-5: 38 92% 50%;
+    /* Maintain your existing radius */
+    --radius: 0.5rem;
   }
 
   .dark {
-    /* Dark theme colors */
+    /* Keep existing dark theme as fallback */
     --background: 240 20% 4%;
     --foreground: 240 5% 96%;
-
     --card: 240 15% 6%;
     --card-foreground: 240 5% 96%;
-
     --popover: 240 15% 6%;
     --popover-foreground: 240 5% 96%;
-
-    /* Primary brand - Deep purple for exclusivity */
-    --primary: 262 80% 50%;
+    --primary: 255 0 0;
     --primary-foreground: 240 5% 96%;
-    --primary-glow: 262 90% 60%;
-
-    /* Secondary - Subtle purple */
     --secondary: 240 15% 12%;
     --secondary-foreground: 240 5% 90%;
-
-    /* Muted tones */
     --muted: 240 10% 10%;
     --muted-foreground: 240 5% 65%;
-
-    /* Accent - Gold for premium features */
-    --accent: 45 90% 60%;
-    --accent-foreground: 0 0% 0%;
-
-    /* Destructive */
-    --destructive: 0 70% 60%;
+    --accent: 240 10% 15%;
+    --accent-foreground: 240 5% 90%;
+    --destructive: 255 0 0;
     --destructive-foreground: 240 5% 96%;
-
-    /* Borders and inputs */
-    --border: 240 10% 15%;
-    --input: 240 10% 12%;
-    --ring: 262 80% 50%;
-
-    /* Custom gradients for premium feel */
-    --gradient-primary: linear-gradient(135deg, hsl(262 80% 50%), hsl(262 90% 60%));
-    --gradient-gold: linear-gradient(135deg, hsl(45 90% 60%), hsl(45 100% 70%));
-    --gradient-card: linear-gradient(135deg, hsl(var(--card)), hsl(240 15% 8%));
-
-    /* Success and warning */
     --success: 142 70% 50%;
     --success-foreground: 240 5% 96%;
     --warning: 38 92% 50%;
     --warning-foreground: 240 20% 10%;
-
-    /* Chart colors */
-    --chart-1: 262 80% 50%;
-    --chart-2: 45 90% 60%;
-    --chart-3: 142 70% 50%;
-    --chart-4: 0 70% 60%;
-    --chart-5: 38 92% 50%;
+    --border: 240 10% 15%;
+    --input: 240 10% 12%;
+    --ring: 255 0 0;
+    --chart-1: 255 0 0;
+    --chart-2: 255 51 51;
+    --chart-3: 204 0 0;
+    --chart-4: 255 102 102;
+    --chart-5: 153 0 0;
   }
 }
 
@@ -256,13 +229,14 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* Remove any background gradients for pure monochrome */
   }
 }
 
 @layer components {
-  /* Tab indicator styling */
+  /* Tab indicator styling - YouTube red accent */
   .tab-trigger {
-    @apply relative;
+    @apply relative text-muted-foreground hover:text-foreground transition-colors;
   }
 
   .tab-trigger::after {
@@ -270,8 +244,28 @@
     @apply absolute bottom-0 left-0 right-0 h-0.5 bg-transparent transition-all duration-200;
   }
 
+  .tab-trigger[data-state="active"] {
+    @apply text-foreground;
+  }
+
   .tab-trigger[data-state="active"]::after {
     @apply bg-primary;
+  }
+
+  /* Navigation styling - Remove colored icons, use grayscale + red accent */
+  .nav-item {
+    @apply text-muted-foreground hover:text-foreground transition-colors;
+  }
+
+  .nav-item.active {
+    @apply text-primary;
+  }
+
+  /* Card styling - Clean with maintained rounded corners */
+  .youtube-card {
+    @apply bg-card border border-border rounded-lg; /* Keeping your rounded corners */
+    @apply hover:border-primary/20 transition-all duration-200;
+    /* Remove any gradient backgrounds */
   }
 
   /* Ensure consistent tab spacing */
@@ -281,35 +275,38 @@
 }
 
 @layer utilities {
+  /* Flat YouTube red backgrounds - no gradients */
   .bg-gradient-primary {
-    background: var(--gradient-primary);
-  }
-
-  .bg-gradient-gold {
-    background: var(--gradient-gold);
+    background: hsl(var(--primary)); /* Flat YouTube red */
   }
 
   .bg-gradient-card {
-    background: var(--gradient-card);
+    /* Subtle monochrome gradient for cards */
+    background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--muted)) 100%);
   }
 
+  .bg-gradient-subtle {
+    background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--card)) 100%);
+  }
+
+  /* Flat red background - no gradients */
+  .bg-gradient-gold {
+    background: hsl(var(--primary)); /* Flat YouTube red */
+  }
+
+  /* Flat red text - no gradients */
   .text-gradient-primary {
-    background: var(--gradient-primary);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: hsl(var(--primary)); /* Flat YouTube red text */
   }
 
+  /* Flat red text - no gradients */
   .text-gradient-gold {
-    background: var(--gradient-gold);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: hsl(var(--primary)); /* Flat YouTube red text */
   }
 
-  /* Brand logo styling */
+  /* Brand logo styling - YouTube red accent */
   .brand-logo {
-    background: var(--gradient-primary);
+    background: hsl(var(--primary));
     color: white;
     border-radius: 0.5rem;
     padding: 0.5rem;
@@ -319,41 +316,45 @@
     justify-content: center;
   }
 
-  /* CTA Button styling */
+  /* CTA Button styling - Flat red primary, grayscale variants */
   .btn-primary-gradient {
-    background: var(--gradient-primary);
+    background: hsl(var(--primary)); /* Flat YouTube red */
     color: white;
     border: none;
     transition: all 0.2s ease;
   }
 
   .btn-primary-gradient:hover {
-    opacity: 0.9;
+    background: hsl(var(--primary)); /* Keep same flat red on hover */
+    opacity: 0.9; /* Subtle opacity change instead of color change */
     transform: translateY(-1px);
   }
 
+  /* Replace gold buttons with red or grayscale */
   .btn-gold-gradient {
-    background: var(--gradient-gold);
-    color: hsl(var(--accent-foreground));
-    border: none;
+    background: hsl(var(--secondary));
+    color: hsl(var(--secondary-foreground));
+    border: 1px solid hsl(var(--border));
     font-weight: 600;
   }
 
   .btn-gold-gradient:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
+    background: hsl(var(--accent));
+    border-color: hsl(var(--primary));
   }
 
-  /* Stats card enhancements */
+  /* Stats card enhancements - Monochrome with red accents */
   .stats-card {
     border: 1px solid hsl(var(--border));
     background: hsl(var(--card));
     transition: all 0.2s ease;
+    /* Maintain rounded corners */
+    border-radius: var(--radius);
   }
 
   .stats-card:hover {
     border-color: hsl(var(--primary));
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.1);
   }
 
   .stats-value {
@@ -368,6 +369,21 @@
 
   .stats-icon {
     color: hsl(var(--primary));
+  }
+
+  /* YouTube-style hover effects */
+  .hover-lift {
+    transition: all 0.2s ease-in-out;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.15);
+  }
+
+  /* Red accent glow effect */
+  .glow-red {
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
   }
 
   .truncated-bio.expanded {
@@ -472,38 +488,31 @@
     display: none;
   }
 
-  /* YouTube-style Grid Card Layout */
+  /* YouTube-style Grid Card Layout - MAINTAIN ROUNDED CORNERS */
   .youtube-grid-card {
     display: flex;
     flex-direction: column;
     transition: all 0.2s ease;
-    max-width: 280px; /* Reduced for tighter layout */
+    max-width: 280px;
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius); /* KEEP rounded corners */
+    overflow: hidden;
   }
 
   .youtube-grid-card:hover {
     transform: translateY(-2px);
+    border-color: hsl(var(--primary));
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.1);
   }
 
-  /* Remove rounded corners on mobile for up next cards */
+  /* Remove rounded corners on mobile for up next cards ONLY */
   @media (max-width: 768px) {
-    .youtube-grid-card .rounded-lg,
-    .youtube-grid-card .rounded-md {
+    .youtube-grid-card.mobile-no-radius {
       border-radius: 0 !important;
     }
 
-    .feed-card .rounded-lg,
-    .feed-card .rounded-md {
-      border-radius: 0 !important;
-    }
-
-    /* Remove all rounded corners from video thumbnails and duration badges on mobile */
-    .aspect-video {
-      border-radius: 0 !important;
-    }
-
-    .aspect-video .rounded,
-    .aspect-video .rounded-lg,
-    .aspect-video .rounded-md {
+    .feed-card.mobile-no-radius {
       border-radius: 0 !important;
     }
   }
@@ -523,18 +532,21 @@
     overflow: visible;
   }
 
-  /* Feed Card Layout (kept for compatibility) */
+  /* Feed Card Layout - MAINTAIN ROUNDED CORNERS */
   .feed-card {
     display: flex;
     flex-direction: column;
     overflow: hidden;
     background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius); /* KEEP rounded corners */
     transition: all 0.2s ease;
   }
 
   .feed-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: hsl(var(--primary));
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.1);
   }
 
   .feed-card-thumbnail {
@@ -561,6 +573,7 @@
     font-size: 14px;
     line-height: 1.3;
     margin-bottom: 4px;
+    color: hsl(var(--foreground));
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -632,4 +645,22 @@
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
   text-overflow: ellipsis;
+}
+
+/* Custom scrollbar with YouTube red accent */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary));
 }

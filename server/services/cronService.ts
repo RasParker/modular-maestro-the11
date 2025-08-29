@@ -3,10 +3,11 @@ import * as cron from 'node-cron';
 import { payoutService } from './payoutService';
 import { db } from '../db';
 import { posts } from '../../shared/schema';
-import { eq, and, lte } from 'drizzle-orm';
+import { eq, and, lte, sql } from 'drizzle-orm';
 
 export class CronService {
   private jobs: Map<string, cron.ScheduledTask> = new Map();
+  private lastErrorLog: number = 0;
 
   // Start all scheduled jobs
   start(): void {
@@ -84,6 +85,18 @@ export class CronService {
   // Publish scheduled posts that are due
   private async publishScheduledPosts(): Promise<void> {
     try {
+      // Check if database tables exist first
+      const result = await db.execute(sql`
+        SELECT table_name 
+        FROM information_schema.tables 
+        WHERE table_schema = 'public' AND table_name = 'posts'
+      `);
+      
+      if (!result || (result as any).rows?.length === 0) {
+        // Tables don't exist yet, skip this execution
+        return;
+      }
+
       const now = new Date();
       
       // Find all scheduled posts where scheduled_for <= now
@@ -116,7 +129,11 @@ export class CronService {
         console.log(`Successfully published ${scheduledPosts.length} scheduled posts`);
       }
     } catch (error) {
-      console.error('Error publishing scheduled posts:', error);
+      // Only log the error once every 10 minutes to avoid spam
+      if (!this.lastErrorLog || Date.now() - this.lastErrorLog > 600000) {
+        console.error('Error publishing scheduled posts:', error instanceof Error ? error.message : 'Unknown error');
+        this.lastErrorLog = Date.now();
+      }
     }
   }
 
