@@ -287,7 +287,7 @@
 
 @layer utilities {
   .bg-gradient-primary {
-    background: hsl(var(--primary));
+    background: #ff0000;
   }
 
   .bg-gradient-card {
@@ -299,15 +299,15 @@
   }
 
   .bg-gradient-gold {
-    background: hsl(var(--primary));
+    background: #ff0000;
   }
 
   .text-gradient-primary {
-    color: hsl(var(--primary));
+    color: #ff0000;
   }
 
   .text-gradient-gold {
-    color: hsl(var(--primary));
+    color: #ff0000;
   }
 
   .brand-logo {
