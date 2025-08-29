@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { UserCard } from '@/components/admin/UserCard';
 import { AppLayout } from '@/components/layout/AppLayout';
+import { EdgeToEdgeContainer } from '@/components/layout/EdgeToEdgeContainer';
 import { ArrowLeft, Search, Users } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner';
@@ -129,8 +130,7 @@ export const ManageUsers: React.FC = () => {
 
   return (
     <AppLayout>
-      <div className="min-h-screen flex justify-center px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        <div className="w-full max-w-7xl">
+      <EdgeToEdgeContainer maxWidth="7xl" enablePadding enableTopPadding>
         <div className="mb-6 sm:mb-8 text-center sm:text-left">
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2 justify-center sm:justify-start">
             Manage Users
@@ -291,8 +291,7 @@ export const ManageUsers: React.FC = () => {
             </Tabs>
           </CardContent>
         </Card>
-        </div>
-      </div>
+      </EdgeToEdgeContainer>
     </AppLayout>
   );
 };
