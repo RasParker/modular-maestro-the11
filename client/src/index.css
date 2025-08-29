@@ -665,3 +665,24 @@ button[class*="outline"]:hover,
 .inline-flex.items-center.justify-center[class*="outline"]:hover {
   background-color: #22222a !important;
 }
+
+/* Cancel button styling */
+button[class*="bg-[#1e1e24]"],
+.inline-flex.items-center.justify-center[class*="bg-[#1e1e24]"] {
+  background-color: #1e1e24 !important;
+}
+
+button[class*="bg-[#1e1e24]"]:hover,
+.inline-flex.items-center.justify-center[class*="bg-[#1e1e24]"]:hover {
+  background-color: rgba(30, 30, 36, 0.9) !important;
+}
+
+/* Auto-renew toggle consistent styling */
+[data-state="checked"] {
+  background-color: hsl(var(--primary)) !important;
+}
+
+[data-state="unchecked"] {
+  background-color: hsl(var(--input)) !important;
+}
+}
