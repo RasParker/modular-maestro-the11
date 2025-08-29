@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
@@ -8,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
-import { CreditCard, Smartphone, Loader2, Lock, Shield } from 'lucide-react';
+import { CreditCard, Smartphone, Loader2, Lock, Shield, Star, Check } from 'lucide-react';
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -64,10 +65,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, tie
     setIsLoading(true);
 
     try {
-      // Store current location for return navigation
       sessionStorage.setItem('lastCreatorProfile', window.location.pathname);
 
-      // Initialize payment
       const response = await fetch('/api/payments/initialize', {
         method: 'POST',
         headers: {
@@ -86,14 +85,11 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, tie
       if (data.success) {
         console.log('Payment authorization URL:', data.data.authorization_url);
         
-        // Check if this is a relative URL (development mode) or external URL (production)
         if (data.data.authorization_url.startsWith('/')) {
-          // Development mode - use React Router navigation
           console.log('Development mode: navigating to callback');
-          onClose(); // Close the modal first
+          onClose();
           navigate(data.data.authorization_url);
         } else {
-          // Production mode - redirect to external Paystack URL
           console.log('Production mode: redirecting to Paystack');
           window.location.href = data.data.authorization_url;
         }
@@ -133,9 +129,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, tie
     setIsLoading(true);
 
     try {
-       // Store current location for return navigation
        sessionStorage.setItem('lastCreatorProfile', window.location.pathname);
-      // Initialize mobile money payment
+      
       const response = await fetch('/api/payments/mobile-money/initialize', {
         method: 'POST',
         headers: {
@@ -158,8 +153,6 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, tie
           description: "Please check your phone and approve the payment request.",
         });
 
-        // You might want to implement payment status polling here
-        // For now, we'll close the modal and show instructions
         onClose();
       } else {
         throw new Error(data.message || 'Mobile money payment initialization failed');
@@ -185,88 +178,107 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, tie
   };
 
   const isValidPhoneNumber = (phone: string) => {
-    // Basic Ghana phone number validation
     const phoneRegex = /^(0|\+233)[2-9]\d{8}$/;
     return phoneRegex.test(phone);
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader className="text-center">
-          <DialogTitle className="flex items-center justify-center gap-2">
-            <Lock className="h-5 w-5" />
+      <DialogContent className="sm:max-w-lg bg-gradient-to-br from-slate-900/95 to-slate-800/95 backdrop-blur-xl border border-slate-700/50">
+        <DialogHeader className="text-center space-y-3">
+          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-primary mx-auto">
+            <Star className="h-6 w-6 text-white" />
+          </div>
+          <DialogTitle className="text-xl font-semibold text-gradient-primary">
             Subscribe to {creatorName}
           </DialogTitle>
-          <DialogDescription className="text-center">
-            You're subscribing to the {tier.name} tier
+          <DialogDescription className="text-slate-400">
+            Join the {tier.name} tier for exclusive content access
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="space-y-6 mt-6">
           {/* Tier Summary */}
-          <Card>
+          <Card className="border border-slate-700/50 bg-slate-800/50 backdrop-blur-sm">
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg">{tier.name}</CardTitle>
-              <CardDescription>{tier.description}</CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-lg text-slate-100">{tier.name}</CardTitle>
+                  <CardDescription className="text-slate-400 text-sm">{tier.description}</CardDescription>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-gradient-primary">GHS {tier.price}</div>
+                  <div className="text-sm text-slate-400">per month</div>
+                </div>
+              </div>
             </CardHeader>
-            <CardContent>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">Monthly Price</span>
-                <span className="text-2xl font-bold">GHS {tier.price}</span>
+            <CardContent className="pt-0">
+              <div className="flex items-center gap-2 text-sm text-slate-300">
+                <Check className="h-4 w-4 text-green-400" />
+                <span>Cancel anytime</span>
               </div>
             </CardContent>
           </Card>
 
           {/* Payment Method Selection */}
           <div className="space-y-4">
-            <Label>Payment Method</Label>
+            <Label className="text-slate-200 font-medium">Choose Payment Method</Label>
             <div className="grid grid-cols-2 gap-3">
               <Button
                 variant={paymentMethod === 'card' ? 'default' : 'outline'}
                 onClick={() => setPaymentMethod('card')}
-                className="h-16 flex flex-col items-center gap-2"
+                className={`h-20 flex flex-col items-center gap-2 transition-all duration-200 ${
+                  paymentMethod === 'card' 
+                    ? 'bg-gradient-primary text-white border-0 shadow-lg shadow-blue-500/25' 
+                    : 'border-slate-600 bg-slate-800/50 text-slate-300 hover:bg-slate-700/50 hover:border-slate-500'
+                }`}
               >
-                <CreditCard className="h-6 w-6" />
-                <span className="text-sm">Card</span>
+                <CreditCard className="h-5 w-5" />
+                <span className="text-sm font-medium">Debit Card</span>
               </Button>
               <Button
                 variant={paymentMethod === 'mobile_money' ? 'default' : 'outline'}
                 onClick={() => setPaymentMethod('mobile_money')}
-                className="h-16 flex flex-col items-center gap-2"
+                className={`h-20 flex flex-col items-center gap-2 transition-all duration-200 ${
+                  paymentMethod === 'mobile_money' 
+                    ? 'bg-gradient-primary text-white border-0 shadow-lg shadow-blue-500/25' 
+                    : 'border-slate-600 bg-slate-800/50 text-slate-300 hover:bg-slate-700/50 hover:border-slate-500'
+                }`}
               >
-                <Smartphone className="h-6 w-6" />
-                <span className="text-sm">Mobile Money</span>
+                <Smartphone className="h-5 w-5" />
+                <span className="text-sm font-medium">Mobile Money</span>
               </Button>
             </div>
           </div>
 
           {/* Mobile Money Form */}
           {paymentMethod === 'mobile_money' && (
-            <div className="space-y-4">
+            <div className="space-y-4 p-4 bg-slate-800/30 rounded-xl border border-slate-700/50">
               <div>
-                <Label htmlFor="phone">Phone Number</Label>
+                <Label htmlFor="phone" className="text-slate-200 font-medium">Phone Number</Label>
                 <Input
                   id="phone"
                   type="tel"
                   placeholder="0244000000"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
+                  className="mt-2 bg-slate-700/50 border-slate-600 text-slate-100 placeholder:text-slate-400 focus:border-blue-500 focus:ring-blue-500/20"
                 />
                 {phoneNumber && !isValidPhoneNumber(phoneNumber) && (
-                  <p className="text-sm text-destructive mt-1">
+                  <p className="text-sm text-red-400 mt-2 flex items-center gap-1">
+                    <span className="w-1 h-1 bg-red-400 rounded-full"></span>
                     Please enter a valid Ghana phone number
                   </p>
                 )}
               </div>
 
               <div>
-                <Label htmlFor="provider">Mobile Money Provider</Label>
+                <Label htmlFor="provider" className="text-slate-200 font-medium">Mobile Money Provider</Label>
                 <Select value={mobileProvider} onValueChange={(value: 'mtn' | 'vod' | 'tgo' | 'airtel') => setMobileProvider(value)}>
-                  <SelectTrigger>
+                  <SelectTrigger className="mt-2 bg-slate-700/50 border-slate-600 text-slate-100">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-slate-800 border-slate-700">
                     <SelectItem value="mtn">MTN Mobile Money</SelectItem>
                     <SelectItem value="vod">Vodafone Cash</SelectItem>
                     <SelectItem value="tgo">Tigo Cash</SelectItem>
@@ -278,11 +290,13 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, tie
           )}
 
           {/* Security Notice */}
-          <div className="flex items-start gap-2 p-3 bg-muted rounded-lg">
-            <Shield className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-            <div className="text-sm">
-              <p className="font-medium">Secure Payment</p>
-              <p className="text-muted-foreground">
+          <div className="flex items-start gap-3 p-4 bg-slate-800/30 rounded-xl border border-slate-700/50">
+            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-green-500/20 flex-shrink-0">
+              <Shield className="h-4 w-4 text-green-400" />
+            </div>
+            <div className="space-y-1">
+              <p className="font-medium text-slate-200 text-sm">Secure Payment</p>
+              <p className="text-slate-400 text-sm leading-relaxed">
                 Your payment is processed securely through Paystack. We never store your payment details.
               </p>
             </div>
@@ -292,20 +306,26 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, tie
           <Button
             onClick={handlePayment}
             disabled={isLoading || (paymentMethod === 'mobile_money' && (!phoneNumber || !isValidPhoneNumber(phoneNumber)))}
-            className="w-full py-6 text-lg font-semibold"
+            className="w-full py-6 text-lg font-semibold bg-gradient-primary hover:opacity-90 text-white border-0 shadow-lg shadow-blue-500/25 transition-all duration-200 hover:shadow-blue-500/30 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             size="lg"
           >
             {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Processing...
-              </>
+              <div className="flex items-center gap-3">
+                <Loader2 className="h-5 w-5 animate-spin" />
+                <span>Processing Payment...</span>
+              </div>
             ) : (
-              <>
-                Pay GHS {tier.price}/month
-              </>
+              <div className="flex items-center justify-center gap-2">
+                <Lock className="h-5 w-5" />
+                <span>Pay GHS {tier.price}/month</span>
+              </div>
             )}
           </Button>
+
+          {/* Footer Note */}
+          <p className="text-center text-xs text-slate-500">
+            By subscribing, you agree to our terms and conditions
+          </p>
         </div>
       </DialogContent>
     </Dialog>
