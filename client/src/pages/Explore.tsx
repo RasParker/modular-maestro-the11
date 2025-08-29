@@ -309,7 +309,7 @@ export const Explore: React.FC = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCreators.map((creator) => {
             return (
-              <Card key={creator.id} className="overflow-hidden bg-gradient-card border-border/50"></Card>
+              <Card key={creator.id} className="overflow-hidden bg-gradient-card border-border/50">
                 <div className="relative">
                   {creator.cover ? (
                     <img
@@ -409,7 +409,7 @@ export const Explore: React.FC = () => {
                   </div>
                 </CardContent>
               </Card>
-            )
+            );
           })}
         </div>
 
