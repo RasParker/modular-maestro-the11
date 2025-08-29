@@ -71,7 +71,7 @@ export const Login: React.FC = () => {
             <div className="w-10 h-10 bg-gradient-primary rounded-xl flex items-center justify-center">
               <span className="text-primary-foreground font-bold text-xl">X</span>
             </div>
-            <span className="text-2xl font-bold text-primary">
+            <span className="text-2xl font-bold text-gradient-primary">
               Xclusive
             </span>
           </Link>
@@ -173,7 +173,7 @@ export const Login: React.FC = () => {
             <div className="text-center space-y-2">
               <Link 
                 to="/forgot-password" 
-                className="text-sm text-primary hover:underline"
+                className="text-sm text-white hover:underline"
               >
                 Forgot your password?
               </Link>

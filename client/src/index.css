@@ -230,11 +230,11 @@
   }
 
   html.dark {
-    --primary: 255 0 0;
+    --primary: 59 130 246;
   }
 
   html {
-    --primary: 255 0 0;
+    --primary: 59 130 246;
   }
 }
 
