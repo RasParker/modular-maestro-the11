@@ -520,7 +520,7 @@ export const Explore: React.FC = () => {
 
                           {/* Action Button */}
                           <div className="pt-2">
-                            <div className="w-full bg-primary/10 group-hover:bg-primary group-hover:text-primary-foreground text-primary font-medium py-2.5 px-4 rounded-lg text-center transition-all duration-200 text-sm">
+                            <div className="w-full bg-blue-500/10 group-hover:bg-blue-500 group-hover:text-white text-blue-500 font-medium py-2.5 px-4 rounded-lg text-center transition-all duration-200 text-sm">
                               Select {tier.name} →
                             </div>
                           </div>

@@ -184,7 +184,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, tie
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-lg bg-gradient-to-br from-slate-900/95 to-slate-800/95 backdrop-blur-xl border border-slate-700/50">
+      <DialogContent className="sm:max-w-lg bg-[#08080c] backdrop-blur-xl border border-slate-700/50">
         <DialogHeader className="text-center space-y-3">
           <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-primary mx-auto">
             <Star className="h-6 w-6 text-white" />
