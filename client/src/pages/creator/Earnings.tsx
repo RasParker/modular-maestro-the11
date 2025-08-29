@@ -186,9 +186,8 @@ export const Earnings: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-        <div className="mb-8 text-center sm:text-left">
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2 justify-center sm:justify-start">
-            <DollarSign className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+        <div className="mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
             Earnings Overview
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground">

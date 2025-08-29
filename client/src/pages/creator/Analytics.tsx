@@ -51,7 +51,7 @@ export const Analytics: React.FC = () => {
 
           // Calculate monthly growth from subscriber data
           const currentDate = new Date();
-          const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+          const months = ['January', 'February', 'March', 'April', 'May', 'June',
                          'July', 'August', 'September', 'October', 'November', 'December'];
 
           const monthlyGrowth = [];
@@ -60,7 +60,7 @@ export const Analytics: React.FC = () => {
             const monthName = months[targetMonth.getMonth()];
             const monthlySubscribers = subscribersData.filter((sub: any) => {
               const subDate = new Date(sub.created_at);
-              return subDate.getMonth() === targetMonth.getMonth() && 
+              return subDate.getMonth() === targetMonth.getMonth() &&
                      subDate.getFullYear() === targetMonth.getFullYear();
             }).length;
 
@@ -103,7 +103,7 @@ export const Analytics: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8 text-center sm:text-left">
+        <div className="mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">Analytics Dashboard</h1>
           <p className="text-sm sm:text-base text-muted-foreground">
             Track your performance and growth
