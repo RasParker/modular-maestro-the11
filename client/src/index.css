@@ -258,7 +258,7 @@
   }
 
   .tab-trigger[data-state="active"]::after {
-    @apply bg-primary;
+    @apply bg-white;
   }
 
   .nav-item {
