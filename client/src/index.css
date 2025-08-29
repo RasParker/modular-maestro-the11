@@ -243,7 +243,7 @@
     @apply relative text-muted-foreground hover:text-foreground transition-colors;
     background: transparent !important;
   }
-  
+
   .tab-trigger:hover {
     background: transparent !important;
     background-color: transparent !important;
@@ -666,22 +666,22 @@ button[class*="outline"]:hover,
   background-color: #22222a !important;
 }
 
-/* Cancel button styling */
-button[class*="bg-[#1e1e24]"],
-.inline-flex.items-center.justify-center[class*="bg-[#1e1e24]"] {
-  background-color: #1e1e24 !important;
+/* Manage Subscriptions page desktop layout centering */
+@media (min-width: 768px) {
+  .manage-subscriptions-container {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
 }
 
-button[class*="bg-[#1e1e24]"]:hover,
-.inline-flex.items-center.justify-center[class*="bg-[#1e1e24]"]:hover {
-  background-color: rgba(30, 30, 36, 0.9) !important;
+/* Pause button hover styling */
+.pause-button:hover {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
 }
 
-/* Auto-renew toggle consistent styling */
-[data-state="checked"] {
-  background-color: hsl(var(--primary)) !important;
-}
-
-[data-state="unchecked"] {
-  background-color: hsl(var(--input)) !important;
+/* Cancel button hover styling to match Pause button */
+.cancel-button:hover {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
 }
