@@ -162,7 +162,6 @@ export const Subscribers: React.FC = () => {
         {/* Header */}
         <div className="mb-8 text-center sm:text-left">
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2 justify-center sm:justify-start">
-            <Users className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
             Subscribers
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground">
