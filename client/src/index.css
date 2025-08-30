@@ -45,25 +45,41 @@
     width: calc(100% - 2rem);
   }
 
-  /* Category button hover fix */
-  .category-button:hover {
+  /* Global button hover styling - consistent #1e1e24 background with no rings */
+  .category-button:hover,
+  .btn-hover-dark:hover,
+  .outline-hover:hover {
     background-color: #1e1e24 !important;
     color: white !important;
     border-color: rgba(255, 255, 255, 0.5) !important;
   }
   
+  /* Remove all ring styles from interactive elements */
   .category-button:focus-visible,
-  .category-button:focus {
+  .category-button:focus,
+  .btn-hover-dark:focus-visible,
+  .btn-hover-dark:focus,
+  .outline-hover:focus-visible,
+  .outline-hover:focus,
+  button[class*="outline"]:focus-visible,
+  button[class*="outline"]:focus {
     outline: none !important;
     box-shadow: none !important;
     border: 1px solid var(--border) !important;
     --tw-ring-shadow: none !important;
     --tw-ring-offset-shadow: none !important;
+    ring: none !important;
+    ring-offset: none !important;
   }
   
-  .category-button {
+  .category-button,
+  .btn-hover-dark,
+  .outline-hover,
+  button[class*="outline"] {
     --tw-ring-shadow: none !important;
     --tw-ring-offset-shadow: none !important;
+    ring: none !important;
+    ring-offset: none !important;
   }
 
   /* Subscription amount text styling */
