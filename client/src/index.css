@@ -163,7 +163,7 @@
     --card-foreground: 248 250 252;
     --popover: 15 23 30;
     --popover-foreground: 248 250 252;
-    --primary: 59 130 246;
+    --primary: 220 38 38;
     --primary-foreground: 255 255 255;
     --secondary: 20 25 31;
     --secondary-foreground: 248 250 252;
@@ -179,7 +179,7 @@
     --warning-foreground: 255 255 255;
     --border: 51 65 85;
     --input: 20 25 31;
-    --ring: 59 130 246;
+    --ring: 71 85 105;
     --chart-1: 59 130 246;
     --chart-2: 99 102 241;
     --chart-3: 139 92 246;
@@ -230,11 +230,11 @@
   }
 
   html.dark {
-    --primary: 59 130 246;
+    --primary: 220 38 38;
   }
 
   html {
-    --primary: 59 130 246;
+    --primary: 220 38 38;
   }
 }
 
@@ -287,7 +287,7 @@
 
 @layer utilities {
   .bg-gradient-primary {
-    background: linear-gradient(135deg, #3B82F6 0%, #2563EB 50%, #1D4ED8 100%);
+    background: linear-gradient(135deg, #DC2626 0%, #B91C1C 50%, #991B1B 100%);
   }
 
   .bg-gradient-card {
@@ -299,18 +299,18 @@
   }
 
   .bg-gradient-gold {
-    background: linear-gradient(135deg, #3B82F6 0%, #2563EB 50%, #1D4ED8 100%);
+    background: linear-gradient(135deg, #DC2626 0%, #B91C1C 50%, #991B1B 100%);
   }
 
   .text-gradient-primary {
-    background: linear-gradient(135deg, #3B82F6 0%, #2563EB 50%, #1D4ED8 100%);
+    background: linear-gradient(135deg, #DC2626 0%, #B91C1C 50%, #991B1B 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .text-gradient-gold {
-    background: linear-gradient(135deg, #3B82F6 0%, #2563EB 50%, #1D4ED8 100%);
+    background: linear-gradient(135deg, #DC2626 0%, #B91C1C 50%, #991B1B 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
