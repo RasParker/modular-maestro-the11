@@ -188,7 +188,7 @@ export const Subscribers: React.FC = () => {
                         {subscribers.length}
                       </p>
                     </div>
-                    <Users className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+                    <Users className="h-6 w-6 sm:h-8 sm:w-8 text-primary" strokeWidth={1} />
                   </div>
                 </CardContent>
               </Card>
@@ -202,7 +202,7 @@ export const Subscribers: React.FC = () => {
                         {activeCount}
                       </p>
                     </div>
-                    <Users className="h-6 w-6 sm:h-8 sm:w-8 text-accent" />
+                    <Users className="h-6 w-6 sm:h-8 sm:w-8 text-accent" strokeWidth={1} />
                   </div>
                 </CardContent>
               </Card>
@@ -216,7 +216,7 @@ export const Subscribers: React.FC = () => {
                         {recentCount}
                       </p>
                     </div>
-                    <Users className="h-6 w-6 sm:h-8 sm:w-8 text-success" />
+                    <Users className="h-6 w-6 sm:h-8 sm:w-8 text-success" strokeWidth={1} />
                   </div>
                 </CardContent>
               </Card>

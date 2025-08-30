@@ -204,7 +204,7 @@ export const Earnings: React.FC = () => {
                   <p className="text-green-100 text-xs sm:text-sm mb-1">Total Monthly Revenue</p>
                   <p className="text-2xl sm:text-3xl font-bold">GHS {currentEarnings?.gross_revenue?.toFixed(2) || '0.00'}</p>
                 </div>
-                <DollarSign className="w-6 h-6 sm:w-8 sm:h-8 text-white opacity-70" />
+                <DollarSign className="w-6 h-6 sm:w-8 sm:h-8 text-white opacity-70" strokeWidth={1} />
               </div>
             </CardContent>
           </Card>
@@ -216,7 +216,7 @@ export const Earnings: React.FC = () => {
                   <p className="text-blue-100 text-xs sm:text-sm mb-1">Total Active Subscribers</p>
                   <p className="text-2xl sm:text-3xl font-bold">{analytics.subscribers || 0}</p>
                 </div>
-                <Users className="w-6 h-6 sm:w-8 sm:h-8 text-white opacity-70" />
+                <Users className="w-6 h-6 sm:w-8 sm:h-8 text-white opacity-70" strokeWidth={1} />
               </div>
             </CardContent>
           </Card>
@@ -228,7 +228,7 @@ export const Earnings: React.FC = () => {
                   <p className="text-cyan-100 text-xs sm:text-sm mb-1">Est. Net Revenue*</p>
                   <p className="text-2xl sm:text-3xl font-bold">GHS {currentEarnings?.net_payout?.toFixed(2) || '0.00'}</p>
                 </div>
-                <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-cyan-200" />
+                <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-cyan-200" strokeWidth={1} />
               </div>
             </CardContent>
           </Card>

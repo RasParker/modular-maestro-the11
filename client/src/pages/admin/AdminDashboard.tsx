@@ -98,7 +98,7 @@ export const AdminDashboard: React.FC = () => {
                     )}
                     <p className="text-xs text-success">Real-time data</p>
                   </div>
-                  <Users className="h-8 w-8 text-primary" />
+                  <Users className="h-8 w-8 text-primary" strokeWidth={1} />
                 </div>
               </CardContent>
             </Card>
@@ -115,7 +115,7 @@ export const AdminDashboard: React.FC = () => {
                     )}
                     <p className="text-xs text-success">15% commission</p>
                   </div>
-                  <DollarSign className="h-8 w-8 text-accent" />
+                  <DollarSign className="h-8 w-8 text-accent" strokeWidth={1} />
                 </div>
               </CardContent>
             </Card>
@@ -132,7 +132,7 @@ export const AdminDashboard: React.FC = () => {
                     )}
                     <p className="text-xs text-success">Live count</p>
                   </div>
-                  <Crown className="h-8 w-8 text-accent" />
+                  <Crown className="h-8 w-8 text-accent" strokeWidth={1} />
                 </div>
               </CardContent>
             </Card>
@@ -149,7 +149,7 @@ export const AdminDashboard: React.FC = () => {
                     )}
                     <p className="text-xs text-warning">Needs attention</p>
                   </div>
-                  <AlertTriangle className="h-8 w-8 text-warning" />
+                  <AlertTriangle className="h-8 w-8 text-warning" strokeWidth={1} />
                 </div>
               </CardContent>
             </Card>
