@@ -431,25 +431,28 @@ export const Explore: React.FC = () => {
       {/* Tier Selection Modal */}
       {selectedCreator && (
         <Dialog open={tierSelectionModalOpen} onOpenChange={setTierSelectionModalOpen}>
-          <DialogContent className="sm:max-w-lg max-h-[85vh] flex flex-col">
-            <DialogHeader className="flex-shrink-0 pb-4">
-              <DialogTitle className="text-xl font-bold">
-                Choose Your Subscription
+          <DialogContent className="sm:max-w-2xl max-h-[90vh] flex flex-col bg-gradient-to-br from-background to-background/95 backdrop-blur-xl border border-border/50">
+            <DialogHeader className="flex-shrink-0 pb-6 text-center">
+              <div className="flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-primary/20 to-accent/20 mx-auto mb-4">
+                <Star className="h-8 w-8 text-primary" />
+              </div>
+              <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                Join {selectedCreator.display_name}
               </DialogTitle>
-              <p className="text-sm text-muted-foreground">
-                Select a tier to unlock exclusive content from {selectedCreator.display_name}
+              <p className="text-muted-foreground mt-2 max-w-md mx-auto leading-relaxed">
+                Choose your subscription tier and unlock exclusive content, direct access, and premium perks
               </p>
             </DialogHeader>
             
-            <div className="flex-1 overflow-y-auto pr-2 -mr-2">
-              <div className="space-y-3">
+            <div className="flex-1 overflow-y-auto px-1">
+              <div className="space-y-4">
                 {(() => {
                   console.log('Tier Selection Modal - selectedCreator:', selectedCreator);
                   console.log('Tier Selection Modal - selectedCreator.tiers:', selectedCreator.tiers);
                   return null;
                 })()}
                 {selectedCreator.tiers && selectedCreator.tiers.length > 0 ? (
-                  selectedCreator.tiers.map((tier: any) => {
+                  selectedCreator.tiers.map((tier: any, index: number) => {
                     // Handle benefits properly - they might be a JSON string
                     let benefits = tier.benefits || [];
                     if (typeof benefits === 'string') {
@@ -464,64 +467,96 @@ export const Explore: React.FC = () => {
                       benefits = [];
                     }
 
+                    const isPopular = index === 1 && selectedCreator.tiers.length > 2;
+
                     return (
                       <div
                         key={tier.id}
-                        className="p-4 border border-border rounded-xl hover:border-accent/60 cursor-pointer transition-all duration-200 hover:bg-accent/5 hover:shadow-sm group"
+                        className={`relative p-6 border rounded-2xl cursor-pointer transition-all duration-300 group ${
+                          isPopular 
+                            ? 'border-primary/60 bg-gradient-to-br from-primary/5 to-accent/5 shadow-lg shadow-primary/10 scale-[1.02]' 
+                            : 'border-border/30 hover:border-primary/40 bg-gradient-to-br from-card/50 to-background/50'
+                        } hover:shadow-xl hover:shadow-primary/10 hover:scale-[1.02]`}
                         onClick={() => handleTierSelected(tier)}
                       >
-                        <div className="space-y-3">
-                          {/* Tier Header */}
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <h4 className="font-bold text-foreground group-hover:text-accent transition-colors">
-                                {tier.name}
-                              </h4>
-                              <div className="font-bold text-accent text-lg mt-0.5">
-                                GHS {typeof tier.price === 'string' ? parseFloat(tier.price).toFixed(2) : tier.price.toFixed(2)}
-                                <span className="text-sm font-normal text-muted-foreground ml-1">/month</span>
-                              </div>
-                            </div>
-                            <div className="text-xs text-muted-foreground bg-muted/50 px-2 py-1 rounded-full">
-                              Monthly
+                        {isPopular && (
+                          <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                            <div className="bg-gradient-to-r from-primary to-accent text-white px-4 py-1 rounded-full text-xs font-semibold shadow-lg">
+                              ⭐ Most Popular
                             </div>
                           </div>
-                          
-                          {/* Description */}
-                          {tier.description && (
-                            <div className="bg-muted/30 p-3 rounded-lg">
-                              <p className="text-sm text-foreground leading-relaxed">
+                        )}
+                        
+                        <div className="space-y-5">
+                          {/* Tier Header */}
+                          <div className="text-center space-y-3">
+                            <div className="space-y-2">
+                              <h4 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
+                                {tier.name}
+                              </h4>
+                              <div className="flex items-baseline justify-center gap-1">
+                                <span className="text-3xl font-bold text-primary">
+                                  GHS {typeof tier.price === 'string' ? parseFloat(tier.price).toFixed(0) : tier.price.toFixed(0)}
+                                </span>
+                                <span className="text-sm text-muted-foreground font-medium">/month</span>
+                              </div>
+                            </div>
+                            
+                            {/* Description */}
+                            {tier.description && (
+                              <p className="text-sm text-muted-foreground leading-relaxed max-w-sm mx-auto">
                                 {tier.description}
                               </p>
-                            </div>
-                          )}
+                            )}
+                          </div>
 
                           {/* Benefits */}
                           {benefits.length > 0 && (
-                            <div className="space-y-2">
-                              <h5 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                                What's included:
-                              </h5>
-                              <div className="space-y-1.5">
-                                {benefits.slice(0, 3).map((benefit: string, index: number) => (
-                                  <div key={index} className="flex items-start gap-2">
-                                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0" />
-                                    <span className="text-sm text-foreground leading-relaxed">{benefit}</span>
-                                  </div>
-                                ))}
-                                {benefits.length > 3 && (
-                                  <div className="text-xs text-muted-foreground pl-3.5">
-                                    +{benefits.length - 3} more benefits
-                                  </div>
-                                )}
+                            <div className="space-y-4">
+                              <div className="w-full h-px bg-gradient-to-r from-transparent via-border to-transparent"></div>
+                              <div className="space-y-3">
+                                <h5 className="text-xs font-semibold text-primary uppercase tracking-wider text-center">
+                                  What's Included
+                                </h5>
+                                <div className="grid gap-2.5">
+                                  {benefits.slice(0, 4).map((benefit: string, index: number) => (
+                                    <div key={index} className="flex items-center gap-3">
+                                      <div className="flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex-shrink-0">
+                                        <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                        </svg>
+                                      </div>
+                                      <span className="text-sm text-foreground font-medium">{benefit}</span>
+                                    </div>
+                                  ))}
+                                  {benefits.length > 4 && (
+                                    <div className="flex items-center gap-3 opacity-75">
+                                      <div className="w-5 h-5 rounded-full bg-gradient-to-r from-primary/30 to-accent/30 flex items-center justify-center flex-shrink-0">
+                                        <span className="text-xs font-bold">+</span>
+                                      </div>
+                                      <span className="text-sm text-muted-foreground">
+                                        {benefits.length - 4} more exclusive benefits
+                                      </span>
+                                    </div>
+                                  )}
+                                </div>
                               </div>
                             </div>
                           )}
 
                           {/* Action Button */}
                           <div className="pt-2">
-                            <div className="w-full bg-blue-500/10 group-hover:bg-blue-500 group-hover:text-white text-blue-500 font-medium py-2.5 px-4 rounded-lg text-center transition-all duration-200 text-sm">
-                              Select {tier.name} →
+                            <div className={`w-full font-semibold py-4 px-6 rounded-xl text-center transition-all duration-300 ${
+                              isPopular 
+                                ? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/25 group-hover:shadow-xl group-hover:shadow-primary/30'
+                                : 'bg-gradient-to-r from-primary/10 to-accent/10 text-primary border border-primary/20 group-hover:from-primary group-hover:to-accent group-hover:text-white group-hover:border-transparent'
+                            } group-hover:scale-[1.02]`}>
+                              <span className="flex items-center justify-center gap-2">
+                                Select {tier.name}
+                                <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                </svg>
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -529,17 +564,32 @@ export const Explore: React.FC = () => {
                     );
                   })
                 ) : (
-                  <div className="text-center py-8">
-                    <p className="text-muted-foreground">No subscription tiers available</p>
+                  <div className="text-center py-12">
+                    <div className="w-16 h-16 mx-auto mb-4 bg-muted/50 rounded-full flex items-center justify-center">
+                      <Star className="w-8 h-8 text-muted-foreground" />
+                    </div>
+                    <h3 className="font-semibold text-foreground mb-2">No Subscription Tiers</h3>
+                    <p className="text-muted-foreground text-sm">This creator hasn't set up subscription tiers yet.</p>
                   </div>
                 )}
               </div>
             </div>
             
-            <div className="flex-shrink-0 pt-4 border-t border-border/50">
-              <p className="text-xs text-center text-muted-foreground">
-                Cancel anytime • Secure payments via Paystack
-              </p>
+            <div className="flex-shrink-0 pt-6 border-t border-border/30">
+              <div className="flex items-center justify-center gap-6 text-xs text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>Cancel anytime</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                  <span>Secure payments via Paystack</span>
+                </div>
+              </div>
             </div>
           </DialogContent>
         </Dialog>
