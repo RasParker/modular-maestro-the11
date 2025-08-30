@@ -1572,7 +1572,7 @@ export const CreatorProfile: React.FC = () => {
                   {creator.tiers.map((tier: any, index: number) => (
                     <div
                       key={tier.id}
-                      className={`flex flex-col p-4 md:p-5 border border-border/30 rounded-lg hover:border-accent/50 transition-colors ${!isOwnProfile ? 'cursor-pointer hover:shadow-md' : ''}`}
+                      className={`flex flex-col p-4 md:p-5 border border-border/30 rounded-lg hover:border-primary hover:ring-2 hover:ring-primary/20 transition-all duration-200 ${!isOwnProfile ? 'cursor-pointer hover:shadow-md' : ''}`}
                       onClick={!isOwnProfile ? (e) => {
                         e.stopPropagation();
                         console.log('Tier clicked:', tier);
@@ -1590,7 +1590,7 @@ export const CreatorProfile: React.FC = () => {
                         <div className="flex items-start justify-between gap-2 mb-3">
                           <span className="text-sm md:text-base font-medium uppercase leading-tight">{tier.name}</span>
                           {index === 0 && creator.tiers.length > 1 && (
-                            <span className="text-xs bg-accent/20 text-accent px-2 py-1 rounded-full flex-shrink-0">POPULAR</span>
+                            <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded-full flex-shrink-0">POPULAR</span>
                           )}
                         </div>
                         <div className="min-h-[3rem]">
