@@ -431,7 +431,7 @@ export const Explore: React.FC = () => {
       {/* Tier Selection Modal */}
       {selectedCreator && (
         <Dialog open={tierSelectionModalOpen} onOpenChange={setTierSelectionModalOpen}>
-          <DialogContent className="sm:max-w-lg max-h-[85vh] flex flex-col bg-[#0f121a]">
+          <DialogContent className="sm:max-w-lg max-h-[85vh] flex flex-col">
             <DialogHeader className="flex-shrink-0 pb-4">
               <DialogTitle className="text-xl font-bold">
                 Choose Your Subscription
