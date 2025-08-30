@@ -1500,7 +1500,7 @@ export const CreatorProfile: React.FC = () => {
       {/* Compact Subscription Tiers - Show for profiles with tiers (Mobile + Desktop) */}
       {creator?.tiers && creator.tiers.length > 0 && (
         <div id="subscription-tiers" className="mx-4 mb-6 max-w-4xl md:mx-auto md:px-6">
-          <div className="bg-gradient-card border border-border/50 rounded-lg shadow-sm overflow-hidden">
+          <div className="bg-gradient-card border border-border/60 rounded-lg shadow-sm overflow-hidden">
             {!isSubscriptionTiersExpanded ? (
               /* Compact View */
               <div
@@ -1572,7 +1572,7 @@ export const CreatorProfile: React.FC = () => {
                   {creator.tiers.map((tier: any, index: number) => (
                     <div
                       key={tier.id}
-                      className={`flex flex-col p-4 md:p-5 border border-border/30 rounded-lg hover:border-primary hover:ring-2 hover:ring-primary/20 transition-all duration-200 ${!isOwnProfile ? 'cursor-pointer hover:shadow-md' : ''}`}
+                      className={`flex flex-col p-4 md:p-5 border border-border/40 rounded-lg hover:border-primary hover:ring-2 hover:ring-primary/20 transition-all duration-200 ${!isOwnProfile ? 'cursor-pointer hover:shadow-md' : ''}`}
                       onClick={!isOwnProfile ? (e) => {
                         e.stopPropagation();
                         console.log('Tier clicked:', tier);
