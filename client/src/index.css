@@ -56,7 +56,14 @@
   .category-button:focus {
     outline: none !important;
     box-shadow: none !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid var(--border) !important;
+    --tw-ring-shadow: none !important;
+    --tw-ring-offset-shadow: none !important;
+  }
+  
+  .category-button {
+    --tw-ring-shadow: none !important;
+    --tw-ring-offset-shadow: none !important;
   }
 
   /* Subscription amount text styling */
