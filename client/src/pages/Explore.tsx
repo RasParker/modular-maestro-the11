@@ -290,7 +290,11 @@ export const Explore: React.FC = () => {
                 variant={selectedCategory === category ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setSelectedCategory(category)}
-                className={selectedCategory === category ? 'bg-white text-black hover:bg-white/90' : '!hover:bg-[#1e1e24] !hover:text-foreground !focus-visible:ring-0 !focus-visible:ring-offset-0'}
+                className={selectedCategory === category ? 'bg-white text-black hover:bg-white/90' : 'hover:text-foreground'}
+                style={selectedCategory !== category ? {
+                  '--tw-ring-offset-width': '0px',
+                  '--tw-ring-width': '0px'
+                } as React.CSSProperties : undefined}
               >
                 {category}
               </Button>
