@@ -45,27 +45,6 @@
     width: calc(100% - 2rem);
   }
 
-  /* Category button hover fix */
-  .category-button:hover {
-    background-color: #1e1e24 !important;
-    color: white !important;
-    border-color: rgba(255, 255, 255, 0.5) !important;
-  }
-  
-  .category-button:focus-visible,
-  .category-button:focus {
-    outline: none !important;
-    box-shadow: none !important;
-    border: 1px solid var(--border) !important;
-    --tw-ring-shadow: none !important;
-    --tw-ring-offset-shadow: none !important;
-  }
-  
-  .category-button {
-    --tw-ring-shadow: none !important;
-    --tw-ring-offset-shadow: none !important;
-  }
-
   /* Subscription amount text styling */
   .subscription-amount {
     color: white !important;
