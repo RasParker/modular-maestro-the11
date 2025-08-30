@@ -131,7 +131,7 @@ export const ManageUsers: React.FC = () => {
   return (
     <AppLayout>
       <div className="flex-1 flex flex-col min-h-0">
-        <EdgeToEdgeContainer maxWidth="7xl" enablePadding enableTopPadding className="mx-auto w-full">
+        <EdgeToEdgeContainer maxWidth="7xl" enablePadding enableTopPadding>
           <div className="mb-6 sm:mb-8 text-center sm:text-left">
             <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2 justify-center sm:justify-start">
               Manage Users
