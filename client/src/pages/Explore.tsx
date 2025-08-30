@@ -287,12 +287,12 @@ export const Explore: React.FC = () => {
             {CATEGORIES.map(category => (
               <Button
                 key={category}
-                variant={selectedCategory === category ? 'default' : 'ghost'}
+                variant={selectedCategory === category ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setSelectedCategory(category)}
                 className={selectedCategory === category 
                   ? 'bg-white text-black hover:bg-white/90' 
-                  : 'border border-border bg-card/50 backdrop-blur-sm hover:bg-[#1e1e24] hover:text-foreground hover:border-primary/50 focus-visible:ring-0 focus-visible:ring-offset-0 focus:ring-0 focus:ring-offset-0 focus:outline-none'}
+                  : 'category-button'}
               >
                 {category}
               </Button>
