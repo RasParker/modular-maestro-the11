@@ -267,6 +267,10 @@
     @apply bg-white;
   }
 
+  .tab-trigger:hover {
+    @apply bg-[#1e1e24] text-foreground;
+  }
+
   .nav-item {
     @apply text-muted-foreground hover:text-foreground transition-colors;
   }

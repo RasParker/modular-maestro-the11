@@ -241,7 +241,7 @@ export const SidebarNavigation: React.FC = () => {
               <DropdownMenuSeparator />
               <DropdownMenuItem 
                 onClick={logout} 
-                className="flex items-center space-x-2 text-destructive focus:text-destructive"
+                className="flex items-center space-x-2 text-white focus:text-white"
                 data-testid="logout-button"
               >
                 <LogOut className="w-4 h-4" />
