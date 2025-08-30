@@ -266,7 +266,7 @@ export const CreatorDashboard: React.FC = () => {
                     <p className="text-xl sm:text-2xl font-bold text-foreground">{analytics.subscribers.toLocaleString()}</p>
                     <p className="text-xs text-success">+{analytics.growthRate}% this month</p>
                   </div>
-                  <Users className="h-6 w-6 sm:h-8 sm:w-8 text-white opacity-70" />
+                  <Users className="h-6 w-6 sm:h-8 sm:w-8 text-white opacity-70" strokeWidth={1} />
                 </div>
               </CardContent>
             </Card>
@@ -279,7 +279,7 @@ export const CreatorDashboard: React.FC = () => {
                     <p className="text-xl sm:text-2xl font-bold text-foreground">GHS {analytics.monthlyEarnings.toLocaleString()}</p>
                     <p className="text-xs text-success">+{analytics.growthRate}% vs last month</p>
                   </div>
-                  <DollarSign className="h-6 w-6 sm:h-8 sm:w-8 text-white opacity-70" />
+                  <DollarSign className="h-6 w-6 sm:h-8 sm:w-8 text-white opacity-70" strokeWidth={1} />
                 </div>
               </CardContent>
             </Card>
@@ -292,7 +292,7 @@ export const CreatorDashboard: React.FC = () => {
                     <p className="text-xl sm:text-2xl font-bold text-foreground">GHS {analytics.totalEarnings.toLocaleString()}</p>
                     <p className="text-xs text-success">All time</p>
                   </div>
-                  <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-white opacity-70" />
+                  <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-white opacity-70" strokeWidth={1} />
                 </div>
               </CardContent>
             </Card>
@@ -305,7 +305,7 @@ export const CreatorDashboard: React.FC = () => {
                     <p className="text-xl sm:text-2xl font-bold text-foreground">{analytics.engagementRate}%</p>
                     <p className="text-xs text-success">Above average</p>
                   </div>
-                  <Heart className="h-6 w-6 sm:h-8 sm:w-8 text-white opacity-70" />
+                  <Heart className="h-6 w-6 sm:h-8 sm:w-8 text-white opacity-70" strokeWidth={1} />
                 </div>
               </CardContent>
             </Card>

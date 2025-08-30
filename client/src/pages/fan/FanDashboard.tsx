@@ -188,7 +188,7 @@ export const FanDashboard: React.FC = () => {
                       <p className="text-sm font-medium text-muted-foreground">Active Subscriptions</p>
                       <p className="text-2xl font-bold text-foreground">{subscriptions.filter(sub => sub.status === 'active').length}</p>
                     </div>
-                    <Heart className="h-8 w-8 text-white" />
+                    <Heart className="h-8 w-8 text-white" strokeWidth={1} />
                   </div>
                 </CardContent>
               </Card>
@@ -202,7 +202,7 @@ export const FanDashboard: React.FC = () => {
                         GHS {subscriptions.filter(sub => sub.status === 'active').reduce((sum, sub) => sum + parseFloat(sub.tier.price), 0).toFixed(2)}
                       </p>
                     </div>
-                    <CreditCard className="h-8 w-8 text-white" />
+                    <CreditCard className="h-8 w-8 text-white" strokeWidth={1} />
                   </div>
                 </CardContent>
               </Card>
@@ -214,7 +214,7 @@ export const FanDashboard: React.FC = () => {
                       <p className="text-sm font-medium text-muted-foreground">New Content</p>
                       <p className="text-2xl font-bold text-foreground">{newContentCount}</p>
                     </div>
-                    <TrendingUp className="h-8 w-8 text-white" />
+                    <TrendingUp className="h-8 w-8 text-white" strokeWidth={1} />
                   </div>
                 </CardContent>
               </Card>
