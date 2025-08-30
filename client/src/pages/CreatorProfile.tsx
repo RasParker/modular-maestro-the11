@@ -1500,30 +1500,30 @@ export const CreatorProfile: React.FC = () => {
       {/* Compact Subscription Tiers - Show for profiles with tiers (Mobile + Desktop) */}
       {creator?.tiers && creator.tiers.length > 0 && (
         <div id="subscription-tiers" className="mx-4 mb-6 max-w-4xl md:mx-auto md:px-6">
-          <div className="bg-gradient-to-br from-background to-muted/20 border border-border/30 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden backdrop-blur-sm">
+          <div className="bg-gradient-card border border-border/50 rounded-lg shadow-sm overflow-hidden">
             {!isSubscriptionTiersExpanded ? (
               /* Compact View */
               <div
-                className="p-4 md:p-6 cursor-pointer hover:bg-gradient-to-r hover:from-muted/20 hover:to-muted/10 transition-all duration-200"
+                className="p-4 md:p-6 cursor-pointer hover:bg-muted/30 transition-colors"
                 onClick={() => setIsSubscriptionTiersExpanded(true)}
               >
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-2">
-                      <h3 className="text-base md:text-lg font-semibold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">SUBSCRIBE NOW</h3>
-                      <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform duration-200" />
+                      <h3 className="text-base md:text-lg font-semibold">SUBSCRIBE NOW</h3>
+                      <ChevronDown className="w-4 h-4 text-muted-foreground" />
                     </div>
-                    <div className="flex items-center gap-3 md:gap-4 flex-wrap">
+                    <div className="flex items-center gap-3 md:gap-3 flex-wrap">
                       {creator.tiers.slice(0, 3).map((tier: any, index: number) => (
                         <div key={tier.id} className="flex items-center gap-1">
-                          <span className="text-sm md:text-base font-semibold bg-gradient-to-r from-accent to-accent/80 bg-clip-text text-transparent whitespace-nowrap">GHS {tier.price}</span>
+                          <span className="text-sm md:text-base font-medium text-accent whitespace-nowrap">GHS {tier.price}</span>
                           {index < Math.min(creator.tiers.length - 1, 2) && (
-                            <span className="text-xs md:text-sm text-muted-foreground/60 mx-1">•</span>
+                            <span className="text-xs md:text-sm text-muted-foreground mx-1">•</span>
                           )}
                         </div>
                       ))}
                       {creator.tiers.length > 3 && (
-                        <span className="text-xs md:text-sm text-muted-foreground/80 whitespace-nowrap px-2 py-1 bg-muted/20 rounded-full">+{creator.tiers.length - 3} more</span>
+                        <span className="text-xs md:text-sm text-muted-foreground whitespace-nowrap">+{creator.tiers.length - 3} more</span>
                       )}
                     </div>
                   </div>
@@ -1532,7 +1532,7 @@ export const CreatorProfile: React.FC = () => {
                       <Button
                         size="sm"
                         variant="outline"
-                        className="px-3 py-2 text-sm font-medium rounded-full md:px-6 md:py-3 border-border/50 hover:border-accent/30 hover:bg-accent/5 transition-all duration-200"
+                        className="px-3 py-2 text-sm font-medium rounded-full md:px-6 md:py-3"
                         onClick={(e) => {
                           e.stopPropagation();
                           setIsSubscriptionTiersExpanded(true);
@@ -1543,7 +1543,7 @@ export const CreatorProfile: React.FC = () => {
                     ) : (
                       <Button
                         size="sm"
-                        className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-3 py-2 text-sm font-medium rounded-full md:px-6 md:py-3 shadow-sm hover:shadow-md transition-all duration-200"
+                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 text-sm font-medium rounded-full md:px-6 md:py-3"
                         onClick={(e) => {
                           e.stopPropagation();
                           setIsSubscriptionTiersExpanded(true);
@@ -1559,20 +1559,20 @@ export const CreatorProfile: React.FC = () => {
               /* Expanded View */
               <div className="p-4 md:p-6">
                 <div className="flex items-center justify-between mb-4 md:mb-6">
-                  <h3 className="text-base md:text-lg font-semibold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">SUBSCRIPTION TIERS</h3>
+                  <h3 className="text-base md:text-lg font-semibold">SUBSCRIPTION TIERS</h3>
                   <button
                     onClick={() => setIsSubscriptionTiersExpanded(false)}
-                    className="p-2 hover:bg-muted/30 rounded-full transition-all duration-200 group"
+                    className="p-1 hover:bg-muted/50 rounded-full transition-colors"
                   >
-                    <ChevronUp className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors duration-200" />
+                    <ChevronUp className="w-4 h-4 text-muted-foreground" />
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-3">
                   {creator.tiers.map((tier: any, index: number) => (
                     <div
                       key={tier.id}
-                      className={`group flex flex-col p-5 md:p-6 bg-gradient-to-br from-background to-muted/10 border border-border/20 rounded-xl hover:border-accent/40 hover:shadow-lg transition-all duration-300 ${!isOwnProfile ? 'cursor-pointer hover:scale-[1.02] hover:bg-gradient-to-br hover:from-background hover:to-accent/5' : ''} ${index === 0 && creator.tiers.length > 1 ? 'ring-1 ring-accent/20' : ''}`}
+                      className={`flex flex-col p-4 md:p-5 border border-border/30 rounded-lg hover:border-accent/50 transition-colors ${!isOwnProfile ? 'cursor-pointer hover:shadow-md' : ''}`}
                       onClick={!isOwnProfile ? (e) => {
                         e.stopPropagation();
                         console.log('Tier clicked:', tier);
@@ -1586,36 +1586,33 @@ export const CreatorProfile: React.FC = () => {
                         setPaymentModalOpen(true);
                       } : undefined}
                     >
-                      <div className="flex-1 mb-5">
-                        <div className="flex items-start justify-between gap-2 mb-4">
-                          <span className="text-sm md:text-base font-semibold uppercase leading-tight bg-gradient-to-r from-foreground to-foreground/90 bg-clip-text text-transparent">{tier.name}</span>
+                      <div className="flex-1 mb-4">
+                        <div className="flex items-start justify-between gap-2 mb-3">
+                          <span className="text-sm md:text-base font-medium uppercase leading-tight">{tier.name}</span>
                           {index === 0 && creator.tiers.length > 1 && (
-                            <span className="text-xs bg-gradient-to-r from-accent/20 to-accent/30 text-accent px-3 py-1.5 rounded-full font-medium border border-accent/20 flex-shrink-0 shadow-sm">POPULAR</span>
+                            <span className="text-xs bg-accent/20 text-accent px-2 py-1 rounded-full flex-shrink-0">POPULAR</span>
                           )}
                         </div>
-                        <div className="min-h-[3.5rem]">
-                          <p className="text-xs md:text-sm text-muted-foreground/90 leading-relaxed">
+                        <div className="min-h-[3rem]">
+                          <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
                             {tier.description || 'Access to exclusive content and connect directly with the creator'}
                           </p>
                         </div>
                       </div>
-                      <div className="border-t border-border/10 pt-4 bg-gradient-to-r from-transparent to-muted/5 -mx-5 md:-mx-6 px-5 md:px-6">
-                        <div className="text-xl md:text-2xl font-bold bg-gradient-to-r from-accent to-accent/80 bg-clip-text text-transparent">GHS {tier.price}</div>
-                        <div className="text-xs md:text-sm text-muted-foreground/80 font-medium">per month</div>
+                      <div className="border-t border-border/20 pt-3">
+                        <div className="text-lg md:text-xl font-bold text-accent">GHS {tier.price}</div>
+                        <div className="text-xs md:text-sm text-muted-foreground">per month</div>
                       </div>
-                      {!isOwnProfile && (
-                        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl pointer-events-none" />
-                      )}
                     </div>
                   ))}
                 </div>
 
                 {isOwnProfile && (
-                  <div className="mt-6 pt-5 border-t border-border/10">
+                  <div className="mt-4 pt-4 border-t border-border/20">
                     <Button
                       variant="outline"
                       size="sm"
-                      className="w-full md:w-auto text-sm border-border/40 hover:border-accent/30 hover:bg-accent/5 transition-all duration-200"
+                      className="w-full md:w-auto text-sm"
                       asChild
                     >
                       <Link to="/creator/tiers">
