@@ -113,7 +113,7 @@ export const Signup: React.FC = () => {
                   <div className="flex items-center space-x-2 p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors">
                     <RadioGroupItem value="fan" id="fan" />
                     <Label htmlFor="fan" className="flex items-center space-x-2 cursor-pointer flex-1">
-                      <User className="w-4 h-4 text-primary" />
+                      <User className="w-4 h-4 text-blue-500" />
                       <div>
                         <div className="font-medium">Fan</div>
                         <div className="text-xs text-muted-foreground">Support and follow creators</div>
@@ -123,7 +123,7 @@ export const Signup: React.FC = () => {
                   <div className="flex items-center space-x-2 p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors">
                     <RadioGroupItem value="creator" id="creator" />
                     <Label htmlFor="creator" className="flex items-center space-x-2 cursor-pointer flex-1">
-                      <Crown className="w-4 h-4 text-accent" />
+                      <Crown className="w-4 h-4 text-blue-500" />
                       <div>
                         <div className="font-medium">Creator</div>
                         <div className="text-xs text-muted-foreground">Monetize your content</div>
@@ -219,7 +219,7 @@ export const Signup: React.FC = () => {
             <div className="text-center">
               <p className="text-sm text-muted-foreground">
                 Already have an account?{' '}
-                <Link to="/login" className="text-primary hover:underline font-medium">
+                <Link to="/login" className="text-blue-500 hover:underline font-medium">
                   Sign in
                 </Link>
               </p>
