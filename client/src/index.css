@@ -45,62 +45,6 @@
     width: calc(100% - 2rem);
   }
 
-  /* Global button hover styling - consistent #1e1e24 background with no rings */
-  .category-button:hover,
-  .btn-hover-dark:hover,
-  .outline-hover:hover {
-    background-color: #1e1e24 !important;
-    color: white !important;
-    border-color: rgba(255, 255, 255, 0.5) !important;
-  }
-  
-  /* Remove all ring styles from interactive elements */
-  .category-button:focus-visible,
-  .category-button:focus,
-  .category-button:hover:focus,
-  .category-button:hover:focus-visible,
-  .btn-hover-dark:focus-visible,
-  .btn-hover-dark:focus,
-  .outline-hover:focus-visible,
-  .outline-hover:focus,
-  button[class*="outline"]:focus-visible,
-  button[class*="outline"]:focus,
-  button[class*="outline"]:hover:focus,
-  button[class*="outline"]:hover:focus-visible {
-    outline: none !important;
-    box-shadow: none !important;
-    border: 1px solid rgba(255, 255, 255, 0.5) !important;
-    --tw-ring-shadow: none !important;
-    --tw-ring-offset-shadow: none !important;
-    ring: none !important;
-    ring-offset: none !important;
-    border-color: rgba(255, 255, 255, 0.5) !important;
-  }
-  
-  .category-button,
-  .btn-hover-dark,
-  .outline-hover,
-  button[class*="outline"] {
-    --tw-ring-shadow: none !important;
-    --tw-ring-offset-shadow: none !important;
-    ring: none !important;
-    ring-offset: none !important;
-  }
-  
-  /* Additional override to completely remove any white focus ring */
-  .category-button *,
-  .category-button:hover *,
-  .category-button:focus *,
-  button[class*="outline"] *,
-  button[class*="outline"]:hover *,
-  button[class*="outline"]:focus * {
-    outline: none !important;
-    box-shadow: none !important;
-    border: none !important;
-    --tw-ring-shadow: none !important;
-    --tw-ring-offset-shadow: none !important;
-  }
-
   /* Subscription amount text styling */
   .subscription-amount {
     color: white !important;
