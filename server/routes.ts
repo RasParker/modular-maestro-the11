@@ -1287,13 +1287,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Categories routes
+  // Category routes
   app.get("/api/categories", async (req, res) => {
+    try {
+      const categories = await storage.getActiveCategories();
+      res.json(categories);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch categories" });
+    }
+  });
+
+  app.get("/api/categories/all", async (req, res) => {
     try {
       const categories = await storage.getCategories();
       res.json(categories);
     } catch (error) {
-      res.status(500).json({ error: "Failed to fetch categories" });
+      res.status(500).json({ error: "Failed to fetch all categories" });
+    }
+  });
+
+  app.get("/api/categories/:id", async (req, res) => {
+    try {
+      const categoryId = parseInt(req.params.id);
+      const category = await storage.getCategory(categoryId);
+      
+      if (!category) {
+        return res.status(404).json({ error: "Category not found" });
+      }
+      
+      res.json(category);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch category" });
+    }
+  });
+
+  app.get("/api/categories/:id/creators", async (req, res) => {
+    try {
+      const categoryId = parseInt(req.params.id);
+      const creators = await storage.getCreatorsByCategory(categoryId);
+      res.json(creators);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch creators for category" });
     }
   });
 
@@ -1311,57 +1345,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put("/api/categories/:id", async (req, res) => {
     try {
       const categoryId = parseInt(req.params.id);
-      const categoryData = insertCategorySchema.parse(req.body);
-      const updated = await storage.updateCategory(categoryId, categoryData);
-
-      if (!updated) {
+      const updates = req.body;
+      const category = await storage.updateCategory(categoryId, updates);
+      
+      if (!category) {
         return res.status(404).json({ error: "Category not found" });
       }
-
-      res.json(updated);
+      
+      res.json(category);
     } catch (error) {
-      console.error('Update category error:', error);
-      res.status(400).json({ error: "Failed to update category" });
+      res.status(500).json({ error: "Failed to update category" });
     }
   });
 
   app.delete("/api/categories/:id", async (req, res) => {
     try {
       const categoryId = parseInt(req.params.id);
-
-      // Check if category is in use
-      const usage = await storage.getCategoryUsage(categoryId);
-      if (usage.creator_count > 0) {
-        return res.status(400).json({ 
-          error: `Cannot delete category. It is currently used by ${usage.creator_count} creator(s).` 
-        });
-      }
-
       const deleted = await storage.deleteCategory(categoryId);
-
+      
       if (!deleted) {
         return res.status(404).json({ error: "Category not found" });
       }
-
+      
       res.json({ success: true });
     } catch (error) {
-      console.error('Delete category error:', error);
       res.status(500).json({ error: "Failed to delete category" });
     }
   });
 
-  // Admin category statistics
-  app.get("/api/admin/category-stats", async (req, res) => {
-    try {
-      const stats = await storage.getCategoryStats();
-      res.json(stats);
-    } catch (error) {
-      console.error('Category stats error:', error);
-      res.status(500).json({ error: "Failed to fetch category statistics" });
-    }
-  });
-
-  // Creator categories management
+  // Creator category routes
   app.get("/api/creators/:id/categories", async (req, res) => {
     try {
       const creatorId = parseInt(req.params.id);
@@ -1372,56 +1384,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/creators/:id/categories", async (req, res) => {
-    try {
-      const creatorId = parseInt(req.params.id);
-      const cleared = await storage.clearCreatorCategories(creatorId);
-
-      if (!cleared) {
-        return res.status(404).json({ error: "Creator not found" });
-      }
-
-      res.json({ success: true });
-    } catch (error) {
-      res.status(500).json({ error: "Failed to clear creator categories" });
-    }
-  });
-
-  app.get("/api/categories/all", async (req, res) => {
-    try {
-      const categories = await storage.getCategories();
-      res.json(categories);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch all categories" });
-    }
-  });
-
-  app.get("/api/categories/:id", async (req, res) => {
-    try {
-      const categoryId = parseInt(req.params.id);
-      const category = await storage.getCategory(categoryId);
-
-      if (!category) {
-        return res.status(404).json({ error: "Category not found" });
-      }
-
-      res.json(category);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch category" });
-    }
-  });
-
-  app.get("/api/categories/:id/creators", async (req, res) => {
-    try {
-      const categoryId = parseInt(req.params.id);
-      const creators = await storage.getCreatorsByCategory(categoryId);
-      res.json(creators);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch creators for category" });
-    }
-  });
-
-  // Creator category routes
   app.get("/api/creators/:id/primary-category", async (req, res) => {
     try {
       const creatorId = parseInt(req.params.id);
@@ -1452,11 +1414,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const creatorId = parseInt(req.params.id);
       const categoryId = parseInt(req.params.categoryId);
       const removed = await storage.removeCreatorFromCategory(creatorId, categoryId);
-
+      
       if (!removed) {
         return res.status(404).json({ error: "Creator category association not found" });
       }
-
+      
       res.json({ success: true });
     } catch (error) {
       res.status(500).json({ error: "Failed to remove creator from category" });
@@ -1468,11 +1430,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const creatorId = parseInt(req.params.id);
       const { categoryId } = req.body;
       const updated = await storage.updateCreatorPrimaryCategory(creatorId, categoryId);
-
+      
       if (!updated) {
         return res.status(400).json({ error: "Failed to update primary category" });
       }
-
+      
       res.json({ success: true });
     } catch (error) {
       res.status(500).json({ error: "Failed to update creator primary category" });
@@ -3265,7 +3227,7 @@ app.post('/api/conversations', async (req, res) => {
     // Handle errors
     ws.on('error', (error) => {
       console.error('WebSocket error:', error);
-
+      
       // Clean up heartbeat on error
       if (pingInterval) {
         clearInterval(pingInterval);

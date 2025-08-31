@@ -160,8 +160,6 @@ export interface IStorage {
   createCategory(category: InsertCategory): Promise<Category>;
   updateCategory(id: number, updates: Partial<Category>): Promise<Category | undefined>;
   deleteCategory(id: number): Promise<boolean>;
-  getCategoryUsage(categoryId: number): Promise<{ creator_count: number; primary_count: number }>;
-  getCategoryStats(): Promise<any[]>;
 
   // Creator category methods
   getCreatorCategories(creatorId: number): Promise<CreatorCategory[]>;
@@ -170,7 +168,6 @@ export interface IStorage {
   removeCreatorFromCategory(creatorId: number, categoryId: number): Promise<boolean>;
   updateCreatorPrimaryCategory(creatorId: number, categoryId: number): Promise<boolean>;
   getCreatorsByCategory(categoryId: number): Promise<User[]>;
-  clearCreatorCategories(creatorId: number): Promise<boolean>;
 }
 
 // Database Storage Implementation
@@ -1344,7 +1341,8 @@ export class DatabaseStorage implements IStorage {
   // Category methods implementation
   async getCategories(): Promise<Category[]> {
     try {
-      return await this.db.select().from(categories).orderBy(categories.name);
+      const result = await db.select().from(categories).orderBy(categories.name);
+      return result;
     } catch (error) {
       console.error('Error getting categories:', error);
       throw error;
@@ -1383,97 +1381,47 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  async createCategory(categoryData: InsertCategory): Promise<Category> {
+  async createCategory(category: InsertCategory): Promise<Category> {
     try {
-      const [category] = await this.db.insert(categories).values(categoryData).returning();
-      return category;
+      const [newCategory] = await db.insert(categories).values(category).returning();
+      return newCategory;
     } catch (error) {
       console.error('Error creating category:', error);
       throw error;
     }
   }
 
-  async updateCategory(categoryId: number, categoryData: Partial<InsertCategory>): Promise<Category | null> {
+  async updateCategory(id: number, updates: Partial<Category>): Promise<Category | undefined> {
     try {
-      const [updated] = await this.db
+      const [updatedCategory] = await db
         .update(categories)
-        .set({ ...categoryData, updated_at: new Date() })
-        .where(eq(categories.id, categoryId))
+        .set({ ...updates, updated_at: new Date() })
+        .where(eq(categories.id, id))
         .returning();
-      return updated || null;
+      return updatedCategory || undefined;
     } catch (error) {
       console.error('Error updating category:', error);
       throw error;
     }
   }
 
-  async deleteCategory(categoryId: number): Promise<boolean> {
+  async deleteCategory(id: number): Promise<boolean> {
     try {
-      const result = await this.db.delete(categories).where(eq(categories.id, categoryId));
-      return result.rowCount > 0;
+      await db.delete(categories).where(eq(categories.id, id));
+      return true;
     } catch (error) {
       console.error('Error deleting category:', error);
-      throw error;
-    }
-  }
-
-  async getCategoryUsage(categoryId: number): Promise<{ creator_count: number; primary_count: number }> {
-    try {
-      const [usage] = await this.db
-        .select({
-          creator_count: sql<number>`count(*)::int`,
-          primary_count: sql<number>`count(case when ${creator_categories.is_primary} then 1 end)::int`
-        })
-        .from(creator_categories)
-        .where(eq(creator_categories.category_id, categoryId));
-
-      return usage || { creator_count: 0, primary_count: 0 };
-    } catch (error) {
-      console.error('Error getting category usage:', error);
-      throw error;
-    }
-  }
-
-  async getCategoryStats(): Promise<any[]> {
-    try {
-      return await this.db
-        .select({
-          category_id: creator_categories.category_id,
-          category_name: categories.name,
-          creator_count: sql<number>`count(distinct ${creator_categories.creator_id})::int`,
-          primary_count: sql<number>`count(case when ${creator_categories.is_primary} then 1 end)::int`
-        })
-        .from(creator_categories)
-        .leftJoin(categories, eq(creator_categories.category_id, categories.id))
-        .groupBy(creator_categories.category_id, categories.name)
-        .orderBy(categories.name);
-    } catch (error) {
-      console.error('Error getting category stats:', error);
-      throw error;
+      return false;
     }
   }
 
   // Creator category methods implementation
-  async getCreatorCategories(creatorId: number): Promise<any[]> {
+  async getCreatorCategories(creatorId: number): Promise<CreatorCategory[]> {
     try {
-      return await this.db
-        .select({
-          id: creator_categories.id,
-          creator_id: creator_categories.creator_id,
-          category_id: creator_categories.category_id,
-          is_primary: creator_categories.is_primary,
-          category: {
-            id: categories.id,
-            name: categories.name,
-            slug: categories.slug,
-            description: categories.description,
-            icon: categories.icon,
-            color: categories.color
-          }
-        })
-        .from(creator_categories)
-        .leftJoin(categories, eq(creator_categories.category_id, categories.id))
-        .where(eq(creator_categories.creator_id, creatorId));
+      const result = await db.select().from(creator_categories)
+        .where(eq(creator_categories.creator_id, creatorId))
+        .orderBy(desc(creator_categories.is_primary));
+      return result;
     } catch (error) {
       console.error('Error getting creator categories:', error);
       throw error;
@@ -1597,18 +1545,6 @@ export class DatabaseStorage implements IStorage {
       return result;
     } catch (error) {
       console.error('Error getting creators by category:', error);
-      throw error;
-    }
-  }
-
-  async clearCreatorCategories(creatorId: number): Promise<boolean> {
-    try {
-      const result = await this.db
-        .delete(creator_categories)
-        .where(eq(creator_categories.creator_id, creatorId));
-      return result.rowCount >= 0;
-    } catch (error) {
-      console.error('Error clearing creator categories:', error);
       throw error;
     }
   }

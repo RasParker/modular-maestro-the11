@@ -18,8 +18,7 @@ import {
   Settings,
   BarChart3,
   Crown,
-  Flag,
-  Palette // Import Palette for category icon
+  Flag
 } from 'lucide-react';
 
 export const AdminDashboard: React.FC = () => {
