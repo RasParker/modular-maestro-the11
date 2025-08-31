@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -11,7 +12,7 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { EdgeToEdgeContainer } from '@/components/layout/EdgeToEdgeContainer';
-import { User, Save, Upload, Palette, Dumbbell, Music, Laptop, ChefHat, Shirt, Gamepad2, Briefcase, Home, GraduationCap, Plus, X, AlertTriangle, CheckCircle, Star } from 'lucide-react';
+import { User, Save, Upload, Palette, Dumbbell, Music, Laptop, ChefHat, Shirt, Gamepad2, Briefcase, Home, GraduationCap, Plus, X, AlertTriangle, CheckCircle, Star, Settings, Bell, CreditCard, Shield, Eye, MessageCircle, Download, Brush } from 'lucide-react';
 import type { Category } from '@shared/schema';
 
 // Icon mapping for categories
@@ -41,6 +42,7 @@ export const CreatorSettings: React.FC = () => {
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState(user?.avatar || '');
   const [coverPreview, setCoverPreview] = useState(user?.cover_image || '');
+  const [socialLinks, setSocialLinks] = useState(user?.social_links ? JSON.parse(user.social_links) : {});
 
   // Content settings state
   const [commentsEnabled, setCommentsEnabled] = useState(user?.comments_enabled ?? true);
@@ -48,6 +50,34 @@ export const CreatorSettings: React.FC = () => {
   const [watermarkEnabled, setWatermarkEnabled] = useState(user?.watermark_enabled ?? true);
   const [profileDiscoverable, setProfileDiscoverable] = useState(user?.profile_discoverable ?? true);
   const [activityStatusVisible, setActivityStatusVisible] = useState(user?.activity_status_visible ?? false);
+
+  // Privacy settings state
+  const [profilePrivate, setProfilePrivate] = useState(false);
+  const [showEarnings, setShowEarnings] = useState(false);
+  const [allowDirectMessages, setAllowDirectMessages] = useState(true);
+  const [showSubscriberCount, setShowSubscriberCount] = useState(true);
+
+  // Notification settings state
+  const [emailNotifications, setEmailNotifications] = useState(true);
+  const [pushNotifications, setPushNotifications] = useState(true);
+  const [newSubscriberNotif, setNewSubscriberNotif] = useState(true);
+  const [newMessageNotif, setNewMessageNotif] = useState(true);
+  const [paymentNotif, setPaymentNotif] = useState(true);
+
+  // Payment settings state
+  const [paymentMethod, setPaymentMethod] = useState('bank_transfer');
+  const [bankDetails, setBankDetails] = useState({
+    bankName: '',
+    accountNumber: '',
+    accountName: '',
+    routingNumber: ''
+  });
+  const [momoDetails, setMomoDetails] = useState({
+    provider: '',
+    phoneNumber: ''
+  });
+  const [autoPayoutEnabled, setAutoPayoutEnabled] = useState(false);
+  const [minPayoutAmount, setMinPayoutAmount] = useState(50);
 
   // Category management state
   const [categories, setCategories] = useState<Category[]>([]);
@@ -102,6 +132,13 @@ export const CreatorSettings: React.FC = () => {
         setCoverPreview(URL.createObjectURL(file));
       }
     }
+  };
+
+  const handleSocialLinkChange = (platform: string, value: string) => {
+    setSocialLinks((prev: any) => ({
+      ...prev,
+      [platform]: value
+    }));
   };
 
   const handleCategoryToggle = (categoryId: number) => {
@@ -213,6 +250,7 @@ export const CreatorSettings: React.FC = () => {
       const formData = new FormData();
       formData.append('display_name', displayName);
       formData.append('bio', bio);
+      formData.append('social_links', JSON.stringify(socialLinks));
 
       if (avatar) {
         formData.append('avatar', avatar);
@@ -344,16 +382,20 @@ export const CreatorSettings: React.FC = () => {
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Creator Settings</h1>
-          <p className="text-muted-foreground">Manage your profile, categories, and content preferences</p>
+          <p className="text-muted-foreground">Manage your profile, categories, content preferences, and account settings</p>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid grid-cols-3 w-full">
+          <TabsList className="grid grid-cols-6 w-full">
             <TabsTrigger value="profile">Profile</TabsTrigger>
             <TabsTrigger value="categories">Categories</TabsTrigger>
             <TabsTrigger value="content">Content</TabsTrigger>
+            <TabsTrigger value="privacy">Privacy</TabsTrigger>
+            <TabsTrigger value="notifications">Notifications</TabsTrigger>
+            <TabsTrigger value="payments">Payments</TabsTrigger>
           </TabsList>
 
+          {/* Profile Tab */}
           <TabsContent value="profile" className="space-y-6">
             <Card>
               <CardHeader>
@@ -453,6 +495,23 @@ export const CreatorSettings: React.FC = () => {
                       rows={4}
                     />
                   </div>
+
+                  {/* Social Links */}
+                  <div className="space-y-3">
+                    <Label>Social Media Links</Label>
+                    <div className="grid gap-3">
+                      {['twitter', 'instagram', 'youtube', 'tiktok', 'website'].map(platform => (
+                        <div key={platform} className="space-y-1">
+                          <Label className="text-sm capitalize">{platform}</Label>
+                          <Input
+                            placeholder={`Your ${platform} URL`}
+                            value={socialLinks[platform] || ''}
+                            onChange={(e) => handleSocialLinkChange(platform, e.target.value)}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
 
                 <Button onClick={handleSaveProfile} disabled={isLoading} className="w-full">
@@ -463,10 +522,14 @@ export const CreatorSettings: React.FC = () => {
             </Card>
           </TabsContent>
 
+          {/* Categories Tab */}
           <TabsContent value="categories" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Category Management</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <Brush className="w-5 h-5" />
+                  Category Management
+                </CardTitle>
                 <CardDescription>
                   Manage your content categories to help fans discover your content
                 </CardDescription>
@@ -608,10 +671,14 @@ export const CreatorSettings: React.FC = () => {
             </Card>
           </TabsContent>
 
+          {/* Content Settings Tab */}
           <TabsContent value="content" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Content Preferences</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <Settings className="w-5 h-5" />
+                  Content Preferences
+                </CardTitle>
                 <CardDescription>
                   Configure how your content is displayed and managed
                 </CardDescription>
@@ -687,6 +754,315 @@ export const CreatorSettings: React.FC = () => {
                 <Button onClick={handleSaveContentSettings} disabled={isLoading} className="w-full">
                   <Save className="w-4 h-4 mr-2" />
                   {isLoading ? 'Saving...' : 'Save Content Settings'}
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Privacy Tab */}
+          <TabsContent value="privacy" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="w-5 h-5" />
+                  Privacy & Security
+                </CardTitle>
+                <CardDescription>
+                  Control your privacy settings and account security
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>Private Profile</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Make your profile visible only to subscribers
+                      </p>
+                    </div>
+                    <Switch
+                      checked={profilePrivate}
+                      onCheckedChange={setProfilePrivate}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>Show Earnings</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Display your earnings publicly on your profile
+                      </p>
+                    </div>
+                    <Switch
+                      checked={showEarnings}
+                      onCheckedChange={setShowEarnings}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>Allow Direct Messages</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Let fans send you direct messages
+                      </p>
+                    </div>
+                    <Switch
+                      checked={allowDirectMessages}
+                      onCheckedChange={setAllowDirectMessages}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>Show Subscriber Count</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Display your subscriber count on your profile
+                      </p>
+                    </div>
+                    <Switch
+                      checked={showSubscriberCount}
+                      onCheckedChange={setShowSubscriberCount}
+                    />
+                  </div>
+                </div>
+
+                <Button disabled={isLoading} className="w-full">
+                  <Save className="w-4 h-4 mr-2" />
+                  {isLoading ? 'Saving...' : 'Save Privacy Settings'}
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Notifications Tab */}
+          <TabsContent value="notifications" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Bell className="w-5 h-5" />
+                  Notification Preferences
+                </CardTitle>
+                <CardDescription>
+                  Choose how you want to be notified about account activity
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>Email Notifications</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Receive notifications via email
+                      </p>
+                    </div>
+                    <Switch
+                      checked={emailNotifications}
+                      onCheckedChange={setEmailNotifications}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>Push Notifications</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Receive push notifications in your browser
+                      </p>
+                    </div>
+                    <Switch
+                      checked={pushNotifications}
+                      onCheckedChange={setPushNotifications}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>New Subscribers</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Get notified when someone subscribes to you
+                      </p>
+                    </div>
+                    <Switch
+                      checked={newSubscriberNotif}
+                      onCheckedChange={setNewSubscriberNotif}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>New Messages</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Get notified about new direct messages
+                      </p>
+                    </div>
+                    <Switch
+                      checked={newMessageNotif}
+                      onCheckedChange={setNewMessageNotif}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>Payment Updates</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Get notified about payments and payouts
+                      </p>
+                    </div>
+                    <Switch
+                      checked={paymentNotif}
+                      onCheckedChange={setPaymentNotif}
+                    />
+                  </div>
+                </div>
+
+                <Button disabled={isLoading} className="w-full">
+                  <Save className="w-4 h-4 mr-2" />
+                  {isLoading ? 'Saving...' : 'Save Notification Settings'}
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Payments Tab */}
+          <TabsContent value="payments" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CreditCard className="w-5 h-5" />
+                  Payment Settings
+                </CardTitle>
+                <CardDescription>
+                  Configure how you receive payments from subscribers
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Payment Method Selection */}
+                <div className="space-y-3">
+                  <Label>Payment Method</Label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setPaymentMethod('bank_transfer')}
+                      className={`p-4 rounded-lg border-2 text-left transition-all ${
+                        paymentMethod === 'bank_transfer' 
+                          ? 'border-primary bg-primary/10' 
+                          : 'border-border hover:border-border/80'
+                      }`}
+                    >
+                      <div className="font-medium">Bank Transfer</div>
+                      <div className="text-sm text-muted-foreground">Receive payments via bank transfer</div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPaymentMethod('mobile_money')}
+                      className={`p-4 rounded-lg border-2 text-left transition-all ${
+                        paymentMethod === 'mobile_money' 
+                          ? 'border-primary bg-primary/10' 
+                          : 'border-border hover:border-border/80'
+                      }`}
+                    >
+                      <div className="font-medium">Mobile Money</div>
+                      <div className="text-sm text-muted-foreground">Receive payments via mobile money</div>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Bank Transfer Details */}
+                {paymentMethod === 'bank_transfer' && (
+                  <div className="space-y-4 p-4 bg-muted/50 rounded-lg">
+                    <h3 className="font-medium">Bank Details</h3>
+                    <div className="grid gap-3">
+                      <div className="space-y-2">
+                        <Label>Bank Name</Label>
+                        <Input
+                          placeholder="e.g., Ecobank Ghana"
+                          value={bankDetails.bankName}
+                          onChange={(e) => setBankDetails(prev => ({ ...prev, bankName: e.target.value }))}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Account Number</Label>
+                        <Input
+                          placeholder="Your account number"
+                          value={bankDetails.accountNumber}
+                          onChange={(e) => setBankDetails(prev => ({ ...prev, accountNumber: e.target.value }))}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Account Name</Label>
+                        <Input
+                          placeholder="Account holder name"
+                          value={bankDetails.accountName}
+                          onChange={(e) => setBankDetails(prev => ({ ...prev, accountName: e.target.value }))}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Mobile Money Details */}
+                {paymentMethod === 'mobile_money' && (
+                  <div className="space-y-4 p-4 bg-muted/50 rounded-lg">
+                    <h3 className="font-medium">Mobile Money Details</h3>
+                    <div className="grid gap-3">
+                      <div className="space-y-2">
+                        <Label>Provider</Label>
+                        <select 
+                          className="w-full p-2 border rounded-md"
+                          value={momoDetails.provider}
+                          onChange={(e) => setMomoDetails(prev => ({ ...prev, provider: e.target.value }))}
+                        >
+                          <option value="">Select Provider</option>
+                          <option value="mtn">MTN Mobile Money</option>
+                          <option value="vodafone">Vodafone Cash</option>
+                          <option value="airteltigo">AirtelTigo Money</option>
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Phone Number</Label>
+                        <Input
+                          placeholder="e.g., 0241234567"
+                          value={momoDetails.phoneNumber}
+                          onChange={(e) => setMomoDetails(prev => ({ ...prev, phoneNumber: e.target.value }))}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Auto Payout Settings */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>Automatic Payouts</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Enable automatic monthly payouts
+                      </p>
+                    </div>
+                    <Switch
+                      checked={autoPayoutEnabled}
+                      onCheckedChange={setAutoPayoutEnabled}
+                    />
+                  </div>
+
+                  {autoPayoutEnabled && (
+                    <div className="space-y-2">
+                      <Label>Minimum Payout Amount (GHS)</Label>
+                      <Input
+                        type="number"
+                        placeholder="50"
+                        value={minPayoutAmount}
+                        onChange={(e) => setMinPayoutAmount(Number(e.target.value))}
+                      />
+                      <p className="text-sm text-muted-foreground">
+                        Payments will only be processed if your balance exceeds this amount
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <Button disabled={isLoading} className="w-full">
+                  <Save className="w-4 h-4 mr-2" />
+                  {isLoading ? 'Saving...' : 'Save Payment Settings'}
                 </Button>
               </CardContent>
             </Card>
