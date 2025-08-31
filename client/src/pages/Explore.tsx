@@ -10,7 +10,8 @@ import { PaymentModal } from '@/components/payment/PaymentModal';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
-import { Search, Users, Star, Filter, Heart, MessageSquare, Share2, Image, Video } from 'lucide-react';
+import { Search, Users, Star, Filter, Heart, MessageSquare, Share2, Image, Video, Palette, Dumbbell, Music, Laptop, ChefHat, Shirt, Gamepad2, Briefcase, Home, GraduationCap } from 'lucide-react';
+import type { Category } from '@shared/schema';
 
 // Mock creators data
 const CREATORS = [
@@ -108,13 +109,27 @@ const CREATORS = [
   }
 ];
 
-const CATEGORIES = ['All', 'Art', 'Fitness', 'Music', 'Tech', 'Cooking', 'Fashion'];
+// Icon mapping for categories
+const categoryIcons: { [key: string]: any } = {
+  'Palette': Palette,
+  'Dumbbell': Dumbbell,
+  'Music': Music,
+  'Laptop': Laptop,
+  'ChefHat': ChefHat,
+  'Shirt': Shirt,
+  'Gamepad2': Gamepad2,
+  'Briefcase': Briefcase,
+  'Home': Home,
+  'GraduationCap': GraduationCap,
+};
 
 export const Explore: React.FC = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState(true);
   const [tierSelectionModalOpen, setTierSelectionModalOpen] = useState(false);
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [selectedTier, setSelectedTier] = useState<any>(null);
@@ -122,6 +137,27 @@ export const Explore: React.FC = () => {
   
   const [realCreators, setRealCreators] = useState<any[]>([]);
   const [allCreators, setAllCreators] = useState<any[]>([]);
+
+  // Fetch categories from database
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('/api/categories');
+        if (response.ok) {
+          const data = await response.json();
+          setCategories(data);
+        } else {
+          console.error('Failed to fetch categories');
+        }
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      } finally {
+        setLoadingCategories(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     const fetchCreators = async () => {
@@ -284,17 +320,46 @@ export const Explore: React.FC = () => {
 
           {/* Category Filters */}
           <div className="flex flex-wrap justify-center gap-2">
-            {CATEGORIES.map(category => (
-              <Button
-                key={category}
-                variant={selectedCategory === category ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setSelectedCategory(category)}
-                className={selectedCategory === category ? 'bg-white text-black hover:bg-white/90' : 'hover:bg-[#1e1e24] hover:text-foreground focus-visible:ring-0 focus-visible:ring-offset-0'}
-              >
-                {category}
-              </Button>
-            ))}
+            {loadingCategories ? (
+              // Loading skeleton for categories
+              <>
+                <div className="h-8 w-12 bg-muted/50 rounded-md animate-pulse" />
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="h-8 w-16 bg-muted/50 rounded-md animate-pulse" />
+                ))}
+              </>
+            ) : (
+              <>
+                {/* All Categories Button */}
+                <Button
+                  variant={selectedCategory === 'All' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setSelectedCategory('All')}
+                  className={selectedCategory === 'All' ? 'bg-white text-black hover:bg-white/90' : 'hover:bg-[#1e1e24] hover:text-foreground focus-visible:ring-0 focus-visible:ring-offset-0'}
+                  data-testid="category-filter-all"
+                >
+                  All
+                </Button>
+                
+                {/* Dynamic Categories */}
+                {categories.map(category => {
+                  const IconComponent = categoryIcons[category.icon] || Star;
+                  return (
+                    <Button
+                      key={category.slug}
+                      variant={selectedCategory === category.name ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setSelectedCategory(category.name)}
+                      className={selectedCategory === category.name ? 'bg-white text-black hover:bg-white/90' : 'hover:bg-[#1e1e24] hover:text-foreground focus-visible:ring-0 focus-visible:ring-offset-0'}
+                      data-testid={`category-filter-${category.slug}`}
+                    >
+                      <IconComponent className="w-3 h-3 mr-1" style={{ color: category.color }} />
+                      {category.name}
+                    </Button>
+                  );
+                })}
+              </>
+            )}
           </div>
         </div>
 
@@ -369,7 +434,7 @@ export const Explore: React.FC = () => {
                         <div className="flex items-center gap-2">
                           <span className="text-sm text-muted-foreground">From</span>
                           <span className="font-semibold text-accent">
-                            GHS {Math.min(...creator.tiers.map(t => t.price))}/month
+                            GHS {Math.min(...creator.tiers.map((t: any) => t.price))}/month
                           </span>
                         </div>
                       ) : (
@@ -392,9 +457,9 @@ export const Explore: React.FC = () => {
                       {creator.tiers.length > 0 ? (
                         <Button
                           className="w-full"
-                          onClick={() => handleSubscribe(creator.display_name, Math.min(...creator.tiers.map(t => t.price)))}
+                          onClick={() => handleSubscribe(creator.display_name, Math.min(...creator.tiers.map((t: any) => t.price)))}
                         >
-                          Subscribe from GHS {Math.min(...creator.tiers.map(t => t.price))}/month
+                          Subscribe from GHS {Math.min(...creator.tiers.map((t: any) => t.price))}/month
                         </Button>
                       ) : (
                         <Button

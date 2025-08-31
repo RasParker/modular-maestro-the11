@@ -1,13 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { Eye, EyeOff, Crown, User } from 'lucide-react';
+import { Eye, EyeOff, Crown, User, Palette, Dumbbell, Music, Laptop, ChefHat, Shirt, Gamepad2, Briefcase, Home, GraduationCap } from 'lucide-react';
+import type { Category } from '@shared/schema';
+
+// Icon mapping for categories
+const categoryIcons: { [key: string]: any } = {
+  'Palette': Palette,
+  'Dumbbell': Dumbbell,
+  'Music': Music,
+  'Laptop': Laptop,
+  'ChefHat': ChefHat,
+  'Shirt': Shirt,
+  'Gamepad2': Gamepad2,
+  'Briefcase': Briefcase,
+  'Home': Home,
+  'GraduationCap': GraduationCap,
+};
 
 export const Signup: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -15,12 +31,66 @@ export const Signup: React.FC = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [role, setRole] = useState<'fan' | 'creator'>('fan');
+  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+  const [primaryCategory, setPrimaryCategory] = useState<number | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { signup } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Fetch categories when role changes to creator
+  useEffect(() => {
+    const fetchCategories = async () => {
+      if (role === 'creator') {
+        setLoadingCategories(true);
+        try {
+          const response = await fetch('/api/categories');
+          if (response.ok) {
+            const data = await response.json();
+            setCategories(data);
+          } else {
+            console.error('Failed to fetch categories');
+          }
+        } catch (error) {
+          console.error('Error fetching categories:', error);
+        } finally {
+          setLoadingCategories(false);
+        }
+      } else {
+        // Reset category selection when switching to fan
+        setSelectedCategories([]);
+        setPrimaryCategory(null);
+        setCategories([]);
+      }
+    };
+
+    fetchCategories();
+  }, [role]);
+
+  const handleCategoryToggle = (categoryId: number) => {
+    setSelectedCategories(prev => {
+      const isSelected = prev.includes(categoryId);
+      const newSelection = isSelected 
+        ? prev.filter(id => id !== categoryId)
+        : [...prev, categoryId];
+      
+      // If removing the primary category, reset it
+      if (isSelected && primaryCategory === categoryId) {
+        setPrimaryCategory(null);
+      }
+      
+      // Auto-set as primary if it's the first selection
+      if (!isSelected && newSelection.length === 1) {
+        setPrimaryCategory(categoryId);
+      }
+      
+      return newSelection;
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,10 +113,31 @@ export const Signup: React.FC = () => {
       return;
     }
 
+    // Validate category selection for creators
+    if (role === 'creator') {
+      if (selectedCategories.length === 0) {
+        toast({
+          title: "Category required",
+          description: "Please select at least one category for your creator profile.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (!primaryCategory) {
+        toast({
+          title: "Primary category required",
+          description: "Please select a primary category for your creator profile.",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
     setIsLoading(true);
 
     try {
-      await signup(email, password, username, role);
+      await signup(email, password, username, role, primaryCategory || undefined);
       toast({
         title: "Welcome to Xclusive!",
         description: `Your ${role} account has been created successfully.`,
@@ -132,6 +223,108 @@ export const Signup: React.FC = () => {
                   </div>
                 </RadioGroup>
               </div>
+
+              {/* Category Selection for Creators */}
+              {role === 'creator' && (
+                <div className="space-y-3">
+                  <div className="space-y-2">
+                    <Label>Content Categories</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Select the categories that best describe your content. Choose at least one.
+                    </p>
+                  </div>
+                  
+                  {loadingCategories ? (
+                    <div className="grid grid-cols-2 gap-2">
+                      {[...Array(6)].map((_, i) => (
+                        <div key={i} className="h-16 bg-muted/50 rounded-lg animate-pulse" />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-2" data-testid="category-selection">
+                      {categories.map((category) => {
+                        const IconComponent = categoryIcons[category.icon] || User;
+                        const isSelected = selectedCategories.includes(category.id);
+                        const isPrimary = primaryCategory === category.id;
+                        
+                        return (
+                          <button
+                            key={category.id}
+                            type="button"
+                            onClick={() => handleCategoryToggle(category.id)}
+                            data-testid={`category-${category.slug}`}
+                            className={`
+                              relative p-3 rounded-lg border-2 transition-all duration-200 text-left
+                              ${isSelected 
+                                ? 'border-primary bg-primary/10' 
+                                : 'border-border hover:border-border/80 hover:bg-muted/50'
+                              }
+                            `}
+                          >
+                            <div className="flex items-center space-x-2">
+                              <IconComponent 
+                                className="w-4 h-4" 
+                                style={{ color: category.color }}
+                              />
+                              <span className="font-medium text-sm">{category.name}</span>
+                            </div>
+                            {isPrimary && (
+                              <Badge 
+                                variant="secondary" 
+                                className="absolute -top-2 -right-2 text-xs px-1 py-0"
+                                data-testid={`primary-badge-${category.slug}`}
+                              >
+                                Primary
+                              </Badge>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                  
+                  {selectedCategories.length > 1 && (
+                    <div className="space-y-2">
+                      <Label>Primary Category</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Choose your main category. This will be displayed prominently on your profile.
+                      </p>
+                      <div className="grid grid-cols-2 gap-2">
+                        {categories
+                          .filter(cat => selectedCategories.includes(cat.id))
+                          .map((category) => {
+                            const IconComponent = categoryIcons[category.icon] || User;
+                            const isPrimary = primaryCategory === category.id;
+                            
+                            return (
+                              <button
+                                key={category.id}
+                                type="button"
+                                onClick={() => setPrimaryCategory(category.id)}
+                                data-testid={`primary-category-${category.slug}`}
+                                className={`
+                                  p-2 rounded-lg border transition-all duration-200 text-left
+                                  ${isPrimary 
+                                    ? 'border-primary bg-primary/20' 
+                                    : 'border-border hover:border-border/80 hover:bg-muted/50'
+                                  }
+                                `}
+                              >
+                                <div className="flex items-center space-x-2">
+                                  <IconComponent 
+                                    className="w-4 h-4" 
+                                    style={{ color: category.color }}
+                                  />
+                                  <span className="text-sm">{category.name}</span>
+                                </div>
+                              </button>
+                            );
+                          })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
 
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>

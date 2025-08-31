@@ -5,7 +5,7 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string, username: string, role: 'fan' | 'creator') => Promise<void>;
+  signup: (email: string, password: string, username: string, role: 'fan' | 'creator', primaryCategoryId?: number) => Promise<void>;
   logout: () => void;
   updateUser: (updates: Partial<User>) => void;
 }
@@ -102,15 +102,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const signup = async (email: string, password: string, username: string, role: 'fan' | 'creator') => {
+  const signup = async (email: string, password: string, username: string, role: 'fan' | 'creator', primaryCategoryId?: number) => {
     setIsLoading(true);
 
     try {
+      const requestBody: any = { email, password, username, role };
+      if (role === 'creator' && primaryCategoryId) {
+        requestBody.primaryCategoryId = primaryCategoryId;
+      }
+
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ email, password, username, role })
+        body: JSON.stringify(requestBody)
       });
 
       if (!response.ok) {

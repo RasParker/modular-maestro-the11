@@ -10,8 +10,8 @@ import path from "path";
 import fs from "fs";
 import { storage } from './storage';
 import { NotificationService } from './notification-service';
-import type { InsertUser, InsertPost, InsertSubscription, InsertSubscriptionTier, InsertComment, InsertNotification, User } from '@shared/schema';
-import { insertUserSchema, insertPostSchema, insertSubscriptionSchema, insertSubscriptionTierSchema, insertCommentSchema, insertReportSchema, insertCreatorPayoutSettingsSchema } from "@shared/schema";
+import type { InsertUser, InsertPost, InsertSubscription, InsertSubscriptionTier, InsertComment, InsertNotification, User, InsertCategory, InsertCreatorCategory } from '@shared/schema';
+import { insertUserSchema, insertPostSchema, insertSubscriptionSchema, insertSubscriptionTierSchema, insertCommentSchema, insertReportSchema, insertCreatorPayoutSettingsSchema, insertCategorySchema, insertCreatorCategorySchema } from "@shared/schema";
 import { db, pool } from './db';
 import { users, posts, comments, post_likes, comment_likes, subscriptions, subscription_tiers, reports, creator_likes, creator_favorites, users as usersTable, posts as postsTable, subscriptions as subscriptionsTable, subscription_tiers as tiersTable, comments as commentsTable, conversations as conversationsTable, messages as messagesTable } from '../shared/schema';
 import { eq, desc, and, gte, lte, count, sum, sql, inArray, asc, like, or, isNull, gt, lt } from 'drizzle-orm';
@@ -185,8 +185,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log('Registration request received:', req.body);
 
+      // Extract category data from request
+      const { primaryCategoryId, ...userData } = req.body;
+
       // Validate input data
-      const validatedData = insertUserSchema.parse(req.body);
+      const validatedData = insertUserSchema.parse(userData);
       console.log('Validated data:', { ...validatedData, password: '[HIDDEN]' });
 
       // Check if user already exists by email
@@ -211,13 +214,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log('Username check error (user probably doesn\'t exist):', error);
       }
 
-      // Create the user
+      // For creators, validate primary category exists
+      if (validatedData.role === 'creator' && primaryCategoryId) {
+        const category = await storage.getCategory(primaryCategoryId);
+        if (!category) {
+          return res.status(400).json({ error: "Invalid category selected" });
+        }
+      }
+
+      // Create the user with primary category
       console.log('Creating user...');
-      const user = await storage.createUser(validatedData);
+      const userDataWithCategory = {
+        ...validatedData,
+        primary_category_id: validatedData.role === 'creator' ? primaryCategoryId : null
+      };
+      const user = await storage.createUser(userDataWithCategory);
       console.log('User created successfully:', user.id);
 
       if (!user) {
         throw new Error('Failed to create user account');
+      }
+
+      // Add creator to category if category was selected
+      if (validatedData.role === 'creator' && primaryCategoryId) {
+        try {
+          await storage.addCreatorToCategory({
+            creator_id: user.id,
+            category_id: primaryCategoryId,
+            is_primary: true
+          });
+          console.log('Creator added to primary category:', primaryCategoryId);
+        } catch (error) {
+          console.error('Failed to add creator to category:', error);
+          // Don't fail registration if category assignment fails
+        }
       }
 
       const { password: _, ...userWithoutPassword } = user;
@@ -1254,6 +1284,160 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(creators);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch creators" });
+    }
+  });
+
+  // Category routes
+  app.get("/api/categories", async (req, res) => {
+    try {
+      const categories = await storage.getActiveCategories();
+      res.json(categories);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch categories" });
+    }
+  });
+
+  app.get("/api/categories/all", async (req, res) => {
+    try {
+      const categories = await storage.getCategories();
+      res.json(categories);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch all categories" });
+    }
+  });
+
+  app.get("/api/categories/:id", async (req, res) => {
+    try {
+      const categoryId = parseInt(req.params.id);
+      const category = await storage.getCategory(categoryId);
+      
+      if (!category) {
+        return res.status(404).json({ error: "Category not found" });
+      }
+      
+      res.json(category);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch category" });
+    }
+  });
+
+  app.get("/api/categories/:id/creators", async (req, res) => {
+    try {
+      const categoryId = parseInt(req.params.id);
+      const creators = await storage.getCreatorsByCategory(categoryId);
+      res.json(creators);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch creators for category" });
+    }
+  });
+
+  app.post("/api/categories", async (req, res) => {
+    try {
+      const categoryData = insertCategorySchema.parse(req.body);
+      const category = await storage.createCategory(categoryData);
+      res.status(201).json(category);
+    } catch (error) {
+      console.error('Create category error:', error);
+      res.status(400).json({ error: "Failed to create category" });
+    }
+  });
+
+  app.put("/api/categories/:id", async (req, res) => {
+    try {
+      const categoryId = parseInt(req.params.id);
+      const updates = req.body;
+      const category = await storage.updateCategory(categoryId, updates);
+      
+      if (!category) {
+        return res.status(404).json({ error: "Category not found" });
+      }
+      
+      res.json(category);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update category" });
+    }
+  });
+
+  app.delete("/api/categories/:id", async (req, res) => {
+    try {
+      const categoryId = parseInt(req.params.id);
+      const deleted = await storage.deleteCategory(categoryId);
+      
+      if (!deleted) {
+        return res.status(404).json({ error: "Category not found" });
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete category" });
+    }
+  });
+
+  // Creator category routes
+  app.get("/api/creators/:id/categories", async (req, res) => {
+    try {
+      const creatorId = parseInt(req.params.id);
+      const categories = await storage.getCreatorCategories(creatorId);
+      res.json(categories);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch creator categories" });
+    }
+  });
+
+  app.get("/api/creators/:id/primary-category", async (req, res) => {
+    try {
+      const creatorId = parseInt(req.params.id);
+      const category = await storage.getCreatorPrimaryCategory(creatorId);
+      res.json(category || null);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch creator primary category" });
+    }
+  });
+
+  app.post("/api/creators/:id/categories", async (req, res) => {
+    try {
+      const creatorId = parseInt(req.params.id);
+      const creatorCategoryData = insertCreatorCategorySchema.parse({
+        ...req.body,
+        creator_id: creatorId
+      });
+      const creatorCategory = await storage.addCreatorToCategory(creatorCategoryData);
+      res.status(201).json(creatorCategory);
+    } catch (error) {
+      console.error('Add creator to category error:', error);
+      res.status(400).json({ error: "Failed to add creator to category" });
+    }
+  });
+
+  app.delete("/api/creators/:id/categories/:categoryId", async (req, res) => {
+    try {
+      const creatorId = parseInt(req.params.id);
+      const categoryId = parseInt(req.params.categoryId);
+      const removed = await storage.removeCreatorFromCategory(creatorId, categoryId);
+      
+      if (!removed) {
+        return res.status(404).json({ error: "Creator category association not found" });
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to remove creator from category" });
+    }
+  });
+
+  app.put("/api/creators/:id/primary-category", async (req, res) => {
+    try {
+      const creatorId = parseInt(req.params.id);
+      const { categoryId } = req.body;
+      const updated = await storage.updateCreatorPrimaryCategory(creatorId, categoryId);
+      
+      if (!updated) {
+        return res.status(400).json({ error: "Failed to update primary category" });
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update creator primary category" });
     }
   });
 

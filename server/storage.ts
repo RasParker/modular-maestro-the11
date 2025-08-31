@@ -14,6 +14,8 @@ import {
   notifications,
   notification_preferences,
   reports,
+  categories,
+  creator_categories,
   type User,
   type InsertUser,
   type Post,
@@ -37,7 +39,11 @@ import {
   type NotificationPreferences,
   type InsertNotificationPreferences,
   type Report,
-  type InsertReport
+  type InsertReport,
+  type Category,
+  type InsertCategory,
+  type CreatorCategory,
+  type InsertCreatorCategory
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, sql, desc, gte, lte } from "drizzle-orm";
@@ -145,6 +151,23 @@ export interface IStorage {
   getSystemHealth(): Promise<any>;
 
   getUserSettings(userId: number): Promise<any>;
+
+  // Category methods
+  getCategories(): Promise<Category[]>;
+  getActiveCategories(): Promise<Category[]>;
+  getCategory(id: number): Promise<Category | undefined>;
+  getCategoryBySlug(slug: string): Promise<Category | undefined>;
+  createCategory(category: InsertCategory): Promise<Category>;
+  updateCategory(id: number, updates: Partial<Category>): Promise<Category | undefined>;
+  deleteCategory(id: number): Promise<boolean>;
+
+  // Creator category methods
+  getCreatorCategories(creatorId: number): Promise<CreatorCategory[]>;
+  getCreatorPrimaryCategory(creatorId: number): Promise<Category | undefined>;
+  addCreatorToCategory(creatorCategory: InsertCreatorCategory): Promise<CreatorCategory>;
+  removeCreatorFromCategory(creatorId: number, categoryId: number): Promise<boolean>;
+  updateCreatorPrimaryCategory(creatorId: number, categoryId: number): Promise<boolean>;
+  getCreatorsByCategory(categoryId: number): Promise<User[]>;
 }
 
 // Database Storage Implementation
@@ -1311,6 +1334,217 @@ export class DatabaseStorage implements IStorage {
       return updatedUser;
     } catch (error) {
       console.error('Error updating user profile:', error);
+      throw error;
+    }
+  }
+
+  // Category methods implementation
+  async getCategories(): Promise<Category[]> {
+    try {
+      const result = await db.select().from(categories).orderBy(categories.name);
+      return result;
+    } catch (error) {
+      console.error('Error getting categories:', error);
+      throw error;
+    }
+  }
+
+  async getActiveCategories(): Promise<Category[]> {
+    try {
+      const result = await db.select().from(categories)
+        .where(eq(categories.is_active, true))
+        .orderBy(categories.name);
+      return result;
+    } catch (error) {
+      console.error('Error getting active categories:', error);
+      throw error;
+    }
+  }
+
+  async getCategory(id: number): Promise<Category | undefined> {
+    try {
+      const [category] = await db.select().from(categories).where(eq(categories.id, id));
+      return category || undefined;
+    } catch (error) {
+      console.error('Error getting category:', error);
+      throw error;
+    }
+  }
+
+  async getCategoryBySlug(slug: string): Promise<Category | undefined> {
+    try {
+      const [category] = await db.select().from(categories).where(eq(categories.slug, slug));
+      return category || undefined;
+    } catch (error) {
+      console.error('Error getting category by slug:', error);
+      throw error;
+    }
+  }
+
+  async createCategory(category: InsertCategory): Promise<Category> {
+    try {
+      const [newCategory] = await db.insert(categories).values(category).returning();
+      return newCategory;
+    } catch (error) {
+      console.error('Error creating category:', error);
+      throw error;
+    }
+  }
+
+  async updateCategory(id: number, updates: Partial<Category>): Promise<Category | undefined> {
+    try {
+      const [updatedCategory] = await db
+        .update(categories)
+        .set({ ...updates, updated_at: new Date() })
+        .where(eq(categories.id, id))
+        .returning();
+      return updatedCategory || undefined;
+    } catch (error) {
+      console.error('Error updating category:', error);
+      throw error;
+    }
+  }
+
+  async deleteCategory(id: number): Promise<boolean> {
+    try {
+      await db.delete(categories).where(eq(categories.id, id));
+      return true;
+    } catch (error) {
+      console.error('Error deleting category:', error);
+      return false;
+    }
+  }
+
+  // Creator category methods implementation
+  async getCreatorCategories(creatorId: number): Promise<CreatorCategory[]> {
+    try {
+      const result = await db.select().from(creator_categories)
+        .where(eq(creator_categories.creator_id, creatorId))
+        .orderBy(desc(creator_categories.is_primary));
+      return result;
+    } catch (error) {
+      console.error('Error getting creator categories:', error);
+      throw error;
+    }
+  }
+
+  async getCreatorPrimaryCategory(creatorId: number): Promise<Category | undefined> {
+    try {
+      const [result] = await db.select({
+        id: categories.id,
+        name: categories.name,
+        slug: categories.slug,
+        description: categories.description,
+        icon: categories.icon,
+        color: categories.color,
+        is_active: categories.is_active,
+        created_at: categories.created_at,
+        updated_at: categories.updated_at,
+      })
+      .from(creator_categories)
+      .leftJoin(categories, eq(creator_categories.category_id, categories.id))
+      .where(and(
+        eq(creator_categories.creator_id, creatorId),
+        eq(creator_categories.is_primary, true)
+      ));
+      return result || undefined;
+    } catch (error) {
+      console.error('Error getting creator primary category:', error);
+      throw error;
+    }
+  }
+
+  async addCreatorToCategory(creatorCategory: InsertCreatorCategory): Promise<CreatorCategory> {
+    try {
+      const [newCreatorCategory] = await db.insert(creator_categories).values(creatorCategory).returning();
+      return newCreatorCategory;
+    } catch (error) {
+      console.error('Error adding creator to category:', error);
+      throw error;
+    }
+  }
+
+  async removeCreatorFromCategory(creatorId: number, categoryId: number): Promise<boolean> {
+    try {
+      await db.delete(creator_categories)
+        .where(and(
+          eq(creator_categories.creator_id, creatorId),
+          eq(creator_categories.category_id, categoryId)
+        ));
+      return true;
+    } catch (error) {
+      console.error('Error removing creator from category:', error);
+      return false;
+    }
+  }
+
+  async updateCreatorPrimaryCategory(creatorId: number, categoryId: number): Promise<boolean> {
+    try {
+      // First, unset any existing primary category
+      await db.update(creator_categories)
+        .set({ is_primary: false })
+        .where(eq(creator_categories.creator_id, creatorId));
+
+      // Then set the new primary category
+      await db.update(creator_categories)
+        .set({ is_primary: true })
+        .where(and(
+          eq(creator_categories.creator_id, creatorId),
+          eq(creator_categories.category_id, categoryId)
+        ));
+
+      // Also update the users table primary_category_id
+      await db.update(users)
+        .set({ primary_category_id: categoryId, updated_at: new Date() })
+        .where(eq(users.id, creatorId));
+
+      return true;
+    } catch (error) {
+      console.error('Error updating creator primary category:', error);
+      return false;
+    }
+  }
+
+  async getCreatorsByCategory(categoryId: number): Promise<User[]> {
+    try {
+      const result = await db.select({
+        id: users.id,
+        username: users.username,
+        email: users.email,
+        password: users.password,
+        avatar: users.avatar,
+        role: users.role,
+        status: users.status,
+        display_name: users.display_name,
+        bio: users.bio,
+        cover_image: users.cover_image,
+        social_links: users.social_links,
+        verified: users.verified,
+        total_subscribers: users.total_subscribers,
+        total_earnings: users.total_earnings,
+        commission_rate: users.commission_rate,
+        comments_enabled: users.comments_enabled,
+        auto_post_enabled: users.auto_post_enabled,
+        watermark_enabled: users.watermark_enabled,
+        profile_discoverable: users.profile_discoverable,
+        activity_status_visible: users.activity_status_visible,
+        is_online: users.is_online,
+        last_seen: users.last_seen,
+        primary_category_id: users.primary_category_id,
+        created_at: users.created_at,
+        updated_at: users.updated_at,
+      })
+      .from(users)
+      .leftJoin(creator_categories, eq(users.id, creator_categories.creator_id))
+      .where(and(
+        eq(users.role, 'creator'),
+        eq(users.status, 'active'),
+        eq(creator_categories.category_id, categoryId)
+      ))
+      .orderBy(desc(users.total_subscribers));
+      return result;
+    } catch (error) {
+      console.error('Error getting creators by category:', error);
       throw error;
     }
   }

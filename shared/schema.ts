@@ -30,8 +30,29 @@ export const users = pgTable("users", {
   activity_status_visible: boolean("activity_status_visible").notNull().default(false), // Show when user is online
   is_online: boolean("is_online").notNull().default(false), // Current online status
   last_seen: timestamp("last_seen"), // Last activity timestamp
+  primary_category_id: integer("primary_category_id"),
   created_at: timestamp("created_at").notNull().defaultNow(),
   updated_at: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const categories = pgTable("categories", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull().unique(),
+  slug: text("slug").notNull().unique(),
+  description: text("description"),
+  icon: text("icon").notNull(), // Lucide icon name
+  color: text("color").notNull().default("#6366f1"), // Hex color for category
+  is_active: boolean("is_active").notNull().default(true),
+  created_at: timestamp("created_at").notNull().defaultNow(),
+  updated_at: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const creator_categories = pgTable("creator_categories", {
+  id: serial("id").primaryKey(),
+  creator_id: integer("creator_id").notNull(),
+  category_id: integer("category_id").notNull(),
+  is_primary: boolean("is_primary").notNull().default(false),
+  created_at: timestamp("created_at").notNull().defaultNow(),
 });
 
 export const posts = pgTable('posts', {
@@ -262,6 +283,11 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   creator_likes_received: many(creator_likes, { relationName: "creatorLikes" }),
   favorite_creators: many(creator_favorites, { relationName: "fanFavorites" }),
   creator_favorites_received: many(creator_favorites, { relationName: "creatorFavorites" }),
+  primary_category: one(categories, {
+    fields: [users.primary_category_id],
+    references: [categories.id],
+  }),
+  creator_categories: many(creator_categories),
 }));
 
 export const postsRelations = relations(posts, ({ one, many }) => ({
@@ -386,6 +412,22 @@ export const creatorLikesRelations = relations(creator_likes, ({ one }) => ({
   }),
 }));
 
+export const categoriesRelations = relations(categories, ({ many }) => ({
+  creator_categories: many(creator_categories),
+  primary_users: many(users),
+}));
+
+export const creatorCategoriesRelations = relations(creator_categories, ({ one }) => ({
+  creator: one(users, {
+    fields: [creator_categories.creator_id],
+    references: [users.id],
+  }),
+  category: one(categories, {
+    fields: [creator_categories.category_id],
+    references: [categories.id],
+  }),
+}));
+
 export const creatorFavoritesRelations = relations(creator_favorites, ({ one }) => ({
   fan: one(users, {
     fields: [creator_favorites.fan_id],
@@ -407,6 +449,7 @@ export const insertUserSchema = createInsertSchema(users).pick({
   bio: true,
   cover_image: true,
   social_links: true,
+  primary_category_id: true,
 });
 
 export const insertPostSchema = createInsertSchema(posts).pick({
@@ -565,6 +608,21 @@ export type Notification = typeof notifications.$inferSelect;
 export type InsertNotificationPreferences = z.infer<typeof insertNotificationPreferencesSchema>;
 export type NotificationPreferences = typeof notification_preferences.$inferSelect;
 
+export const insertCategorySchema = createInsertSchema(categories).pick({
+  name: true,
+  slug: true,
+  description: true,
+  icon: true,
+  color: true,
+  is_active: true,
+});
+
+export const insertCreatorCategorySchema = createInsertSchema(creator_categories).pick({
+  creator_id: true,
+  category_id: true,
+  is_primary: true,
+});
+
 export const insertCreatorLikeSchema = createInsertSchema(creator_likes).pick({
   fan_id: true,
   creator_id: true,
@@ -574,6 +632,11 @@ export const insertCreatorFavoriteSchema = createInsertSchema(creator_favorites)
   fan_id: true,
   creator_id: true,
 });
+
+export type InsertCategory = z.infer<typeof insertCategorySchema>;
+export type Category = typeof categories.$inferSelect;
+export type InsertCreatorCategory = z.infer<typeof insertCreatorCategorySchema>;
+export type CreatorCategory = typeof creator_categories.$inferSelect;
 
 export type InsertCreatorLike = z.infer<typeof insertCreatorLikeSchema>;
 export type CreatorLike = typeof creator_likes.$inferSelect;
