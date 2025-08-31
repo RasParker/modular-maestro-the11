@@ -18,7 +18,8 @@ import {
   Settings,
   BarChart3,
   Crown,
-  Flag
+  Flag,
+  Palette
 } from 'lucide-react';
 
 export const AdminDashboard: React.FC = () => {
@@ -175,6 +176,12 @@ export const AdminDashboard: React.FC = () => {
                     <Link to="/admin/content">
                       <FileText className="w-6 h-6" />
                       Review Content
+                    </Link>
+                  </Button>
+                  <Button variant="outline" size="lg" className="h-20 flex-col gap-3 px-4" asChild>
+                    <Link to="/admin/categories">
+                      <Palette className="w-6 h-6" />
+                      Categories
                     </Link>
                   </Button>
                   <Button variant="outline" size="lg" className="h-20 flex-col gap-3 px-4 relative" asChild>

@@ -153,13 +153,15 @@ export interface IStorage {
   getUserSettings(userId: number): Promise<any>;
 
   // Category methods
-  getCategories(): Promise<Category[]>;
+  getCategories(includeInactive?: boolean): Promise<Category[]>;
   getActiveCategories(): Promise<Category[]>;
   getCategory(id: number): Promise<Category | undefined>;
   getCategoryBySlug(slug: string): Promise<Category | undefined>;
   createCategory(category: InsertCategory): Promise<Category>;
   updateCategory(id: number, updates: Partial<Category>): Promise<Category | undefined>;
   deleteCategory(id: number): Promise<boolean>;
+  toggleCategoryStatus(categoryId: number): Promise<Category | undefined>;
+  getCategoryStats(): Promise<{ creatorCounts: { [key: string]: number }; totalCategories: number; activeCategories: number }>;
 
   // Creator category methods
   getCreatorCategories(creatorId: number): Promise<CreatorCategory[]>;
@@ -1339,10 +1341,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Category methods implementation
-  async getCategories(): Promise<Category[]> {
+  async getCategories(includeInactive = false): Promise<Category[]> {
     try {
-      const result = await db.select().from(categories).orderBy(categories.name);
-      return result;
+      if (includeInactive) {
+        return await this.db.select().from(categories).orderBy(categories.name);
+      }
+      return await this.db.select().from(categories).where(eq(categories.is_active, true)).orderBy(categories.name);
     } catch (error) {
       console.error('Error getting categories:', error);
       throw error;
@@ -1381,47 +1385,93 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  async createCategory(category: InsertCategory): Promise<Category> {
+  async createCategory(categoryData: InsertCategory): Promise<Category> {
     try {
-      const [newCategory] = await db.insert(categories).values(category).returning();
-      return newCategory;
+      const [category] = await this.db.insert(categories).values(categoryData).returning();
+      return category;
     } catch (error) {
       console.error('Error creating category:', error);
       throw error;
     }
   }
 
-  async updateCategory(id: number, updates: Partial<Category>): Promise<Category | undefined> {
+  async updateCategory(categoryId: number, categoryData: Partial<InsertCategory>): Promise<Category | undefined> {
     try {
-      const [updatedCategory] = await db
+      const [updated] = await this.db
         .update(categories)
-        .set({ ...updates, updated_at: new Date() })
-        .where(eq(categories.id, id))
+        .set({ ...categoryData, updated_at: new Date() })
+        .where(eq(categories.id, categoryId))
         .returning();
-      return updatedCategory || undefined;
+      return updated;
     } catch (error) {
       console.error('Error updating category:', error);
       throw error;
     }
   }
 
-  async deleteCategory(id: number): Promise<boolean> {
+  async deleteCategory(categoryId: number): Promise<boolean> {
     try {
-      await db.delete(categories).where(eq(categories.id, id));
+      // Check if category is in use
+      const [creatorCount] = await this.db
+        .select({ count: sql<number>`count(*)` })
+        .from(creator_categories)
+        .where(eq(creator_categories.category_id, categoryId));
+
+      if (creatorCount.count > 0) {
+        return false; // Cannot delete category in use
+      }
+
+      await this.db.delete(categories).where(eq(categories.id, categoryId));
       return true;
     } catch (error) {
       console.error('Error deleting category:', error);
-      return false;
+      throw error;
+    }
+  }
+
+  async toggleCategoryStatus(categoryId: number): Promise<Category | undefined> {
+    try {
+      const [category] = await this.db
+        .select()
+        .from(categories)
+        .where(eq(categories.id, categoryId));
+
+      if (!category) return false;
+
+      const [updated] = await this.db
+        .update(categories)
+        .set({
+          is_active: !category.is_active,
+          updated_at: new Date()
+        })
+        .where(eq(categories.id, categoryId))
+        .returning();
+
+      return updated;
+    } catch (error) {
+      console.error('Error toggling category status:', error);
+      throw error;
     }
   }
 
   // Creator category methods implementation
   async getCreatorCategories(creatorId: number): Promise<CreatorCategory[]> {
     try {
-      const result = await db.select().from(creator_categories)
+      return await this.db
+        .select({
+          id: creator_categories.id,
+          category_id: creator_categories.category_id,
+          is_primary: creator_categories.is_primary,
+          category_name: categories.name,
+          category_description: categories.description,
+          category_icon: categories.icon,
+          category_color: categories.color,
+          created_at: creator_categories.created_at
+        })
+        .from(creator_categories)
+        .innerJoin(categories, eq(creator_categories.category_id, categories.id))
         .where(eq(creator_categories.creator_id, creatorId))
-        .orderBy(desc(creator_categories.is_primary));
-      return result;
+        .orderBy(desc(creator_categories.is_primary), categories.name);
     } catch (error) {
       console.error('Error getting creator categories:', error);
       throw error;
@@ -1545,6 +1595,40 @@ export class DatabaseStorage implements IStorage {
       return result;
     } catch (error) {
       console.error('Error getting creators by category:', error);
+      throw error;
+    }
+  }
+
+  async getCategoryStats(): Promise<{ creatorCounts: { [key: string]: number }; totalCategories: number; activeCategories: number }> {
+    try {
+      // Get creator count per category
+      const creatorCounts = await this.db
+        .select({
+          category_name: categories.name,
+          creator_count: sql<number>`count(${creator_categories.creator_id})`
+        })
+        .from(categories)
+        .leftJoin(creator_categories, eq(categories.id, creator_categories.category_id))
+        .groupBy(categories.id, categories.name)
+        .orderBy(categories.name);
+
+      // Convert to object for easier access
+      const counts: { [key: string]: number } = {};
+      creatorCounts.forEach(row => {
+        counts[row.category_name] = row.creator_count;
+      });
+
+      return {
+        creatorCounts: counts,
+        totalCategories: creatorCounts.length,
+        activeCategories: await this.db
+          .select({ count: sql<number>`count(*)` })
+          .from(categories)
+          .where(eq(categories.is_active, true))
+          .then(result => result[0].count)
+      };
+    } catch (error) {
+      console.error('Error getting category stats:', error);
       throw error;
     }
   }

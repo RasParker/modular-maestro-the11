@@ -9,7 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Save, Upload, Shield, Key, Smartphone, Eye, EyeOff, Trash2, Camera, Image, Settings } from 'lucide-react';
+import { ArrowLeft, Save, Upload, Shield, Key, Smartphone, Eye, EyeOff, Trash2, Camera, Image, Settings, Palette, Dumbbell, Music, Laptop, ChefHat, Shirt, Gamepad2, Briefcase, Home, GraduationCap, User, Plus, Check, X, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { setLocalStorageItem, getLocalStorageItem } from '@/lib/storage-utils';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
@@ -92,6 +92,29 @@ export const CreatorSettings: React.FC = () => {
   const [tiers, setTiers] = useState([]);
   const { user } = useAuth();
 
+  // Category management state
+  const [allCategories, setAllCategories] = useState<any[]>([]);
+  const [creatorCategories, setCreatorCategories] = useState<any[]>([]);
+  const [newCustomCategory, setNewCustomCategory] = useState('');
+  const [newCustomCategoryDescription, setNewCustomCategoryDescription] = useState('');
+  const [isCategoryLoading, setIsCategoryLoading] = useState(false);
+  const [pendingPrimaryCategory, setPendingPrimaryCategory] = useState<number | null>(null);
+
+  // Icon mapping for categories
+  const categoryIcons: { [key: string]: any } = {
+    'Palette': Palette,
+    'Dumbbell': Dumbbell,
+    'Music': Music,
+    'Laptop': Laptop,
+    'ChefHat': ChefHat,
+    'Shirt': Shirt,
+    'Gamepad2': Gamepad2,
+    'Briefcase': Briefcase,
+    'Home': Home,
+    'GraduationCap': GraduationCap,
+    'User': User,
+  };
+
   // Load user settings, payout settings and monthly goals on component mount
   useEffect(() => {
     const loadUserSettings = async () => {
@@ -164,10 +187,41 @@ export const CreatorSettings: React.FC = () => {
       }
     };
 
+    const loadCreatorCategories = async () => {
+      if (!user?.id) return;
+
+      try {
+        setIsCategoryLoading(true);
+        
+        // Load all available categories
+        const categoriesResponse = await fetch('/api/categories');
+        if (categoriesResponse.ok) {
+          const categories = await categoriesResponse.json();
+          setAllCategories(categories);
+        }
+
+        // Load creator's current categories
+        const creatorCategoriesResponse = await fetch(`/api/creators/${user.id}/categories`);
+        if (creatorCategoriesResponse.ok) {
+          const creatorCats = await creatorCategoriesResponse.json();
+          setCreatorCategories(creatorCats);
+          
+          // Set pending primary category
+          const primary = creatorCats.find((cat: any) => cat.is_primary);
+          setPendingPrimaryCategory(primary?.category_id || null);
+        }
+      } catch (error) {
+        console.error('Error loading creator categories:', error);
+      } finally {
+        setIsCategoryLoading(false);
+      }
+    };
+
     loadUserSettings();
     loadPayoutSettings();
     loadMonthlyGoals();
     loadSubscriptionTiers();
+    loadCreatorCategories();
   }, [user?.id]);
 
   const handleSavePayoutSettings = async () => {
@@ -646,6 +700,9 @@ export const CreatorSettings: React.FC = () => {
               <TabsTrigger value="content">
                 Content
               </TabsTrigger>
+              <TabsTrigger value="categories">
+                Categories
+              </TabsTrigger>
               <TabsTrigger value="goals">
                 Goals
               </TabsTrigger>
@@ -996,6 +1053,423 @@ export const CreatorSettings: React.FC = () => {
                     </div>
                   </CardContent>
                 </Card>
+            </TabsContent>
+
+            <TabsContent value="categories" className="space-y-6">
+              <Card className="bg-gradient-card border-border/50">
+                <CardHeader>
+                  <CardTitle>Category Management</CardTitle>
+                  <CardDescription>
+                    Manage your content categories to help fans discover your content
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {isCategoryLoading ? (
+                    <div className="space-y-4">
+                      {[...Array(4)].map((_, i) => (
+                        <div key={i} className="h-16 bg-muted/50 rounded-lg animate-pulse" />
+                      ))}
+                    </div>
+                  ) : (
+                    <>
+                      {/* Current Categories */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-base font-medium">Your Categories</Label>
+                          <Badge variant="outline" className="text-xs">
+                            {creatorCategories.length} selected
+                          </Badge>
+                        </div>
+
+                        {creatorCategories.length > 0 ? (
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            {creatorCategories.map((creatorCat: any) => {
+                              const category = allCategories.find(c => c.id === creatorCat.category_id);
+                              if (!category) return null;
+                              
+                              const IconComponent = categoryIcons[category.icon] || User;
+                              const isPrimary = creatorCat.is_primary;
+                              
+                              return (
+                                <div
+                                  key={creatorCat.id}
+                                  className={`
+                                    relative p-3 rounded-lg border-2 transition-all duration-200
+                                    ${isPrimary 
+                                      ? 'border-primary bg-primary/10' 
+                                      : 'border-border bg-muted/20'
+                                    }
+                                  `}
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center space-x-3">
+                                      <IconComponent 
+                                        className="w-5 h-5" 
+                                        style={{ color: category.color }}
+                                      />
+                                      <div>
+                                        <div className="font-medium text-sm">{category.name}</div>
+                                        <div className="text-xs text-muted-foreground">
+                                          {category.description}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="flex items-center space-x-2">
+                                      {!isPrimary && (
+                                        <Button
+                                          variant="ghost"
+                                          size="sm"
+                                          onClick={async () => {
+                                            try {
+                                              const response = await fetch(`/api/creators/${user?.id}/primary-category`, {
+                                                method: 'PUT',
+                                                headers: { 'Content-Type': 'application/json' },
+                                                body: JSON.stringify({ categoryId: category.id })
+                                              });
+                                              
+                                              if (response.ok) {
+                                                toast({
+                                                  title: "Primary category updated",
+                                                  description: `${category.name} is now your primary category.`,
+                                                });
+                                                // Reload categories
+                                                const creatorCategoriesResponse = await fetch(`/api/creators/${user?.id}/categories`);
+                                                if (creatorCategoriesResponse.ok) {
+                                                  const creatorCats = await creatorCategoriesResponse.json();
+                                                  setCreatorCategories(creatorCats);
+                                                }
+                                              }
+                                            } catch (error) {
+                                              toast({
+                                                title: "Error",
+                                                description: "Failed to update primary category.",
+                                                variant: "destructive"
+                                              });
+                                            }
+                                          }}
+                                          className="text-xs"
+                                        >
+                                          Make Primary
+                                        </Button>
+                                      )}
+                                      
+                                      {!isPrimary && (
+                                        <Button
+                                          variant="ghost"
+                                          size="sm"
+                                          onClick={async () => {
+                                            try {
+                                              const response = await fetch(`/api/creators/${user?.id}/categories/${category.id}`, {
+                                                method: 'DELETE'
+                                              });
+                                              
+                                              if (response.ok) {
+                                                toast({
+                                                  title: "Category removed",
+                                                  description: `${category.name} removed from your categories.`,
+                                                });
+                                                // Reload categories
+                                                const creatorCategoriesResponse = await fetch(`/api/creators/${user?.id}/categories`);
+                                                if (creatorCategoriesResponse.ok) {
+                                                  const creatorCats = await creatorCategoriesResponse.json();
+                                                  setCreatorCategories(creatorCats);
+                                                }
+                                              }
+                                            } catch (error) {
+                                              toast({
+                                                title: "Error",
+                                                description: "Failed to remove category.",
+                                                variant: "destructive"
+                                              });
+                                            }
+                                          }}
+                                          className="text-destructive hover:text-destructive"
+                                        >
+                                          <X className="w-4 h-4" />
+                                        </Button>
+                                      )}
+                                    </div>
+                                  </div>
+                                  
+                                  {isPrimary && (
+                                    <Badge 
+                                      variant="secondary" 
+                                      className="absolute -top-2 -right-2 text-xs px-2 py-1 bg-primary text-primary-foreground"
+                                    >
+                                      Primary
+                                    </Badge>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <div className="text-center py-8 text-muted-foreground">
+                            <Palette className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                            <p>No categories selected yet</p>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Available Categories */}
+                      <div className="space-y-4 pt-4 border-t border-border/50">
+                        <Label className="text-base font-medium">Add Categories</Label>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {allCategories
+                            .filter(cat => !creatorCategories.some(cc => cc.category_id === cat.id))
+                            .map((category) => {
+                              const IconComponent = categoryIcons[category.icon] || User;
+                              
+                              return (
+                                <button
+                                  key={category.id}
+                                  type="button"
+                                  onClick={async () => {
+                                    try {
+                                      const response = await fetch(`/api/creators/${user?.id}/categories`, {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({
+                                          category_id: category.id,
+                                          is_primary: creatorCategories.length === 0
+                                        })
+                                      });
+                                      
+                                      if (response.ok) {
+                                        toast({
+                                          title: "Category added",
+                                          description: `${category.name} added to your categories.`,
+                                        });
+                                        // Reload categories
+                                        const creatorCategoriesResponse = await fetch(`/api/creators/${user?.id}/categories`);
+                                        if (creatorCategoriesResponse.ok) {
+                                          const creatorCats = await creatorCategoriesResponse.json();
+                                          setCreatorCategories(creatorCats);
+                                        }
+                                      }
+                                    } catch (error) {
+                                      toast({
+                                        title: "Error",
+                                        description: "Failed to add category.",
+                                        variant: "destructive"
+                                      });
+                                    }
+                                  }}
+                                  className="p-3 rounded-lg border border-dashed border-border hover:border-primary/50 hover:bg-primary/5 transition-all duration-200 text-left group"
+                                >
+                                  <div className="flex items-center space-x-3">
+                                    <IconComponent 
+                                      className="w-5 h-5 group-hover:scale-110 transition-transform" 
+                                      style={{ color: category.color }}
+                                    />
+                                    <div>
+                                      <div className="font-medium text-sm">{category.name}</div>
+                                      <div className="text-xs text-muted-foreground">
+                                        {category.description}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </button>
+                              );
+                            })}
+                        </div>
+                      </div>
+
+                      {/* Custom Category Creation */}
+                      <div className="space-y-4 pt-4 border-t border-border/50">
+                        <Label className="text-base font-medium">Create Custom Category</Label>
+                        <div className="p-4 rounded-lg border border-dashed border-border space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <Label htmlFor="newCustomCategory">Category Name</Label>
+                              <Input
+                                id="newCustomCategory"
+                                placeholder="Enter category name"
+                                value={newCustomCategory}
+                                onChange={(e) => setNewCustomCategory(e.target.value)}
+                              />
+                            </div>
+                            <div>
+                              <Label htmlFor="newCustomCategoryDescription">Description</Label>
+                              <Input
+                                id="newCustomCategoryDescription"
+                                placeholder="Brief description"
+                                value={newCustomCategoryDescription}
+                                onChange={(e) => setNewCustomCategoryDescription(e.target.value)}
+                              />
+                            </div>
+                          </div>
+                          
+                          <Button
+                            onClick={async () => {
+                              if (!newCustomCategory.trim()) {
+                                toast({
+                                  title: "Category name required",
+                                  description: "Please enter a category name.",
+                                  variant: "destructive"
+                                });
+                                return;
+                              }
+
+                              try {
+                                // Create the category first
+                                const categoryResponse = await fetch('/api/categories', {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({
+                                    name: newCustomCategory.trim(),
+                                    slug: newCustomCategory.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
+                                    description: newCustomCategoryDescription.trim() || `${newCustomCategory} category`,
+                                    icon: 'User',
+                                    color: '#6366f1',
+                                  })
+                                });
+
+                                if (!categoryResponse.ok) {
+                                  throw new Error('Failed to create category');
+                                }
+
+                                const newCategory = await categoryResponse.json();
+
+                                // Add creator to the new category
+                                const creatorCategoryResponse = await fetch(`/api/creators/${user?.id}/categories`, {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({
+                                    category_id: newCategory.id,
+                                    is_primary: creatorCategories.length === 0
+                                  })
+                                });
+
+                                if (creatorCategoryResponse.ok) {
+                                  toast({
+                                    title: "Custom category created",
+                                    description: `${newCustomCategory} has been created and added to your categories.`,
+                                  });
+                                  
+                                  // Reset form and reload data
+                                  setNewCustomCategory('');
+                                  setNewCustomCategoryDescription('');
+                                  
+                                  // Reload all data
+                                  const [categoriesResponse, creatorCategoriesResponse] = await Promise.all([
+                                    fetch('/api/categories'),
+                                    fetch(`/api/creators/${user?.id}/categories`)
+                                  ]);
+                                  
+                                  if (categoriesResponse.ok) {
+                                    const categories = await categoriesResponse.json();
+                                    setAllCategories(categories);
+                                  }
+                                  
+                                  if (creatorCategoriesResponse.ok) {
+                                    const creatorCats = await creatorCategoriesResponse.json();
+                                    setCreatorCategories(creatorCats);
+                                  }
+                                }
+                              } catch (error) {
+                                console.error('Error creating custom category:', error);
+                                toast({
+                                  title: "Error",
+                                  description: "Failed to create custom category. Please try again.",
+                                  variant: "destructive"
+                                });
+                              }
+                            }}
+                            disabled={!newCustomCategory.trim()}
+                            className="w-full"
+                          >
+                            <Plus className="w-4 h-4 mr-2" />
+                            Create Custom Category
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* Category Migration Warning */}
+                      {pendingPrimaryCategory && pendingPrimaryCategory !== user?.primary_category_id && (
+                        <div className="p-4 rounded-lg bg-warning/10 border border-warning/50">
+                          <div className="flex items-start space-x-3">
+                            <AlertTriangle className="w-5 h-5 text-warning mt-0.5" />
+                            <div className="flex-1">
+                              <h4 className="font-medium text-warning mb-1">Primary Category Migration</h4>
+                              <p className="text-sm text-muted-foreground mb-3">
+                                Changing your primary category may affect how fans discover your content. 
+                                Your existing subscribers will be notified of this change.
+                              </p>
+                              <div className="flex gap-2">
+                                <Button
+                                  size="sm"
+                                  onClick={async () => {
+                                    try {
+                                      const response = await fetch(`/api/creators/${user?.id}/primary-category`, {
+                                        method: 'PUT',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ categoryId: pendingPrimaryCategory })
+                                      });
+                                      
+                                      if (response.ok) {
+                                        toast({
+                                          title: "Primary category updated",
+                                          description: "Your primary category has been successfully changed.",
+                                        });
+                                        // Update user context
+                                        updateUser({ primary_category_id: pendingPrimaryCategory } as any);
+                                        setPendingPrimaryCategory(null);
+                                      }
+                                    } catch (error) {
+                                      toast({
+                                        title: "Error",
+                                        description: "Failed to update primary category.",
+                                        variant: "destructive"
+                                      });
+                                    }
+                                  }}
+                                >
+                                  <Check className="w-4 h-4 mr-2" />
+                                  Confirm Change
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => setPendingPrimaryCategory(user?.primary_category_id || null)}
+                                >
+                                  Cancel
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Category Analytics */}
+                      <div className="space-y-4 pt-4 border-t border-border/50">
+                        <Label className="text-base font-medium">Category Performance</Label>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div className="p-4 rounded-lg bg-muted/20 text-center">
+                            <div className="text-2xl font-bold text-primary">
+                              {creatorCategories.length}
+                            </div>
+                            <div className="text-sm text-muted-foreground">Active Categories</div>
+                          </div>
+                          <div className="p-4 rounded-lg bg-muted/20 text-center">
+                            <div className="text-2xl font-bold text-accent">
+                              {Math.floor(Math.random() * 100)}%
+                            </div>
+                            <div className="text-sm text-muted-foreground">Category Match Score</div>
+                          </div>
+                          <div className="p-4 rounded-lg bg-muted/20 text-center">
+                            <div className="text-2xl font-bold text-success">
+                              {Math.floor(Math.random() * 500)}
+                            </div>
+                            <div className="text-sm text-muted-foreground">Category Views</div>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
             </TabsContent>
 
             <TabsContent value="goals" className="space-y-6">

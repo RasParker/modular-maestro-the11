@@ -43,6 +43,7 @@ const ManageUsers = React.lazy(() => import('@/pages/admin/ManageUsers').then(m 
 const ReviewContent = React.lazy(() => import('@/pages/admin/ReviewContent').then(m => ({ default: m.ReviewContent })));
 const Reports = React.lazy(() => import('@/pages/admin/Reports').then(m => ({ default: m.Reports })));
 const AdminAnalytics = React.lazy(() => import('@/pages/admin/AdminAnalytics'));
+const ManageCategories = React.lazy(() => import('@/pages/admin/ManageCategories'));
 
 // Payment pages
 const PaymentCallback = React.lazy(() => import('@/pages/PaymentCallback'));
@@ -112,11 +113,12 @@ function App() {
               {/* Admin Routes */}
               <Route path="/admin" element={<AdminRedirect />} />
               <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
-              <Route path="/admin/settings" element={<ProtectedRoute allowedRoles={['admin']}><AdminSettings /></ProtectedRoute>} />
               <Route path="/admin/users" element={<ProtectedRoute allowedRoles={['admin']}><ManageUsers /></ProtectedRoute>} />
               <Route path="/admin/content" element={<ProtectedRoute allowedRoles={['admin']}><ReviewContent /></ProtectedRoute>} />
               <Route path="/admin/reports" element={<ProtectedRoute allowedRoles={['admin']}><Reports /></ProtectedRoute>} />
+              <Route path="/admin/categories" element={<ProtectedRoute allowedRoles={['admin']}><ManageCategories /></ProtectedRoute>} />
               <Route path="/admin/analytics" element={<ProtectedRoute allowedRoles={['admin']}><AdminAnalytics /></ProtectedRoute>} />
+              <Route path="/admin/settings" element={<ProtectedRoute allowedRoles={['admin']}><AdminSettings /></ProtectedRoute>} />
               <Route path="/admin/notifications" element={<ProtectedRoute allowedRoles={['admin']}><Notifications /></ProtectedRoute>} />
 
               {/* Default route */}

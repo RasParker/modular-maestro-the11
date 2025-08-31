@@ -86,4 +86,18 @@ router.get('/system-health', async (req, res) => {
   }
 });
 
+// Get category statistics for admin
+router.get('/category-stats', async (req, res) => {
+  try {
+    const stats = await storage.getCategoryStats();
+    res.json(stats);
+  } catch (error: any) {
+    console.error('Error fetching category stats:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to fetch category statistics'
+    });
+  }
+});
+
 export default router;
