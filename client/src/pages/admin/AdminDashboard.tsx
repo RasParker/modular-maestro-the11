@@ -178,12 +178,12 @@ export const AdminDashboard: React.FC = () => {
                       Review Content
                     </Link>
                   </Button>
-                  <Button variant="outline" size="lg" className="h-20 flex-col gap-3 px-4" asChild>
-                    <Link to="/admin/categories">
-                      <Palette className="w-6 h-6" />
-                      Categories
+                  <Link to="/admin/manage-categories" className="block">
+                      <Button variant="ghost" className="w-full justify-start">
+                        <Palette className="w-6 h-6" />
+                        Categories
+                      </Button>
                     </Link>
-                  </Button>
                   <Button variant="outline" size="lg" className="h-20 flex-col gap-3 px-4 relative" asChild>
                     <Link to="/admin/reports">
                       <Flag className="w-6 h-6" />

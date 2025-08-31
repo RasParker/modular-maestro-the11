@@ -14,7 +14,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { EdgeToEdgeContainer } from '@/components/layout/EdgeToEdgeContainer';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Plus, Edit, Trash2, Eye, EyeOff, Users, TrendingUp, Palette, Dumbbell, Music, Laptop, ChefHat, Shirt, Gamepad2, Briefcase, Home, GraduationCap, User, Save, AlertTriangle } from 'lucide-react';
-import type { Category } from '@shared/schema';
+
+// Define Category type locally to avoid import issues
+type Category = {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string;
+  icon: string;
+  color: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
 
 // Icon mapping for categories
 const categoryIcons: { [key: string]: any } = {
@@ -51,6 +63,13 @@ const colorOptions = [
 ];
 
 export const ManageCategories: React.FC = () => {
+  // Add error state
+  const [error, setError] = useState<string | null>(null);
+
+  // Reset error when component mounts
+  useEffect(() => {
+    setError(null);
+  }, []);
   const { toast } = useToast();
   const [categories, setCategories] = useState<Category[]>([]);
   const [categoryStats, setCategoryStats] = useState<any>({});
@@ -79,10 +98,19 @@ export const ManageCategories: React.FC = () => {
       const response = await fetch('/api/categories?include_inactive=true');
       if (response.ok) {
         const data = await response.json();
-        setCategories(data);
+        setCategories(data || []);
+      } else {
+        console.error('Failed to load categories:', response.status);
+        setCategories([]);
+        toast({
+          title: "Error",
+          description: "Failed to load categories from server.",
+          variant: "destructive"
+        });
       }
     } catch (error) {
       console.error('Error loading categories:', error);
+      setCategories([]);
       toast({
         title: "Error",
         description: "Failed to load categories.",
@@ -98,10 +126,14 @@ export const ManageCategories: React.FC = () => {
       const response = await fetch('/api/admin/category-stats');
       if (response.ok) {
         const stats = await response.json();
-        setCategoryStats(stats);
+        setCategoryStats(stats || {});
+      } else {
+        console.error('Failed to load category stats:', response.status);
+        setCategoryStats({});
       }
     } catch (error) {
       console.error('Error loading category stats:', error);
+      setCategoryStats({});
     }
   };
 
@@ -252,6 +284,30 @@ export const ManageCategories: React.FC = () => {
       is_active: true
     });
   };
+
+  // Show error state if there's an error
+  if (error) {
+    return (
+      <EdgeToEdgeContainer>
+        <div className="min-h-screen flex items-center justify-center">
+          <Card className="w-96">
+            <CardContent className="p-6 text-center">
+              <AlertTriangle className="w-12 h-12 text-destructive mx-auto mb-4" />
+              <h2 className="text-lg font-semibold mb-2">Something went wrong</h2>
+              <p className="text-muted-foreground mb-4">{error}</p>
+              <Button onClick={() => {
+                setError(null);
+                loadCategories();
+                loadCategoryStats();
+              }}>
+                Try Again
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </EdgeToEdgeContainer>
+    );
+  }
 
   return (
     <EdgeToEdgeContainer>
