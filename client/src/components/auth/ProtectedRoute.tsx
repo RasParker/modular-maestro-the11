@@ -17,6 +17,9 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const { user, isLoading } = useAuth();
   const location = useLocation();
 
+  // Add safety check for user object
+  const safeUser = user && typeof user === 'object' ? user : null;
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -25,17 +28,23 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     );
   }
 
-  if (requireAuth && !user) {
+  if (requireAuth && !safeUser) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (allowedRoles && user && !allowedRoles.includes(user.role)) {
+  if (allowedRoles && safeUser && safeUser.role && !allowedRoles.includes(safeUser.role)) {
     // Redirect to appropriate dashboard based on role
-    const redirectPath = user.role === 'admin' ? '/admin/dashboard' 
-                        : user.role === 'creator' ? '/creator/dashboard' 
+    const redirectPath = safeUser.role === 'admin' ? '/admin/dashboard' 
+                        : safeUser.role === 'creator' ? '/creator/dashboard' 
                         : '/fan/dashboard';
     return <Navigate to={redirectPath} replace />;
   }
 
-  return <>{children}</>;
+  try {
+    return <>{children}</>;
+  } catch (error) {
+    console.error('ProtectedRoute error:', error);
+    // Fallback to login page if there's an error
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
 };
