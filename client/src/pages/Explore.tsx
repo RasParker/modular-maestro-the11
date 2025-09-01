@@ -161,6 +161,9 @@ export const Explore: React.FC = () => {
 
   useEffect(() => {
     const fetchCreators = async () => {
+      // Only fetch creators after categories are loaded
+      if (loadingCategories) return;
+      
       try {
         const response = await fetch('/api/creators');
         if (response.ok) {
@@ -194,6 +197,15 @@ export const Explore: React.FC = () => {
               tiers = [];
             }
 
+            // Get creator category from their primary_category_id
+            let categoryName = 'General';
+            if (creator.primary_category_id && categories.length > 0) {
+              const category = categories.find(cat => cat.id === creator.primary_category_id);
+              if (category) {
+                categoryName = category.name;
+              }
+            }
+
             return {
               id: `real_${creator.id}`,
               username: creator.username,
@@ -201,7 +213,7 @@ export const Explore: React.FC = () => {
               avatar: creator.avatar || null,
               cover: creator.cover_image || null,
               bio: creator.bio || 'Creator profile - join for exclusive content!',
-              category: 'General',
+              category: categoryName,
               subscribers: creator.total_subscribers || 0,
               verified: creator.verified || false,
               tiers: tiers
@@ -220,7 +232,7 @@ export const Explore: React.FC = () => {
     };
 
     fetchCreators();
-  }, []);
+  }, [loadingCategories, categories]);
 
   const handleSubscribe = async (creatorName: string, price: number) => {
     if (!user) {
