@@ -54,10 +54,13 @@ export const TierDetailsModal: React.FC<TierDetailsModalProps> = ({
           {/* Tier Header */}
           <div className="text-center space-y-3">
             <div className="space-y-2">
-              <div className="flex justify-center">
+              <div className="flex justify-center gap-2">
                 <Badge variant="secondary" className="text-xs">
                   <Star className="h-3 w-3 mr-1" />
                   Popular
+                </Badge>
+                <Badge className="text-xs" style={{ backgroundColor: '#262626', color: 'white' }}>
+                  Monthly
                 </Badge>
               </div>
               <h2 className="text-2xl font-bold uppercase">{tier.name}</h2>

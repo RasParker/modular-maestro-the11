@@ -559,7 +559,7 @@ export const Explore: React.FC = () => {
                                 <span className="text-sm font-normal text-muted-foreground ml-1">/month</span>
                               </div>
                             </div>
-                            <div className="text-xs text-muted-foreground bg-muted/50 px-2 py-1 rounded-full">
+                            <div className="text-xs text-muted-foreground px-2 py-1 rounded-full" style={{ backgroundColor: '#262626' }}>
                               Monthly
                             </div>
                           </div>
