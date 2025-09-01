@@ -162,6 +162,7 @@ export interface IStorage {
   deleteCategory(id: number): Promise<boolean>;
   toggleCategoryStatus(categoryId: number): Promise<Category | undefined>;
   getCategoryStats(): Promise<{ creatorCounts: { [key: string]: number }; totalCategories: number; activeCategories: number }>;
+  getAllCategoriesWithCounts(): Promise<any>;
 
   // Creator category methods
   getCreatorCategories(creatorId: number): Promise<CreatorCategory[]>;
@@ -1629,6 +1630,28 @@ export class DatabaseStorage implements IStorage {
       };
     } catch (error) {
       console.error('Error getting category stats:', error);
+      throw error;
+    }
+  }
+
+  async getAllCategoriesWithCounts() {
+    try {
+      const categories = await this.db
+        .select({
+          id: categories.id,
+          name: categories.name,
+          description: categories.description,
+          is_active: categories.is_active,
+          creator_count: sql<number>`COUNT(${creator_categories.creator_id})`.as('creator_count'),
+        })
+        .from(categories)
+        .leftJoin(creator_categories, eq(categories.id, creator_categories.category_id))
+        .groupBy(categories.id, categories.name, categories.description, categories.is_active)
+        .orderBy(categories.name);
+
+      return categories;
+    } catch (error) {
+      console.error('Error getting categories with counts:', error);
       throw error;
     }
   }

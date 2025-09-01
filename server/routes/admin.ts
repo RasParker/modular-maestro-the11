@@ -100,4 +100,104 @@ router.get('/category-stats', async (req, res) => {
   }
 });
 
+// Get all categories for admin management
+router.get('/categories', async (req, res) => {
+  try {
+    const categories = await storage.getAllCategoriesWithCounts();
+    res.json(categories);
+  } catch (error: any) {
+    console.error('Error fetching admin categories:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to fetch categories'
+    });
+  }
+});
+
+// Create new category (admin only)
+router.post('/categories', async (req, res) => {
+  try {
+    const { name, description } = req.body;
+    
+    if (!name || !name.trim()) {
+      return res.status(400).json({
+        error: 'Category name is required'
+      });
+    }
+
+    const categoryData = {
+      name: name.trim(),
+      description: description?.trim() || '',
+      slug: name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
+      icon: 'User',
+      color: '#6366f1',
+      is_active: true
+    };
+
+    const newCategory = await storage.createCategory(categoryData);
+    res.json(newCategory);
+  } catch (error: any) {
+    console.error('Error creating category:', error);
+    res.status(500).json({
+      error: error.message || 'Failed to create category'
+    });
+  }
+});
+
+// Update category (admin only)
+router.put('/categories/:id', async (req, res) => {
+  try {
+    const categoryId = parseInt(req.params.id);
+    const { name, description } = req.body;
+    
+    if (!name || !name.trim()) {
+      return res.status(400).json({
+        error: 'Category name is required'
+      });
+    }
+
+    const categoryData = {
+      name: name.trim(),
+      description: description?.trim() || '',
+      slug: name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+    };
+
+    const updatedCategory = await storage.updateCategory(categoryId, categoryData);
+    
+    if (!updatedCategory) {
+      return res.status(404).json({
+        error: 'Category not found'
+      });
+    }
+
+    res.json(updatedCategory);
+  } catch (error: any) {
+    console.error('Error updating category:', error);
+    res.status(500).json({
+      error: error.message || 'Failed to update category'
+    });
+  }
+});
+
+// Delete category (admin only)
+router.delete('/categories/:id', async (req, res) => {
+  try {
+    const categoryId = parseInt(req.params.id);
+    const deleted = await storage.deleteCategory(categoryId);
+    
+    if (!deleted) {
+      return res.status(400).json({
+        error: 'Cannot delete category - it may be in use by creators'
+      });
+    }
+
+    res.json({ success: true });
+  } catch (error: any) {
+    console.error('Error deleting category:', error);
+    res.status(500).json({
+      error: error.message || 'Failed to delete category'
+    });
+  }
+});
+
 export default router;
