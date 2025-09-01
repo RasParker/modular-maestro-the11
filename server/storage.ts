@@ -1437,7 +1437,7 @@ export class DatabaseStorage implements IStorage {
         .from(categories)
         .where(eq(categories.id, categoryId));
 
-      if (!category) return false;
+      if (!category) return undefined;
 
       const [updated] = await this.db
         .update(categories)
@@ -1493,7 +1493,7 @@ export class DatabaseStorage implements IStorage {
         updated_at: categories.updated_at,
       })
       .from(creator_categories)
-      .leftJoin(categories, eq(creator_categories.category_id, categories.id))
+      .innerJoin(categories, eq(creator_categories.category_id, categories.id))
       .where(and(
         eq(creator_categories.creator_id, creatorId),
         eq(creator_categories.is_primary, true)
@@ -1615,7 +1615,7 @@ export class DatabaseStorage implements IStorage {
 
       // Convert to object for easier access
       const counts: { [key: string]: number } = {};
-      creatorCounts.forEach(row => {
+      creatorCounts.forEach((row: { category_name: string; creator_count: number }) => {
         counts[row.category_name] = row.creator_count;
       });
 
@@ -1626,7 +1626,7 @@ export class DatabaseStorage implements IStorage {
           .select({ count: sql<number>`count(*)` })
           .from(categories)
           .where(eq(categories.is_active, true))
-          .then(result => result[0].count)
+          .then((result: { count: number }[]) => result[0].count)
       };
     } catch (error) {
       console.error('Error getting category stats:', error);
