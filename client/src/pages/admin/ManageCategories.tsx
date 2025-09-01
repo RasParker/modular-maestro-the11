@@ -79,10 +79,19 @@ export const ManageCategories: React.FC = () => {
       const response = await fetch('/api/categories?include_inactive=true');
       if (response.ok) {
         const data = await response.json();
-        setCategories(data);
+        setCategories(Array.isArray(data) ? data : []);
+      } else {
+        console.error('Failed to load categories:', response.status);
+        setCategories([]);
+        toast({
+          title: "Error",
+          description: "Failed to load categories.",
+          variant: "destructive"
+        });
       }
     } catch (error) {
       console.error('Error loading categories:', error);
+      setCategories([]);
       toast({
         title: "Error",
         description: "Failed to load categories.",
@@ -98,10 +107,14 @@ export const ManageCategories: React.FC = () => {
       const response = await fetch('/api/admin/category-stats');
       if (response.ok) {
         const stats = await response.json();
-        setCategoryStats(stats);
+        setCategoryStats(stats || {});
+      } else {
+        console.error('Failed to load category stats:', response.status);
+        setCategoryStats({});
       }
     } catch (error) {
       console.error('Error loading category stats:', error);
+      setCategoryStats({});
     }
   };
 
@@ -223,6 +236,7 @@ export const ManageCategories: React.FC = () => {
         loadCategories();
       }
     } catch (error) {
+      console.error('Toggle category error:', error);
       toast({
         title: "Error",
         description: "Failed to toggle category status.",
@@ -402,7 +416,10 @@ export const ManageCategories: React.FC = () => {
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Total Creators</p>
                   <p className="text-2xl font-bold text-foreground">
-                    {Object.values(categoryStats.creatorCounts || {}).reduce((a: number, b: number) => a + b, 0)}
+                    {(() => {
+                      const counts = categoryStats.creatorCounts || {};
+                      return Object.values(counts).reduce((a: number, b: any) => Number(a) + Number(b || 0), 0);
+                    })()}
                   </p>
                 </div>
                 <Users className="h-8 w-8 text-accent" />
@@ -416,8 +433,13 @@ export const ManageCategories: React.FC = () => {
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Most Popular</p>
                   <p className="text-lg font-bold text-foreground">
-                    {Object.entries(categoryStats.creatorCounts || {})
-                      .sort(([,a], [,b]) => (b as number) - (a as number))[0]?.[0] || 'N/A'}
+                    {(() => {
+                      const counts = categoryStats.creatorCounts || {};
+                      const entries = Object.entries(counts);
+                      if (entries.length === 0) return 'N/A';
+                      const sorted = entries.sort(([,a], [,b]) => Number(b) - Number(a));
+                      return sorted[0]?.[0] || 'N/A';
+                    })()}
                   </p>
                 </div>
                 <TrendingUp className="h-8 w-8 text-warning" />
@@ -445,7 +467,7 @@ export const ManageCategories: React.FC = () => {
               <div className="space-y-4">
                 {categories.map((category) => {
                   const IconComponent = categoryIcons[category.icon] || User;
-                  const creatorCount = categoryStats.creatorCounts?.[category.name] || 0;
+                  const creatorCount = Number(categoryStats.creatorCounts?.[category.name] || 0);
                   const canDelete = creatorCount === 0;
                   
                   return (
