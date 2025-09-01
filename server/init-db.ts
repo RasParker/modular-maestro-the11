@@ -38,7 +38,9 @@ export async function initializeDatabase() {
     const requiredTables = [
       'users', 'posts', 'comments', 'subscriptions', 'subscription_tiers',
       'notifications', 'messages', 'conversations', 'reports',
-      'creator_likes', 'creator_favorites', 'creator_payout_settings', 'creator_payouts'
+      'creator_likes', 'creator_favorites', 'creator_payout_settings', 'creator_payouts',
+      'categories', 'creator_categories', 'comment_likes', 'post_likes',
+      'payment_transactions', 'notification_preferences'
     ];
     
     const missingTables = requiredTables.filter(table => !existingTables.includes(table));
