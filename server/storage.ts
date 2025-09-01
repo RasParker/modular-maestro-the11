@@ -1636,7 +1636,7 @@ export class DatabaseStorage implements IStorage {
 
   async getAllCategoriesWithCounts() {
     try {
-      const categories = await this.db
+      const categoriesWithCounts = await this.db
         .select({
           id: categories.id,
           name: categories.name,
@@ -1649,7 +1649,7 @@ export class DatabaseStorage implements IStorage {
         .groupBy(categories.id, categories.name, categories.description, categories.is_active)
         .orderBy(categories.name);
 
-      return categories;
+      return categoriesWithCounts;
     } catch (error) {
       console.error('Error getting categories with counts:', error);
       throw error;
