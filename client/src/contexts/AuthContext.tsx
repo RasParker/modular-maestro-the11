@@ -30,30 +30,50 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Check for stored user session and verify with server
     const verifySession = async () => {
       try {
+        setIsLoading(true);
         const storedUser = localStorage.getItem('xclusive_user');
-        if (storedUser) {
-          // Set user immediately from localStorage for faster initial render
-          const userData = JSON.parse(storedUser);
-          setUser(userData);
-          
-          // Verify session with server in background
-          fetch('/api/auth/verify', {
-            credentials: 'include'
-          }).then(response => {
-            if (response.ok) {
-              return response.json();
+        
+        if (storedUser && storedUser !== 'undefined' && storedUser !== 'null') {
+          try {
+            // Set user immediately from localStorage for faster initial render
+            const userData = JSON.parse(storedUser);
+            
+            // Validate user data structure
+            if (userData && typeof userData === 'object' && userData.id) {
+              setUser(userData);
+              
+              // Verify session with server in background
+              fetch('/api/auth/verify', {
+                credentials: 'include'
+              }).then(response => {
+                if (response.ok) {
+                  return response.json();
+                } else {
+                  throw new Error('Session invalid');
+                }
+              }).then(data => {
+                if (data.user && typeof data.user === 'object') {
+                  setUser(data.user);
+                }
+              }).catch((error) => {
+                // Session expired or invalid, clear local storage
+                console.log('Session expired, clearing local storage', error);
+                localStorage.removeItem('xclusive_user');
+                setUser(null);
+              }).finally(() => {
+                setIsLoading(false);
+              });
             } else {
-              throw new Error('Session invalid');
+              throw new Error('Invalid user data structure');
             }
-          }).then(data => {
-            setUser(data.user);
-          }).catch((error) => {
-            // Session expired or invalid, clear local storage
-            console.log('Session expired, clearing local storage', error);
+          } catch (parseError) {
+            console.error('Error parsing stored user data:', parseError);
             localStorage.removeItem('xclusive_user');
             setUser(null);
-          });
+            setIsLoading(false);
+          }
         } else {
+          setUser(null);
           setIsLoading(false);
         }
       } catch (error) {

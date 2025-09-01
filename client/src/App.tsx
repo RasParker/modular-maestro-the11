@@ -8,6 +8,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { NotificationProvider } from '@/contexts/NotificationContext';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { AppLayout } from '@/components/layout/AppLayout';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 // Lazy load pages for better performance
 const Login = React.lazy(() => import('@/pages/Login').then(m => ({ default: m.Login })));
@@ -116,7 +117,13 @@ function App() {
               <Route path="/admin/users" element={<ProtectedRoute allowedRoles={['admin']}><ManageUsers /></ProtectedRoute>} />
               <Route path="/admin/content" element={<ProtectedRoute allowedRoles={['admin']}><ReviewContent /></ProtectedRoute>} />
               <Route path="/admin/reports" element={<ProtectedRoute allowedRoles={['admin']}><Reports /></ProtectedRoute>} />
-              <Route path="/admin/categories" element={<ProtectedRoute allowedRoles={['admin']}><ManageCategories /></ProtectedRoute>} />
+              <Route path="/admin/categories" element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <ErrorBoundary>
+                    <ManageCategories />
+                  </ErrorBoundary>
+                </ProtectedRoute>
+              } />
               <Route path="/admin/analytics" element={<ProtectedRoute allowedRoles={['admin']}><AdminAnalytics /></ProtectedRoute>} />
               <Route path="/admin/settings" element={<ProtectedRoute allowedRoles={['admin']}><AdminSettings /></ProtectedRoute>} />
               <Route path="/admin/notifications" element={<ProtectedRoute allowedRoles={['admin']}><Notifications /></ProtectedRoute>} />
