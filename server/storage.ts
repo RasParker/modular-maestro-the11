@@ -46,7 +46,7 @@ import {
   type InsertCreatorCategory
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, sql, desc, gte, lte, count } from "drizzle-orm";
+import { eq, and, sql, desc, gte, lte } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 
 export interface IStorage {
@@ -168,7 +168,7 @@ export interface IStorage {
   getCreatorPrimaryCategory(creatorId: number): Promise<Category | undefined>;
   addCreatorToCategory(creatorCategory: InsertCreatorCategory): Promise<CreatorCategory>;
   removeCreatorFromCategory(creatorId: number, categoryId: number): Promise<boolean>;
-  updateCreatorPrimaryCategory(creatorId: number, categoryId: number | null): Promise<boolean>;
+  updateCreatorPrimaryCategory(creatorId: number, categoryId: number): Promise<boolean>;
   getCreatorsByCategory(categoryId: number): Promise<User[]>;
 }
 
@@ -1528,80 +1528,30 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  async updateCreatorPrimaryCategory(creatorId: number, categoryId: number | null): Promise<boolean> {
+  async updateCreatorPrimaryCategory(creatorId: number, categoryId: number): Promise<boolean> {
     try {
-      // First, set all categories for this creator to non-primary
-      await db
-        .update(creator_categories)
+      // First, unset any existing primary category
+      await db.update(creator_categories)
         .set({ is_primary: false })
         .where(eq(creator_categories.creator_id, creatorId));
 
-      // If categoryId is provided, set it as primary
-      if (categoryId) {
-        await db
-          .update(creator_categories)
-          .set({ is_primary: true })
-          .where(and(
-            eq(creator_categories.creator_id, creatorId),
-            eq(creator_categories.category_id, categoryId)
-          ));
+      // Then set the new primary category
+      await db.update(creator_categories)
+        .set({ is_primary: true })
+        .where(and(
+          eq(creator_categories.creator_id, creatorId),
+          eq(creator_categories.category_id, categoryId)
+        ));
 
-        // Also update the user's primary_category_id
-        await db
-          .update(users)
-          .set({ primary_category_id: categoryId })
-          .where(eq(users.id, creatorId));
-      } else {
-        // If no category, clear primary_category_id
-        await db
-          .update(users)
-          .set({ primary_category_id: null })
-          .where(eq(users.id, creatorId));
-      }
+      // Also update the users table primary_category_id
+      await db.update(users)
+        .set({ primary_category_id: categoryId, updated_at: new Date() })
+        .where(eq(users.id, creatorId));
 
       return true;
     } catch (error) {
       console.error('Error updating creator primary category:', error);
       return false;
-    }
-  }
-
-  // Get category statistics for admin
-  async getCategoryStats(): Promise<{ creatorCounts: { [key: string]: number }; totalCategories: number; activeCategories: number }> {
-    try {
-      // Get creator count per category
-      const creatorCounts = await db
-        .select({
-          category_name: categories.name,
-          creator_count: count(creator_categories.creator_id)
-        })
-        .from(categories)
-        .leftJoin(creator_categories, eq(categories.id, creator_categories.category_id))
-        .groupBy(categories.id, categories.name)
-        .orderBy(categories.name);
-
-      // Convert to object format
-      const creatorCountsObj: { [key: string]: number } = {};
-      creatorCounts.forEach(item => {
-        creatorCountsObj[item.category_name] = Number(item.creator_count);
-      });
-
-      // Get total and active categories
-      const totalCategoriesResult = await db.select({ count: count(categories.id) }).from(categories);
-      const activeCategoriesResult = await db.select({ count: count(categories.id) }).from(categories).where(eq(categories.is_active, true));
-
-      return {
-        creatorCounts: creatorCountsObj,
-        totalCategories: totalCategoriesResult[0]?.count || 0,
-        activeCategories: activeCategoriesResult[0]?.count || 0
-      };
-    } catch (error) {
-      console.error('Error getting category stats:', error);
-      return {
-        creatorCounts: {},
-        totalCategories: 0,
-        activeCategories: 0
-      };
     }
   }
 
@@ -1645,6 +1595,40 @@ export class DatabaseStorage implements IStorage {
       return result;
     } catch (error) {
       console.error('Error getting creators by category:', error);
+      throw error;
+    }
+  }
+
+  async getCategoryStats(): Promise<{ creatorCounts: { [key: string]: number }; totalCategories: number; activeCategories: number }> {
+    try {
+      // Get creator count per category
+      const creatorCounts = await this.db
+        .select({
+          category_name: categories.name,
+          creator_count: sql<number>`count(${creator_categories.creator_id})`
+        })
+        .from(categories)
+        .leftJoin(creator_categories, eq(categories.id, creator_categories.category_id))
+        .groupBy(categories.id, categories.name)
+        .orderBy(categories.name);
+
+      // Convert to object for easier access
+      const counts: { [key: string]: number } = {};
+      creatorCounts.forEach(row => {
+        counts[row.category_name] = row.creator_count;
+      });
+
+      return {
+        creatorCounts: counts,
+        totalCategories: creatorCounts.length,
+        activeCategories: await this.db
+          .select({ count: sql<number>`count(*)` })
+          .from(categories)
+          .where(eq(categories.is_active, true))
+          .then(result => result[0].count)
+      };
+    } catch (error) {
+      console.error('Error getting category stats:', error);
       throw error;
     }
   }
