@@ -196,7 +196,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, tie
 
         <div className="space-y-6 mt-6">
           {/* Tier Summary */}
-          <Card className="border border-slate-700/50 bg-slate-800/50 backdrop-blur-sm">
+          <Card className="border border-slate-700/50 backdrop-blur-sm" style={{ backgroundColor: '#262626' }}>
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div>
@@ -205,7 +205,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, tie
                 </div>
                 <div className="text-right">
                   <div className="text-2xl font-bold text-gradient-primary">GHS {tier.price}</div>
-                  <div className="text-sm text-slate-400">per month</div>
+                  <div className="text-sm text-slate-400 px-2 py-1 rounded-full" style={{ backgroundColor: '#262626' }}>Monthly</div>
                 </div>
               </div>
             </CardHeader>
@@ -250,7 +250,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, tie
 
           {/* Mobile Money Form */}
           {paymentMethod === 'mobile_money' && (
-            <div className="space-y-4 p-4 bg-slate-800/30 rounded-xl border border-slate-700/50">
+            <div className="space-y-4 p-4 rounded-xl border border-slate-700/50" style={{ backgroundColor: '#262626' }}>
               <div>
                 <Label htmlFor="phone" className="text-slate-200 font-medium">Phone Number</Label>
                 <Input
@@ -287,7 +287,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, tie
           )}
 
           {/* Security Notice */}
-          <div className="flex items-start gap-3 p-4 bg-slate-800/30 rounded-xl border border-slate-700/50">
+          <div className="flex items-start gap-3 p-4 rounded-xl border border-slate-700/50" style={{ backgroundColor: '#262626' }}>
             <div className="flex items-center justify-center w-8 h-8 rounded-full bg-green-500/20 flex-shrink-0">
               <Shield className="h-4 w-4 text-green-400" />
             </div>
