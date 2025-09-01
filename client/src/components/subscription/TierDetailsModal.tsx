@@ -19,12 +19,12 @@ interface TierDetailsModalProps {
   onSubscribe: () => void;
 }
 
-export const TierDetailsModal: React.FC<TierDetailsModalProps> = ({ 
-  isOpen, 
-  onClose, 
-  tier, 
+export const TierDetailsModal: React.FC<TierDetailsModalProps> = ({
+  isOpen,
+  onClose,
+  tier,
   creatorName,
-  onSubscribe 
+  onSubscribe
 }) => {
   const tierFeatures = [
     "Access to exclusive content",
@@ -112,7 +112,7 @@ export const TierDetailsModal: React.FC<TierDetailsModalProps> = ({
           <Separator />
 
           {/* Subscription Terms */}
-          <div className="space-y-3 text-sm text-muted-foreground bg-muted/30 p-4 rounded-lg">
+          <div className="space-y-3 text-sm text-muted-foreground p-4 rounded-lg" style={{ backgroundColor: '#262626' }}>
             <h4 className="font-medium text-foreground">Subscription Terms:</h4>
             <ul className="space-y-1 text-xs">
               <li>• Recurring monthly billing</li>
@@ -123,7 +123,7 @@ export const TierDetailsModal: React.FC<TierDetailsModalProps> = ({
           </div>
 
           {/* Subscribe Button */}
-          <Button 
+          <Button
             onClick={handleSubscribe}
             className="w-full bg-red-600 hover:bg-red-700 text-white py-6 text-lg font-semibold"
             size="lg"
