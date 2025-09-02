@@ -128,10 +128,19 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  if (subscription && subscription.creator && subscription.tier) {
+                  if (subscription && 
+                      subscription.creator && 
+                      subscription.creator.username && 
+                      subscription.creator.display_name && 
+                      subscription.tier && 
+                      subscription.tier.name && 
+                      subscription.tier.price) {
                     setShowTierManagement(true);
                   } else {
                     console.error('Incomplete subscription data:', subscription);
+                    // Show a toast to inform the user
+                    // Note: We can't use useToast here, but we can use a fallback
+                    alert('Unable to load tier management. Please refresh the page and try again.');
                   }
                 }}
                 data-testid={`button-manage-tier-${subscription.id}`}
@@ -298,7 +307,14 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
       </CardContent>
 
       {/* Tier Management Modal */}
-      {showTierManagement && subscription && subscription.creator && subscription.tier && (
+      {showTierManagement && 
+       subscription && 
+       subscription.creator && 
+       subscription.creator.username && 
+       subscription.creator.display_name && 
+       subscription.tier && 
+       subscription.tier.name && 
+       subscription.tier.price && (
         <TierManagementModal
           isOpen={showTierManagement}
           onClose={() => setShowTierManagement(false)}
