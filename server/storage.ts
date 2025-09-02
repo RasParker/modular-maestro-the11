@@ -19,6 +19,7 @@ import {
   reports,
   categories,
   creator_categories,
+  creator_favorites, // Make sure creator_favorites is imported if it's a separate table
   type User,
   type InsertUser,
   type Post,
@@ -52,7 +53,9 @@ import {
   type Category,
   type InsertCategory,
   type CreatorCategory,
-  type InsertCreatorCategory
+  type InsertCreatorCategory,
+  type CreatorFavorite, // Import the type for creator_favorites
+  type InsertCreatorFavorite // Import the type for creator_favorites
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, sql, desc, gte, lte } from "drizzle-orm";
@@ -199,6 +202,14 @@ export interface IStorage {
   removeCreatorFromCategory(creatorId: number, categoryId: number): Promise<boolean>;
   updateCreatorPrimaryCategory(creatorId: number, categoryId: number): Promise<boolean>;
   getCreatorsByCategory(categoryId: number): Promise<User[]>;
+
+  // Creator favorite methods
+  favoriteCreator(fanId: number, creatorId: number): Promise<boolean>;
+  unfavoriteCreator(fanId: number, creatorId: number): Promise<boolean>;
+  isCreatorFavorited(fanId: number, creatorId: number): Promise<boolean>;
+  getFanFavorites(fanId: number): Promise<any[]>;
+  getCreatorFavoriteCount(creatorId: number): Promise<number>;
+  getFavoriteCreatorsForUser(userId: number): Promise<any[]>; // Added for completeness
 }
 
 // Database Storage Implementation
@@ -298,6 +309,10 @@ export class DatabaseStorage implements IStorage {
 
       // Delete user's subscription tiers
       await db.delete(subscription_tiers).where(eq(subscription_tiers.creator_id, id));
+
+      // Delete user's favorites
+      await db.delete(creator_favorites).where(eq(creator_favorites.fan_id, id));
+      await db.delete(creator_favorites).where(eq(creator_favorites.creator_id, id));
 
       // Finally delete the user
       const result = await db.delete(users).where(eq(users.id, id));
@@ -1883,7 +1898,7 @@ export class DatabaseStorage implements IStorage {
           creator_count: sql<number>`COUNT(${creator_categories.creator_id})`.as('creator_count'),
         })
         .from(categories)
-        .leftJoin(creator_categories, eq(categories.id, creator_categories.creator_id))
+        .leftJoin(creator_categories, eq(categories.id, creator_categories.category_id))
         .groupBy(categories.id, categories.name, categories.description, categories.is_active)
         .orderBy(categories.name);
 
@@ -1892,6 +1907,94 @@ export class DatabaseStorage implements IStorage {
       console.error('Error getting categories with counts:', error);
       throw error;
     }
+  }
+
+  // Creator favorite methods
+  async favoriteCreator(fanId: number, creatorId: number): Promise<boolean> {
+    try {
+      await db.insert(creator_favorites).values({ fan_id: fanId, creator_id: creatorId });
+      // Optionally, update creator's favorite count if you have such a field
+      // await db.update(users).set({ favorite_count: sql`${users.favorite_count} + 1` }).where(eq(users.id, creatorId));
+      return true;
+    } catch (error: any) {
+      // Handle potential unique constraint violation if already favorited
+      if (error.code === '23505') { // PostgreSQL unique constraint violation code
+        console.log('Creator already favorited.');
+        return false;
+      }
+      console.error('Error favoriting creator:', error);
+      return false;
+    }
+  }
+
+  async unfavoriteCreator(fanId: number, creatorId: number): Promise<boolean> {
+    try {
+      const result = await db.delete(creator_favorites).where(and(eq(creator_favorites.fan_id, fanId), eq(creator_favorites.creator_id, creatorId)));
+      if ((result.rowCount || 0) > 0) {
+        // Optionally, update creator's favorite count if you have such a field
+        // await db.update(users).set({ favorite_count: sql`${users.favorite_count} - 1` }).where(eq(users.id, creatorId));
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Error unfavoriting creator:', error);
+      return false;
+    }
+  }
+
+  async isCreatorFavorited(fanId: number, creatorId: number): Promise<boolean> {
+    try {
+      const [favorite] = await db.select().from(creator_favorites).where(and(eq(creator_favorites.fan_id, fanId), eq(creator_favorites.creator_id, creatorId)));
+      return !!favorite;
+    } catch (error) {
+      console.error('Error checking if creator is favorited:', error);
+      return false;
+    }
+  }
+
+  async getFanFavorites(fanId: number): Promise<any[]> {
+    const favorites = await db
+      .select({
+        id: users.id,
+        username: users.username,
+        display_name: users.display_name,
+        avatar: users.avatar,
+        cover_image: users.cover_image,
+        bio: users.bio,
+        category: users.primary_category_id,
+        subscribers: users.total_subscribers,
+        verified: users.verified,
+        favorited_at: creator_favorites.created_at
+      })
+      .from(creator_favorites)
+      .innerJoin(users, eq(creator_favorites.creator_id, users.id))
+      .where(eq(creator_favorites.fan_id, fanId))
+      .orderBy(desc(creator_favorites.created_at));
+
+    return favorites.map(fav => ({
+      ...fav,
+      category: fav.category || 'General',
+      subscribers: fav.subscribers || 0
+    }));
+  }
+
+  async getCreatorFavoriteCount(creatorId: number): Promise<number> {
+    try {
+      const [result] = await db
+        .select({ count: sql<number>`count(*)` })
+        .from(creator_favorites)
+        .where(eq(creator_favorites.creator_id, creatorId));
+      return result?.count || 0;
+    } catch (error) {
+      console.error('Error getting creator favorite count:', error);
+      return 0;
+    }
+  }
+
+  async getFavoriteCreatorsForUser(userId: number): Promise<any[]> {
+    // This is similar to getFanFavorites, but might be used for different contexts.
+    // For now, we can reuse the logic.
+    return this.getFanFavorites(userId);
   }
 }
 

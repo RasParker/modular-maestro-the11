@@ -1113,7 +1113,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get recent activity for a fan
+  // Get fan's recent activity
   app.get('/api/fan/:fanId/recent-activity', async (req, res) => {
     try {
       const fanId = parseInt(req.params.fanId);
@@ -1204,6 +1204,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   } catch (error) {
     console.error('Error fetching recent activity:', error);
     res.status(500).json({ error: 'Failed to fetch recent activity' });
+  }
+});
+
+// Get fan's favorited creators
+app.get('/api/fan/:fanId/favorites', async (req, res) => {
+  try {
+    const fanId = parseInt(req.params.fanId);
+    const favorites = await storage.getFanFavorites(fanId);
+    res.json(favorites);
+  } catch (error: any) {
+    console.error('Error fetching favorites:', error);
+    res.status(500).json({ error: error.message });
   }
 });
 

@@ -329,6 +329,12 @@ export const FanDashboard: React.FC = () => {
                         Messages
                       </Link>
                     </Button>
+                    <Button variant="outline" className="w-full justify-start" asChild>
+                      <Link to="/fan/favorites">
+                        <Heart className="w-4 h-4 mr-2" />
+                        My Favorites
+                      </Link>
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
