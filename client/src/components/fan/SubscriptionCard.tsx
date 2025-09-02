@@ -231,7 +231,11 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
               <div className="bg-muted/30 rounded-lg p-3 space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-muted-foreground">Next billing</span>
-                  <span className="text-sm font-medium">{new Date(subscription.next_billing_date).toLocaleDateString()}</span>
+                  <span className="text-sm font-medium">{
+                      subscription.next_billing_date 
+                        ? new Date(subscription.next_billing_date).toLocaleDateString()
+                        : 'N/A'
+                    }</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-muted-foreground">Joined</span>
