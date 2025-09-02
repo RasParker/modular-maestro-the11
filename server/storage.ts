@@ -209,6 +209,7 @@ export interface IStorage {
   isCreatorFavorited(fanId: number, creatorId: number): Promise<boolean>;
   getFanFavorites(fanId: number): Promise<any[]>;
   getCreatorFavoriteCount(creatorId: number): Promise<number>;
+  getCreatorLikeCount(creatorId: number): Promise<number>;
   getFavoriteCreatorsForUser(userId: number): Promise<any[]>; // Added for completeness
 }
 
@@ -1987,6 +1988,19 @@ export class DatabaseStorage implements IStorage {
       return result?.count || 0;
     } catch (error) {
       console.error('Error getting creator favorite count:', error);
+      return 0;
+    }
+  }
+
+  async getCreatorLikeCount(creatorId: number): Promise<number> {
+    try {
+      const [result] = await db
+        .select({ count: sql<number>`count(*)` })
+        .from(creator_likes)
+        .where(eq(creator_likes.creator_id, creatorId));
+      return result?.count || 0;
+    } catch (error) {
+      console.error('Error getting creator like count:', error);
       return 0;
     }
   }

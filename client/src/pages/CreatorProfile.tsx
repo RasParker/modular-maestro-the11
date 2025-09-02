@@ -185,6 +185,7 @@ export const CreatorProfile: React.FC = () => {
   const [isCreatorFavorited, setIsCreatorFavorited] = useState(false);
   const [likingCreator, setLikingCreator] = useState(false);
   const [favoritingCreator, setFavoritingCreator] = useState(false);
+  const [creatorLikesCount, setCreatorLikesCount] = useState(0);
 
   // Define isOwnProfile early to avoid initialization issues
   const isOwnProfile = user?.username === username;
@@ -462,6 +463,13 @@ export const CreatorProfile: React.FC = () => {
           const favoriteData = await favoriteResponse.json();
           setIsCreatorFavorited(favoriteData.favorited);
         }
+
+        // Get creator likes count
+        const likesCountResponse = await fetch(`/api/creators/${creator.id}/likes-count`);
+        if (likesCountResponse.ok) {
+          const likesCountData = await likesCountResponse.json();
+          setCreatorLikesCount(likesCountData.count);
+        }
       } catch (error) {
         console.error('Error checking creator interactions:', error);
       }
@@ -524,6 +532,7 @@ export const CreatorProfile: React.FC = () => {
             cover: (coverPhotoUrl && coverPhotoUrl.trim()) || userData.cover_image || null,
             bio: (bio && bio.trim()) || userData.bio || null,
             subscribers: userData.total_subscribers || 0,
+            likes_count: creatorLikesCount,
             tiers: tiers
           });
         } else {
@@ -1037,6 +1046,8 @@ export const CreatorProfile: React.FC = () => {
 
         if (response.ok) {
           setIsCreatorLiked(false);
+          setCreatorLikesCount(prev => Math.max(0, prev - 1));
+          setCreator(prev => prev ? { ...prev, likes_count: Math.max(0, (prev.likes_count || 0) - 1) } : prev);
           toast({
             title: "Unliked",
             description: `You no longer like ${creator.display_name || creator.username}.`,
@@ -1054,6 +1065,8 @@ export const CreatorProfile: React.FC = () => {
 
         if (response.ok) {
           setIsCreatorLiked(true);
+          setCreatorLikesCount(prev => prev + 1);
+          setCreator(prev => prev ? { ...prev, likes_count: (prev.likes_count || 0) + 1 } : prev);
           toast({
             title: "Liked!",
             description: `You liked ${creator.display_name || creator.username}.`,
@@ -1356,9 +1369,15 @@ export const CreatorProfile: React.FC = () => {
 <div className="flex items-center gap-2">
                 <p className="text-sm text-muted-foreground">@{creator.username}</p>
               </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
-                  <Users className="w-4 h-4" />
-                  {(creator?.total_subscribers || 0).toLocaleString()} subscribers
+                <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
+                  <div className="flex items-center gap-1">
+                    <Users className="w-4 h-4" />
+                    {(creator?.total_subscribers || 0).toLocaleString()} subscribers
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Heart className="w-4 h-4" />
+                    {(creator?.likes_count || 0).toLocaleString()} likes
+                  </div>
                 </div>
               </div>
             </div>

@@ -3135,6 +3135,18 @@ app.post('/api/conversations', async (req, res) => {
     }
   });
 
+  // Get creator likes count
+  app.get("/api/creators/:creatorId/likes-count", async (req, res) => {
+    try {
+      const creatorId = parseInt(req.params.creatorId);
+      const count = await storage.getCreatorLikeCount(creatorId);
+      res.json({ count });
+    } catch (error) {
+      console.error('Error getting creator likes count:', error);
+      res.status(500).json({ error: "Failed to get likes count" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   // WebSocket setup for real-time notifications
