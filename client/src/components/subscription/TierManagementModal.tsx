@@ -103,6 +103,11 @@ export const TierManagementModal: React.FC<TierManagementModalProps> = ({
   const [pendingChanges, setPendingChanges] = useState<PendingChange[]>([]);
   const [changeHistory, setChangeHistory] = useState<SubscriptionChange[]>([]);
 
+  // Early return if subscription data is incomplete
+  if (!subscription || !subscription.creator || !subscription.tier) {
+    return null;
+  }
+
   useEffect(() => {
     if (isOpen && subscription) {
       fetchTierData();
@@ -110,7 +115,7 @@ export const TierManagementModal: React.FC<TierManagementModalProps> = ({
   }, [isOpen, subscription]);
 
   const fetchTierData = async () => {
-    if (!user) return;
+    if (!user || !subscription?.id) return;
 
     try {
       setLoading(true);
@@ -119,12 +124,14 @@ export const TierManagementModal: React.FC<TierManagementModalProps> = ({
       const response = await fetch(`/api/subscriptions/user/${user.id}`);
       if (response.ok) {
         const data = await response.json();
-        const enhancedSub = data.data.find((sub: any) => sub.id === subscription.id);
-        
-        if (enhancedSub) {
-          setTierOptions(enhancedSub.available_tiers || []);
-          setPendingChanges(enhancedSub.pending_changes || []);
-          setChangeHistory(enhancedSub.change_history || []);
+        if (data.success && data.data) {
+          const enhancedSub = data.data.find((sub: any) => sub.id === subscription.id);
+          
+          if (enhancedSub) {
+            setTierOptions(enhancedSub.available_tiers || []);
+            setPendingChanges(enhancedSub.pending_changes || []);
+            setChangeHistory(enhancedSub.change_history || []);
+          }
         }
       }
     } catch (error) {
@@ -288,7 +295,7 @@ export const TierManagementModal: React.FC<TierManagementModalProps> = ({
       <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-left">
-            Manage Subscription - {subscription.creator.display_name}
+            Manage Subscription - {subscription.creator?.display_name || subscription.creator?.username || 'Creator'}
           </DialogTitle>
         </DialogHeader>
 
@@ -303,15 +310,15 @@ export const TierManagementModal: React.FC<TierManagementModalProps> = ({
                     <span className="font-semibold">Current Tier:</span>
                   </div>
                   <Badge variant="secondary" className="text-sm">
-                    {subscription.tier.name}
+                    {subscription.tier?.name || 'Unknown Tier'}
                   </Badge>
                   <span className="text-lg font-bold">
-                    GHS {subscription.tier.price}/month
+                    GHS {subscription.tier?.price || '0'}/month
                   </span>
                 </div>
                 <div className="text-right text-sm text-muted-foreground">
-                  <div>Next billing: {new Date(subscription.next_billing_date).toLocaleDateString()}</div>
-                  <div className="text-xs">Status: {subscription.status}</div>
+                  <div>Next billing: {subscription.next_billing_date ? new Date(subscription.next_billing_date).toLocaleDateString() : 'N/A'}</div>
+                  <div className="text-xs">Status: {subscription.status || 'Unknown'}</div>
                 </div>
               </div>
             </CardContent>

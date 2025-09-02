@@ -127,7 +127,13 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setShowTierManagement(true)}
+                onClick={() => {
+                  if (subscription && subscription.creator && subscription.tier) {
+                    setShowTierManagement(true);
+                  } else {
+                    console.error('Incomplete subscription data:', subscription);
+                  }
+                }}
                 data-testid={`button-manage-tier-${subscription.id}`}
               >
                 <ArrowUpDown className="w-4 h-4 mr-1" />
