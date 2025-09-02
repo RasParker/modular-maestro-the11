@@ -298,15 +298,17 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
       </CardContent>
 
       {/* Tier Management Modal */}
-      <TierManagementModal
-        isOpen={showTierManagement}
-        onClose={() => setShowTierManagement(false)}
-        subscription={subscription}
-        onSubscriptionUpdate={() => {
-          onSubscriptionUpdate?.();
-          setShowTierManagement(false);
-        }}
-      />
+      {showTierManagement && subscription && subscription.creator && subscription.tier && (
+        <TierManagementModal
+          isOpen={showTierManagement}
+          onClose={() => setShowTierManagement(false)}
+          subscription={subscription}
+          onSubscriptionUpdate={() => {
+            onSubscriptionUpdate?.();
+            setShowTierManagement(false);
+          }}
+        />
+      )}
     </Card>
   );
 };

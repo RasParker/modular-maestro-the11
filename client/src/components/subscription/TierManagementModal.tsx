@@ -95,6 +95,11 @@ export const TierManagementModal: React.FC<TierManagementModalProps> = ({
   subscription,
   onSubscriptionUpdate
 }) => {
+  // Early return if subscription data is incomplete - before any hooks
+  if (!subscription || !subscription.creator || !subscription.tier) {
+    return null;
+  }
+
   const { user } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -102,11 +107,6 @@ export const TierManagementModal: React.FC<TierManagementModalProps> = ({
   const [tierOptions, setTierOptions] = useState<TierOption[]>([]);
   const [pendingChanges, setPendingChanges] = useState<PendingChange[]>([]);
   const [changeHistory, setChangeHistory] = useState<SubscriptionChange[]>([]);
-
-  // Early return if subscription data is incomplete
-  if (!subscription || !subscription.creator || !subscription.tier) {
-    return null;
-  }
 
   useEffect(() => {
     if (isOpen && subscription) {
