@@ -102,7 +102,11 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
                 GHS {subscription.tier.price}/month
               </p>
               <p className="text-sm text-muted-foreground">
-                Next: {new Date(subscription.next_billing_date).toLocaleDateString()}
+                Next: {
+                  subscription.next_billing_date 
+                    ? new Date(subscription.next_billing_date).toLocaleDateString()
+                    : 'N/A'
+                }
               </p>
               <p className="text-xs text-muted-foreground">
                 Joined: {new Date(subscription.created_at).toLocaleDateString()}
