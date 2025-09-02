@@ -134,7 +134,7 @@ function App() {
               <Route path="/video/:id" element={<VideoWatch />} />
 
               {/* Catch-all route for undefined paths */}
-              <<Route path="*" element={<NotFound />} />
+              <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Suspense>
               </AppLayout>
