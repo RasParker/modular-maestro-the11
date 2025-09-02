@@ -95,8 +95,16 @@ export const TierManagementModal: React.FC<TierManagementModalProps> = ({
   subscription,
   onSubscriptionUpdate
 }) => {
-  // Validate subscription data before hooks
-  if (!isOpen || !subscription || !subscription.creator || !subscription.tier || !subscription.creator.username) {
+  // Early return with comprehensive validation
+  if (!isOpen) {
+    return null;
+  }
+
+  if (!subscription || 
+      !subscription.creator || 
+      !subscription.tier || 
+      !subscription.creator.username ||
+      !subscription.creator.display_name) {
     return null;
   }
 
@@ -115,7 +123,7 @@ export const TierManagementModal: React.FC<TierManagementModalProps> = ({
   }, [isOpen, subscription]);
 
   const fetchTierData = async () => {
-    if (!user || !subscription?.id) return;
+    if (!user?.id || !subscription?.id) return;
 
     try {
       setLoading(true);
@@ -124,13 +132,13 @@ export const TierManagementModal: React.FC<TierManagementModalProps> = ({
       const response = await fetch(`/api/subscriptions/user/${user.id}`);
       if (response.ok) {
         const data = await response.json();
-        if (data.success && data.data) {
+        if (data.success && data.data && Array.isArray(data.data)) {
           const enhancedSub = data.data.find((sub: any) => sub.id === subscription.id);
           
           if (enhancedSub) {
-            setTierOptions(enhancedSub.available_tiers || []);
-            setPendingChanges(enhancedSub.pending_changes || []);
-            setChangeHistory(enhancedSub.change_history || []);
+            setTierOptions(Array.isArray(enhancedSub.available_tiers) ? enhancedSub.available_tiers : []);
+            setPendingChanges(Array.isArray(enhancedSub.pending_changes) ? enhancedSub.pending_changes : []);
+            setChangeHistory(Array.isArray(enhancedSub.change_history) ? enhancedSub.change_history : []);
           }
         }
       }
@@ -289,6 +297,19 @@ export const TierManagementModal: React.FC<TierManagementModalProps> = ({
 
   const upgradeOptions = tierOptions.filter(tier => tier.is_upgrade);
   const downgradeOptions = tierOptions.filter(tier => !tier.is_upgrade);
+
+  // Additional safety check before rendering
+  if (loading || !subscription?.creator?.username || !subscription?.tier?.name) {
+    return (
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="sm:max-w-md">
+          <div className="flex items-center justify-center p-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
