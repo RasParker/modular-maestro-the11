@@ -12,6 +12,18 @@ import { LoadingSpinner } from '@/components/shared/LoadingSpinner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 
+interface PendingChange {
+  id: number;
+  change_type: string;
+  scheduled_date: string;
+  to_tier: {
+    name: string;
+    price: string;
+  };
+  proration_amount: string;
+  status: string;
+}
+
 interface Subscription {
   id: number;
   creator: {
@@ -19,15 +31,21 @@ interface Subscription {
     username: string;
     display_name: string;
     avatar: string;
+    category: string;
   };
   tier: {
+    id: number;
     name: string;
-    price: number;
+    price: string;
+    description: string;
   };
-  status: string;
-  current_period_end: string;
+  status: 'active' | 'paused' | 'cancelled' | 'expired';
+  next_billing_date: string;
   created_at: string;
   auto_renew: boolean;
+  pending_changes?: PendingChange[];
+  available_tiers?: any[];
+  change_history?: any[];
 }
 
 export const ManageSubscriptions: React.FC = () => {
@@ -40,25 +58,36 @@ export const ManageSubscriptions: React.FC = () => {
 
 
   useEffect(() => {
-    const fetchSubscriptions = async () => {
-      if (!user) return;
-
-      try {
-        const response = await fetch(`/api/subscriptions/fan/${user.id}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch subscriptions');
-        }
-        const data = await response.json();
-        setSubscriptions(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchSubscriptions();
   }, [user]);
+
+  const fetchSubscriptions = async () => {
+    if (!user) return;
+
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Use the enhanced subscription API with tier management data
+      const response = await fetch(`/api/subscriptions/user/${user.id}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch subscriptions');
+      }
+      
+      const result = await response.json();
+      if (result.success) {
+        setSubscriptions(result.data);
+      } else {
+        throw new Error(result.message || 'Failed to fetch subscriptions');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+      console.error('Error fetching subscriptions:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handlePauseResume = async (subscriptionId: number) => {
     const subscription = subscriptions.find(sub => sub.id === subscriptionId);
@@ -135,11 +164,9 @@ export const ManageSubscriptions: React.FC = () => {
     }
   };
 
-  const handleToggleAutoRenew = async (subscriptionId: string, autoRenew: boolean) => {
-    const numericId = parseInt(subscriptionId);
-    
+  const handleToggleAutoRenew = async (subscriptionId: number, autoRenew: boolean) => {
     try {
-      const response = await fetch(`/api/subscriptions/${numericId}`, {
+      const response = await fetch(`/api/subscriptions/${subscriptionId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -155,7 +182,7 @@ export const ManageSubscriptions: React.FC = () => {
 
       // Update local state only after successful API call
       setSubscriptions(subscriptions.map(sub => 
-        sub.id === numericId 
+        sub.id === subscriptionId 
           ? { ...sub, auto_renew: autoRenew }
           : sub
       ));
@@ -177,7 +204,7 @@ export const ManageSubscriptions: React.FC = () => {
 
   const totalMonthlySpend = subscriptions
     .filter(sub => sub.status === 'active')
-    .reduce((sum, sub) => sum + parseFloat(sub.tier.price.toString()), 0);
+    .reduce((sum, sub) => sum + parseFloat(sub.tier.price), 0);
 
   // Calculate derived data
   const activeSubscriptions = subscriptions.filter(sub => sub.status === 'active');
@@ -290,34 +317,16 @@ export const ManageSubscriptions: React.FC = () => {
                   </Button>
                 </div>
               ) : (
-                activeSubscriptions.map((subscription) => {
-                  // Transform the subscription data to match SubscriptionCard expectations
-                  const transformedSubscription = {
-                    id: subscription.id.toString(),
-                    creator: {
-                      username: subscription.creator.username,
-                      display_name: subscription.creator.display_name || subscription.creator.username,
-                      avatar: subscription.creator.avatar || '',
-                      category: 'General' // Default category since it's not in our API data
-                    },
-                    tier: subscription.tier.name,
-                    price: parseFloat(subscription.tier.price.toString()),
-                    status: subscription.status as 'active' | 'paused',
-                    next_billing: new Date(subscription.current_period_end).toLocaleDateString(),
-                    joined: new Date(subscription.created_at).toLocaleDateString(),
-                    auto_renew: subscription.auto_renew
-                  };
-
-                  return (
-                    <SubscriptionCard
-                      key={subscription.id}
-                      subscription={transformedSubscription}
-                      onPauseResume={(id) => handlePauseResume(parseInt(id))}
-                      onCancel={(id) => handleCancel(parseInt(id))}
-                      onToggleAutoRenew={handleToggleAutoRenew}
-                    />
-                  );
-                })
+                activeSubscriptions.map((subscription) => (
+                  <SubscriptionCard
+                    key={subscription.id}
+                    subscription={subscription}
+                    onPauseResume={handlePauseResume}
+                    onCancel={handleCancel}
+                    onToggleAutoRenew={handleToggleAutoRenew}
+                    onSubscriptionUpdate={fetchSubscriptions}
+                  />
+                ))
               )}
             </>
           )}
@@ -343,34 +352,16 @@ export const ManageSubscriptions: React.FC = () => {
                   <p>No inactive subscriptions.</p>
                 </div>
               ) : (
-                inactiveSubscriptions.map((subscription) => {
-                  // Transform the subscription data to match SubscriptionCard expectations
-                  const transformedSubscription = {
-                    id: subscription.id.toString(),
-                    creator: {
-                      username: subscription.creator.username,
-                      display_name: subscription.creator.display_name || subscription.creator.username,
-                      avatar: subscription.creator.avatar || '',
-                      category: 'General' // Default category since it's not in our API data
-                    },
-                    tier: subscription.tier.name,
-                    price: parseFloat(subscription.tier.price.toString()),
-                    status: subscription.status as 'active' | 'paused',
-                    next_billing: new Date(subscription.current_period_end).toLocaleDateString(),
-                    joined: new Date(subscription.created_at).toLocaleDateString(),
-                    auto_renew: subscription.auto_renew
-                  };
-
-                  return (
-                    <SubscriptionCard
-                      key={subscription.id}
-                      subscription={transformedSubscription}
-                      onPauseResume={(id) => handlePauseResume(parseInt(id))}
-                      onCancel={(id) => handleCancel(parseInt(id))}
-                      onToggleAutoRenew={handleToggleAutoRenew}
-                    />
-                  );
-                })
+                inactiveSubscriptions.map((subscription) => (
+                  <SubscriptionCard
+                    key={subscription.id}
+                    subscription={subscription}
+                    onPauseResume={handlePauseResume}
+                    onCancel={handleCancel}
+                    onToggleAutoRenew={handleToggleAutoRenew}
+                    onSubscriptionUpdate={fetchSubscriptions}
+                  />
+                ))
               )}
             </>
           )}
@@ -444,7 +435,7 @@ export const ManageSubscriptions: React.FC = () => {
                           <div className="text-right">
                             <div className="text-xs sm:text-sm text-muted-foreground">
                               <p>Subscribed: {new Date(subscription.created_at).toLocaleDateString()}</p>
-                              <p>Ended: {new Date(subscription.current_period_end).toLocaleDateString()}</p>
+                              <p>Ended: {new Date(subscription.next_billing_date).toLocaleDateString()}</p>
                             </div>
                           </div>
                         </div>
