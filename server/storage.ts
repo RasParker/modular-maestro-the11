@@ -6,6 +6,9 @@ import {
   comment_likes,
   subscription_tiers,
   subscriptions,
+  subscription_changes,
+  pending_subscription_changes,
+  proration_credits,
   payment_transactions,
   creator_payouts,
   creator_payout_settings,
@@ -26,6 +29,12 @@ import {
   type InsertSubscriptionTier,
   type Subscription,
   type InsertSubscription,
+  type SubscriptionChange,
+  type InsertSubscriptionChange,
+  type PendingSubscriptionChange,
+  type InsertPendingSubscriptionChange,
+  type ProrationCredit,
+  type InsertProrationCredit,
   type PaymentTransaction,
   type InsertPaymentTransaction,
   type CreatorPayoutSettings,
@@ -97,6 +106,25 @@ export interface IStorage {
 
   getUserSubscriptionToCreator(fanId: number, creatorId: number): Promise<Subscription | undefined>;
   getCreatorSubscribers(creatorId: number): Promise<Subscription[]>;
+
+  // Subscription management methods (Phase 1)
+  switchSubscriptionTier(subscriptionId: number, newTierId: number, prorationAmount?: number): Promise<Subscription | undefined>;
+  calculateProration(subscriptionId: number, newTierId: number): Promise<{ prorationAmount: number; isUpgrade: boolean; daysRemaining: number }>;
+  
+  // Subscription changes tracking
+  createSubscriptionChange(change: InsertSubscriptionChange): Promise<SubscriptionChange>;
+  getSubscriptionChangeHistory(subscriptionId: number): Promise<SubscriptionChange[]>;
+  
+  // Pending subscription changes
+  createPendingSubscriptionChange(change: InsertPendingSubscriptionChange): Promise<PendingSubscriptionChange>;
+  getPendingSubscriptionChanges(subscriptionId: number): Promise<PendingSubscriptionChange[]>;
+  applyPendingSubscriptionChange(changeId: number): Promise<boolean>;
+  cancelPendingSubscriptionChange(changeId: number): Promise<boolean>;
+  
+  // Proration credits
+  createProrationCredit(credit: InsertProrationCredit): Promise<ProrationCredit>;
+  getProrationCredits(subscriptionId: number): Promise<ProrationCredit[]>;
+  applyProrationCredit(creditId: number, paymentId: number): Promise<boolean>;
 
   // Payment methods
   createPaymentTransaction(transaction: InsertPaymentTransaction): Promise<PaymentTransaction>;
@@ -669,6 +697,200 @@ export class DatabaseStorage implements IStorage {
     } catch (error) {
       console.error('Error in getCreatorSubscribers:', error);
       return [];
+    }
+  }
+
+  // Phase 1 Subscription Management Methods
+  
+  async switchSubscriptionTier(subscriptionId: number, newTierId: number, prorationAmount: number = 0): Promise<Subscription | undefined> {
+    try {
+      // Get current subscription and tier details
+      const [currentSubscription] = await db.select().from(subscriptions).where(eq(subscriptions.id, subscriptionId));
+      const [newTier] = await db.select().from(subscription_tiers).where(eq(subscription_tiers.id, newTierId));
+      
+      if (!currentSubscription || !newTier) {
+        throw new Error('Subscription or tier not found');
+      }
+
+      // Update the subscription with new tier and proration info
+      const [updatedSubscription] = await db
+        .update(subscriptions)
+        .set({
+          previous_tier_id: currentSubscription.tier_id,
+          tier_id: newTierId,
+          proration_credit: prorationAmount < 0 ? Math.abs(prorationAmount).toString() : "0.00",
+          updated_at: new Date()
+        })
+        .where(eq(subscriptions.id, subscriptionId))
+        .returning();
+
+      // Log the tier change
+      await this.createSubscriptionChange({
+        subscription_id: subscriptionId,
+        from_tier_id: currentSubscription.tier_id,
+        to_tier_id: newTierId,
+        change_type: parseFloat(newTier.price) > parseFloat(currentSubscription.tier_id.toString()) ? 'upgrade' : 'downgrade',
+        proration_amount: prorationAmount.toString(),
+        effective_date: new Date(),
+        billing_impact: 'immediate',
+        reason: 'user_initiated'
+      });
+
+      return updatedSubscription;
+    } catch (error) {
+      console.error('Error switching subscription tier:', error);
+      return undefined;
+    }
+  }
+
+  async calculateProration(subscriptionId: number, newTierId: number): Promise<{ prorationAmount: number; isUpgrade: boolean; daysRemaining: number }> {
+    try {
+      // Get subscription and current/new tier details
+      const subscription = await this.getSubscription(subscriptionId);
+      const newTier = await this.getSubscriptionTier(newTierId);
+      const currentTier = subscription ? await this.getSubscriptionTier(subscription.tier_id) : null;
+      
+      if (!subscription || !newTier || !currentTier) {
+        return { prorationAmount: 0, isUpgrade: false, daysRemaining: 0 };
+      }
+
+      // Calculate days remaining in billing cycle (assuming 30-day cycles)
+      const now = new Date();
+      const nextBilling = subscription.next_billing_date ? new Date(subscription.next_billing_date) : new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+      const daysRemaining = Math.ceil((nextBilling.getTime() - now.getTime()) / (24 * 60 * 60 * 1000));
+      
+      const currentPrice = parseFloat(currentTier.price);
+      const newPrice = parseFloat(newTier.price);
+      const isUpgrade = newPrice > currentPrice;
+      
+      // Calculate proration: 
+      // For upgrades: charge difference for remaining days
+      // For downgrades: credit difference for remaining days
+      const dailyDifference = (newPrice - currentPrice) / 30;
+      const prorationAmount = dailyDifference * daysRemaining;
+
+      return {
+        prorationAmount,
+        isUpgrade,
+        daysRemaining
+      };
+    } catch (error) {
+      console.error('Error calculating proration:', error);
+      return { prorationAmount: 0, isUpgrade: false, daysRemaining: 0 };
+    }
+  }
+
+  async createSubscriptionChange(change: InsertSubscriptionChange): Promise<SubscriptionChange> {
+    const [newChange] = await db
+      .insert(subscription_changes)
+      .values(change)
+      .returning();
+    return newChange;
+  }
+
+  async getSubscriptionChangeHistory(subscriptionId: number): Promise<SubscriptionChange[]> {
+    return await db
+      .select()
+      .from(subscription_changes)
+      .where(eq(subscription_changes.subscription_id, subscriptionId))
+      .orderBy(desc(subscription_changes.created_at));
+  }
+
+  async createPendingSubscriptionChange(change: InsertPendingSubscriptionChange): Promise<PendingSubscriptionChange> {
+    const [newChange] = await db
+      .insert(pending_subscription_changes)
+      .values(change)
+      .returning();
+    return newChange;
+  }
+
+  async getPendingSubscriptionChanges(subscriptionId: number): Promise<PendingSubscriptionChange[]> {
+    return await db
+      .select()
+      .from(pending_subscription_changes)
+      .where(and(
+        eq(pending_subscription_changes.subscription_id, subscriptionId),
+        eq(pending_subscription_changes.status, 'pending')
+      ))
+      .orderBy(pending_subscription_changes.scheduled_date);
+  }
+
+  async applyPendingSubscriptionChange(changeId: number): Promise<boolean> {
+    try {
+      const [change] = await db
+        .select()
+        .from(pending_subscription_changes)
+        .where(eq(pending_subscription_changes.id, changeId));
+
+      if (!change || change.status !== 'pending') {
+        return false;
+      }
+
+      // Apply the subscription change
+      await this.switchSubscriptionTier(
+        change.subscription_id,
+        change.to_tier_id,
+        parseFloat(change.proration_amount || "0")
+      );
+
+      // Mark the pending change as applied
+      await db
+        .update(pending_subscription_changes)
+        .set({ status: 'applied' })
+        .where(eq(pending_subscription_changes.id, changeId));
+
+      return true;
+    } catch (error) {
+      console.error('Error applying pending subscription change:', error);
+      return false;
+    }
+  }
+
+  async cancelPendingSubscriptionChange(changeId: number): Promise<boolean> {
+    try {
+      const result = await db
+        .update(pending_subscription_changes)
+        .set({ status: 'cancelled' })
+        .where(eq(pending_subscription_changes.id, changeId));
+
+      return (result.rowCount || 0) > 0;
+    } catch (error) {
+      console.error('Error cancelling pending subscription change:', error);
+      return false;
+    }
+  }
+
+  async createProrationCredit(credit: InsertProrationCredit): Promise<ProrationCredit> {
+    const [newCredit] = await db
+      .insert(proration_credits)
+      .values(credit)
+      .returning();
+    return newCredit;
+  }
+
+  async getProrationCredits(subscriptionId: number): Promise<ProrationCredit[]> {
+    return await db
+      .select()
+      .from(proration_credits)
+      .where(eq(proration_credits.subscription_id, subscriptionId))
+      .orderBy(desc(proration_credits.created_at));
+  }
+
+  async applyProrationCredit(creditId: number, paymentId: number): Promise<boolean> {
+    try {
+      const result = await db
+        .update(proration_credits)
+        .set({
+          applied_to_payment_id: paymentId,
+          status: 'applied',
+          applied_at: new Date()
+        })
+        .where(eq(proration_credits.id, creditId));
+
+      return (result.rowCount || 0) > 0;
+    } catch (error) {
+      console.error('Error applying proration credit:', error);
+      return false;
     }
   }
 

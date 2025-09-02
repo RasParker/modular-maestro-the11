@@ -19,6 +19,7 @@ import paymentRoutes from './routes/payment';
 import paymentTestRoutes from './routes/payment-test';
 import payoutRoutes from './routes/payouts';
 import adminRoutes from './routes/admin';
+import subscriptionRoutes from './routes/subscriptions';
 import { authenticateToken } from "./middleware/auth";
 import bcrypt from "bcryptjs";
 import * as schema from '../shared/schema';
@@ -2192,6 +2193,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use('/api/payment-test', paymentTestRoutes);
   app.use('/api/payouts', payoutRoutes);
   app.use('/api/admin', adminRoutes);
+  app.use('/api/subscriptions', subscriptionRoutes);
 
 // Platform settings endpoints
 app.get('/api/admin/platform-settings', async (req, res) => {

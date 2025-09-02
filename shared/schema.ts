@@ -120,6 +120,9 @@ export const subscriptions = pgTable("subscriptions", {
   ends_at: timestamp("ends_at"),
   auto_renew: boolean("auto_renew").notNull().default(true),
   next_billing_date: timestamp("next_billing_date"),
+  previous_tier_id: integer("previous_tier_id"), // For tracking tier changes
+  billing_cycle_anchor: timestamp("billing_cycle_anchor"), // Original billing date for pro-rating
+  proration_credit: decimal("proration_credit", { precision: 10, scale: 2 }).default("0.00"), // Credit from downgrades
   created_at: timestamp("created_at").notNull().defaultNow(),
   updated_at: timestamp("updated_at").notNull().defaultNow(),
 });
@@ -266,6 +269,51 @@ export const creator_favorites = pgTable("creator_favorites", {
   created_at: timestamp("created_at").notNull().defaultNow(),
 });
 
+// Subscription change tracking for audit trail
+export const subscription_changes = pgTable("subscription_changes", {
+  id: serial("id").primaryKey(),
+  subscription_id: integer("subscription_id").notNull(),
+  from_tier_id: integer("from_tier_id"),
+  to_tier_id: integer("to_tier_id").notNull(),
+  change_type: text("change_type").notNull(), // upgrade, downgrade, reactivate, pause, cancel
+  proration_amount: decimal("proration_amount", { precision: 10, scale: 2 }).default("0.00"),
+  effective_date: timestamp("effective_date").notNull().defaultNow(),
+  billing_impact: text("billing_impact"), // immediate, next_cycle, prorated
+  reason: text("reason"), // user_initiated, admin_action, system_auto
+  metadata: json("metadata").$type<{
+    [key: string]: any;
+  }>(),
+  created_at: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Pending subscription changes (for scheduled downgrades, etc.)
+export const pending_subscription_changes = pgTable("pending_subscription_changes", {
+  id: serial("id").primaryKey(),
+  subscription_id: integer("subscription_id").notNull(),
+  from_tier_id: integer("from_tier_id").notNull(),
+  to_tier_id: integer("to_tier_id").notNull(),
+  change_type: text("change_type").notNull(), // downgrade, upgrade, cancel
+  scheduled_date: timestamp("scheduled_date").notNull(), // when change should take effect
+  proration_amount: decimal("proration_amount", { precision: 10, scale: 2 }).default("0.00"),
+  status: text("status").notNull().default("pending"), // pending, applied, cancelled
+  created_at: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Pro-rating credits for billing adjustments
+export const proration_credits = pgTable("proration_credits", {
+  id: serial("id").primaryKey(),
+  subscription_id: integer("subscription_id").notNull(),
+  amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+  currency: text("currency").notNull().default("GHS"),
+  credit_type: text("credit_type").notNull(), // upgrade_proration, downgrade_credit, refund
+  description: text("description").notNull(),
+  applied_to_payment_id: integer("applied_to_payment_id"), // which payment this credit was applied to
+  status: text("status").notNull().default("pending"), // pending, applied, expired
+  expires_at: timestamp("expires_at"), // when credit expires if not used
+  created_at: timestamp("created_at").notNull().defaultNow(),
+  applied_at: timestamp("applied_at"),
+});
+
 // Database relations
 export const usersRelations = relations(users, ({ one, many }) => ({
   posts: many(posts),
@@ -332,7 +380,14 @@ export const subscriptionsRelations = relations(subscriptions, ({ one, many }) =
     fields: [subscriptions.tier_id],
     references: [subscription_tiers.id],
   }),
+  previous_tier: one(subscription_tiers, {
+    fields: [subscriptions.previous_tier_id],
+    references: [subscription_tiers.id],
+  }),
   payment_transactions: many(payment_transactions),
+  subscription_changes: many(subscription_changes),
+  pending_changes: many(pending_subscription_changes),
+  proration_credits: many(proration_credits),
 }));
 
 export const paymentTransactionsRelations = relations(payment_transactions, ({ one }) => ({
@@ -436,6 +491,47 @@ export const creatorFavoritesRelations = relations(creator_favorites, ({ one }) 
   creator: one(users, {
     fields: [creator_favorites.creator_id],
     references: [users.id],
+  }),
+}));
+
+export const subscriptionChangesRelations = relations(subscription_changes, ({ one }) => ({
+  subscription: one(subscriptions, {
+    fields: [subscription_changes.subscription_id],
+    references: [subscriptions.id],
+  }),
+  from_tier: one(subscription_tiers, {
+    fields: [subscription_changes.from_tier_id],
+    references: [subscription_tiers.id],
+  }),
+  to_tier: one(subscription_tiers, {
+    fields: [subscription_changes.to_tier_id],
+    references: [subscription_tiers.id],
+  }),
+}));
+
+export const pendingSubscriptionChangesRelations = relations(pending_subscription_changes, ({ one }) => ({
+  subscription: one(subscriptions, {
+    fields: [pending_subscription_changes.subscription_id],
+    references: [subscriptions.id],
+  }),
+  from_tier: one(subscription_tiers, {
+    fields: [pending_subscription_changes.from_tier_id],
+    references: [subscription_tiers.id],
+  }),
+  to_tier: one(subscription_tiers, {
+    fields: [pending_subscription_changes.to_tier_id],
+    references: [subscription_tiers.id],
+  }),
+}));
+
+export const prorationCreditsRelations = relations(proration_credits, ({ one }) => ({
+  subscription: one(subscriptions, {
+    fields: [proration_credits.subscription_id],
+    references: [subscriptions.id],
+  }),
+  applied_payment: one(payment_transactions, {
+    fields: [proration_credits.applied_to_payment_id],
+    references: [payment_transactions.id],
   }),
 }));
 
@@ -633,6 +729,39 @@ export const insertCreatorFavoriteSchema = createInsertSchema(creator_favorites)
   creator_id: true,
 });
 
+export const insertSubscriptionChangeSchema = createInsertSchema(subscription_changes).pick({
+  subscription_id: true,
+  from_tier_id: true,
+  to_tier_id: true,
+  change_type: true,
+  proration_amount: true,
+  effective_date: true,
+  billing_impact: true,
+  reason: true,
+  metadata: true,
+});
+
+export const insertPendingSubscriptionChangeSchema = createInsertSchema(pending_subscription_changes).pick({
+  subscription_id: true,
+  from_tier_id: true,
+  to_tier_id: true,
+  change_type: true,
+  scheduled_date: true,
+  proration_amount: true,
+  status: true,
+});
+
+export const insertProrationCreditSchema = createInsertSchema(proration_credits).pick({
+  subscription_id: true,
+  amount: true,
+  currency: true,
+  credit_type: true,
+  description: true,
+  applied_to_payment_id: true,
+  status: true,
+  expires_at: true,
+});
+
 export type InsertCategory = z.infer<typeof insertCategorySchema>;
 export type Category = typeof categories.$inferSelect;
 export type InsertCreatorCategory = z.infer<typeof insertCreatorCategorySchema>;
@@ -642,3 +771,9 @@ export type InsertCreatorLike = z.infer<typeof insertCreatorLikeSchema>;
 export type CreatorLike = typeof creator_likes.$inferSelect;
 export type InsertCreatorFavorite = z.infer<typeof insertCreatorFavoriteSchema>;
 export type CreatorFavorite = typeof creator_favorites.$inferSelect;
+export type InsertSubscriptionChange = z.infer<typeof insertSubscriptionChangeSchema>;
+export type SubscriptionChange = typeof subscription_changes.$inferSelect;
+export type InsertPendingSubscriptionChange = z.infer<typeof insertPendingSubscriptionChangeSchema>;
+export type PendingSubscriptionChange = typeof pending_subscription_changes.$inferSelect;
+export type InsertProrationCredit = z.infer<typeof insertProrationCreditSchema>;
+export type ProrationCredit = typeof proration_credits.$inferSelect;

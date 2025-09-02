@@ -305,10 +305,10 @@ export class PaymentService {
   }
 
   // Create subscription payment
-  async createSubscriptionPayment(fanId: number, tierId: number, amount: number, email: string): Promise<PaystackInitializeResponse> {
+  async createSubscriptionPayment(fanId: number, tierId: number, amount: number, email: string, customMetadata?: any): Promise<PaystackInitializeResponse> {
     const reference = this.generateReference();
 
-    const metadata = {
+    const defaultMetadata = {
       fan_id: fanId,
       tier_id: tierId,
       tier_price: amount.toString(),
@@ -326,6 +326,9 @@ export class PaymentService {
         }
       ]
     };
+
+    // Merge custom metadata with default metadata
+    const metadata = { ...defaultMetadata, ...customMetadata };
 
     // Use current environment's callback URL
     const baseUrl = process.env.REPL_SLUG && process.env.REPL_OWNER
@@ -351,10 +354,14 @@ export class PaymentService {
       const metadata = paymentData.metadata;
       const fanId = metadata?.fan_id || metadata?.custom_fields?.find((f: any) => f.variable_name === 'fan_id')?.value;
       const tierId = metadata?.tier_id || metadata?.custom_fields?.find((f: any) => f.variable_name === 'tier_id')?.value;
+      const subscriptionType = metadata?.subscription_type || 'new';
+      const existingSubscriptionId = metadata?.existing_subscription_id;
 
       if (!fanId || !tierId) {
         throw new Error('Missing fan_id or tier_id in payment metadata');
       }
+
+      console.log(`🎯 Processing ${subscriptionType} payment for fan ${fanId}, tier ${tierId}`);
 
       // Get subscription tier details
       const tier = await storage.getSubscriptionTier(parseInt(tierId));
@@ -362,49 +369,82 @@ export class PaymentService {
         throw new Error('Subscription tier not found');
       }
 
-      // Create subscription
-      const currentDate = new Date();
-      const nextBillingDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days from now
-
-      const subscription = await storage.createSubscription({
-        fan_id: parseInt(fanId),
-        creator_id: tier.creator_id,
-        tier_id: parseInt(tierId),
-        status: 'active',
-        auto_renew: true,
-        started_at: currentDate,
-        ends_at: nextBillingDate,
-        next_billing_date: nextBillingDate
-      });
-
-      // Create payment transaction record
-      await storage.createPaymentTransaction({
-        subscription_id: subscription.id,
-        amount: (paymentData.amount / 100).toString(), // Convert from pesewas to GHS
-        currency: paymentData.currency,
-        status: 'completed',
-        payment_method: 'paystack',
-        transaction_id: paymentData.reference,
-        processed_at: new Date(paymentData.paid_at)
-      });
-
-      // Notify creator of new subscriber
-      try {
-        const { NotificationService } = require('../notification-service');
-        console.log(`Creating new subscriber notification via payment: creator=${tier.creator_id}, fan=${fanId}, tier=${tier.name}`);
-
-        await NotificationService.notifyNewSubscriber(
-          tier.creator_id,
-          parseInt(fanId),
-          tier.name
+      // Handle different subscription types
+      if (subscriptionType === 'tier_upgrade' && existingSubscriptionId) {
+        // This is an upgrade - switch the tier immediately
+        console.log(`⬆️ Processing tier upgrade for subscription ${existingSubscriptionId}`);
+        
+        const updatedSubscription = await storage.switchSubscriptionTier(
+          parseInt(existingSubscriptionId),
+          parseInt(tierId),
+          parseFloat(metadata?.proration_amount || "0")
         );
-        console.log(`✅ Payment flow: Sent notification to creator ${tier.creator_id} for new subscriber ${fanId} (${tier.name} tier)`);
-      } catch (notificationError) {
-        console.error('❌ Payment flow: Failed to send new subscriber notification:', notificationError);
-        // Don't fail the payment processing if notification fails
-      }
 
-      console.log(`Subscription created successfully for fan ${fanId} to tier ${tierId}`);
+        if (updatedSubscription) {
+          console.log(`✅ Tier upgrade successful: ${existingSubscriptionId} → tier ${tierId}`);
+        }
+
+        // Create payment transaction record
+        await storage.createPaymentTransaction({
+          subscription_id: parseInt(existingSubscriptionId),
+          amount: paymentData.amount.toString(),
+          currency: paymentData.currency,
+          status: 'completed',
+          payment_method: 'paystack',
+          transaction_id: paymentData.reference,
+          processed_at: new Date()
+        });
+
+        // TODO: Send notification to user about successful upgrade
+        console.log(`📧 Should send upgrade notification to fan ${fanId}`);
+        
+      } else {
+        // This is a new subscription - create it
+        console.log(`✨ Creating new subscription for fan ${fanId}`);
+        
+        const currentDate = new Date();
+        const nextBillingDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days from now
+
+        const subscription = await storage.createSubscription({
+          fan_id: parseInt(fanId),
+          creator_id: tier.creator_id,
+          tier_id: parseInt(tierId),
+          status: 'active',
+          auto_renew: true,
+          started_at: currentDate,
+          ends_at: nextBillingDate,
+          next_billing_date: nextBillingDate
+        });
+
+        // Create payment transaction record
+        await storage.createPaymentTransaction({
+          subscription_id: subscription.id,
+          amount: (paymentData.amount / 100).toString(), // Convert from pesewas to GHS
+          currency: paymentData.currency,
+          status: 'completed',
+          payment_method: 'paystack',
+          transaction_id: paymentData.reference,
+          processed_at: new Date(paymentData.paid_at)
+        });
+
+        // Notify creator of new subscriber
+        try {
+          const { NotificationService } = require('../notification-service');
+          console.log(`Creating new subscriber notification via payment: creator=${tier.creator_id}, fan=${fanId}, tier=${tier.name}`);
+
+          await NotificationService.notifyNewSubscriber(
+            tier.creator_id,
+            parseInt(fanId),
+            tier.name
+          );
+          console.log(`✅ Payment flow: Sent notification to creator ${tier.creator_id} for new subscriber ${fanId} (${tier.name} tier)`);
+        } catch (notificationError) {
+          console.error('❌ Payment flow: Failed to send new subscriber notification:', notificationError);
+          // Don't fail the payment processing if notification fails
+        }
+
+        console.log(`Subscription created successfully for fan ${fanId} to tier ${tierId}`);
+      }
     } catch (error) {
       console.error('Error processing successful payment:', error);
       throw error;

@@ -37,19 +37,74 @@ router.post('/initialize', async (req, res) => {
 
     // Check if fan already has active subscription to this creator
     const existingSubscription = await storage.getUserSubscriptionToCreator(fan_id, tier.creator_id);
-    if (existingSubscription && existingSubscription.status === 'active') {
+    
+    // If user already has active subscription to same tier, prevent duplicate
+    if (existingSubscription && existingSubscription.status === 'active' && existingSubscription.tier_id === tier_id) {
       return res.status(400).json({
         success: false,
-        message: 'You already have an active subscription to this creator'
+        message: 'You already have an active subscription to this tier'
       });
     }
+    
+    // If user has active subscription to different tier, this is a tier change
+    const isTierChange = existingSubscription && existingSubscription.status === 'active' && existingSubscription.tier_id !== tier_id;
 
-    // Initialize payment
+    let paymentAmount = parseFloat(tier.price);
+    let metadata: any = {
+      fan_id,
+      tier_id,
+      subscription_type: 'new'
+    };
+
+    // Handle tier change logic
+    if (isTierChange) {
+      console.log(`🔄 Processing tier change for subscription ${existingSubscription.id}`);
+      
+      // Calculate proration for the tier change
+      const prorationResult = await storage.calculateProration(existingSubscription.id, tier_id);
+      console.log('📊 Proration calculation:', prorationResult);
+
+      // For upgrades: charge prorated difference immediately
+      // For downgrades: credit will be applied, and they pay reduced amount next cycle
+      if (prorationResult.isUpgrade) {
+        paymentAmount = prorationResult.prorationAmount;
+        metadata = {
+          ...metadata,
+          subscription_type: 'tier_upgrade',
+          existing_subscription_id: existingSubscription.id,
+          proration_amount: prorationResult.prorationAmount,
+          days_remaining: prorationResult.daysRemaining
+        };
+      } else {
+        // For downgrades, schedule the change for next billing cycle
+        await storage.createPendingSubscriptionChange({
+          subscription_id: existingSubscription.id,
+          from_tier_id: existingSubscription.tier_id,
+          to_tier_id: tier_id,
+          change_type: 'downgrade',
+          scheduled_date: existingSubscription.next_billing_date || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+          proration_amount: Math.abs(prorationResult.prorationAmount).toString()
+        });
+
+        return res.json({
+          success: true,
+          message: 'Downgrade scheduled for next billing cycle. You will keep access to current tier until then.',
+          data: {
+            type: 'scheduled_downgrade',
+            effective_date: existingSubscription.next_billing_date,
+            credit_amount: Math.abs(prorationResult.prorationAmount)
+          }
+        });
+      }
+    }
+
+    // Initialize payment with calculated amount and metadata
     const paymentData = await paymentService.createSubscriptionPayment(
       fan_id,
       tier_id,
-      parseFloat(tier.price),
-      fan.email
+      paymentAmount,
+      fan.email,
+      metadata
     );
 
     res.json({
