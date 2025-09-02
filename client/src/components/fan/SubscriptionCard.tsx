@@ -266,7 +266,18 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
                   className="w-full"
                   onClick={(e) => {
                     e.stopPropagation();
-                    setShowTierManagement(true);
+                    if (subscription && 
+                        subscription.creator && 
+                        subscription.creator.username && 
+                        subscription.creator.display_name && 
+                        subscription.tier && 
+                        subscription.tier.name && 
+                        subscription.tier.price) {
+                      setShowTierManagement(true);
+                    } else {
+                      console.error('Incomplete subscription data:', subscription);
+                      alert('Unable to load tier management. Please refresh the page and try again.');
+                    }
                   }}
                   data-testid={`button-manage-tier-mobile-${subscription.id}`}
                 >

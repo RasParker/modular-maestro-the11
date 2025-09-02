@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -103,19 +104,37 @@ export const TierManagementModal: React.FC<TierManagementModalProps> = ({
   const [pendingChanges, setPendingChanges] = useState<PendingChange[]>([]);
   const [changeHistory, setChangeHistory] = useState<SubscriptionChange[]>([]);
 
-  // Validation after hooks
+  // Early return if modal is not open
   if (!isOpen) {
     return null;
   }
 
-  if (!subscription || 
-      !subscription.creator || 
-      !subscription.tier || 
-      !subscription.creator.username ||
-      !subscription.creator.display_name ||
-      !subscription.tier.name ||
-      !subscription.tier.price) {
-    return null;
+  // Validation after hooks - check if subscription data is complete
+  const isValidSubscription = subscription && 
+      subscription.creator && 
+      subscription.tier && 
+      subscription.creator.username &&
+      subscription.creator.display_name &&
+      subscription.tier.name &&
+      subscription.tier.price;
+
+  if (!isValidSubscription) {
+    return (
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Error Loading Subscription</DialogTitle>
+            <DialogDescription>
+              There was an issue loading the subscription data
+            </DialogDescription>
+          </DialogHeader>
+          <div className="p-4 text-center">
+            <p className="text-muted-foreground mb-4">Unable to load subscription details. Please refresh the page and try again.</p>
+            <Button onClick={onClose}>Close</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
   }
 
   useEffect(() => {
@@ -318,8 +337,11 @@ export const TierManagementModal: React.FC<TierManagementModalProps> = ({
       <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-left">
-            Manage Subscription - {subscription.creator.display_name || subscription.creator.username}
+            Manage Subscription - {subscription?.creator?.display_name || subscription?.creator?.username || 'Unknown Creator'}
           </DialogTitle>
+          <DialogDescription>
+            Manage your subscription tier and view billing history
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
@@ -333,15 +355,15 @@ export const TierManagementModal: React.FC<TierManagementModalProps> = ({
                     <span className="font-semibold">Current Tier:</span>
                   </div>
                   <Badge variant="secondary" className="text-sm">
-                    {subscription.tier.name}
+                    {subscription?.tier?.name || 'Unknown Tier'}
                   </Badge>
                   <span className="text-lg font-bold">
-                    GHS {subscription.tier.price}/month
+                    GHS {subscription?.tier?.price || '0'}/month
                   </span>
                 </div>
                 <div className="text-right text-sm text-muted-foreground">
-                  <div>Next billing: {subscription.next_billing_date ? new Date(subscription.next_billing_date).toLocaleDateString() : 'N/A'}</div>
-                  <div className="text-xs">Status: {subscription.status || 'Unknown'}</div>
+                  <div>Next billing: {subscription?.next_billing_date ? new Date(subscription.next_billing_date).toLocaleDateString() : 'N/A'}</div>
+                  <div className="text-xs">Status: {subscription?.status || 'Unknown'}</div>
                 </div>
               </div>
             </CardContent>
@@ -362,15 +384,15 @@ export const TierManagementModal: React.FC<TierManagementModalProps> = ({
                         <div className="flex items-center justify-between">
                           <div>
                             <span className="font-medium">
-                              {change.change_type === 'downgrade' ? 'Downgrade' : 'Change'} to {change.to_tier.name}
+                              {change.change_type === 'downgrade' ? 'Downgrade' : 'Change'} to {change?.to_tier?.name || 'Unknown Tier'}
                             </span>
                             <div className="text-sm text-muted-foreground">
-                              Effective: {new Date(change.scheduled_date).toLocaleDateString()}
+                              Effective: {change?.scheduled_date ? new Date(change.scheduled_date).toLocaleDateString() : 'N/A'}
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
                             <Badge variant="outline">
-                              GHS {change.to_tier.price}/month
+                              GHS {change?.to_tier?.price || '0'}/month
                             </Badge>
                             <Button
                               size="sm"
