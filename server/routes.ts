@@ -117,7 +117,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           email: 'creator@example.com',
           username: 'amazingcreator',
           role: 'creator',
-          avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b5fd?w=150&h=150&fit=crop&crop=face',
+          avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b583?w=150&h=150&fit=crop&crop=face',
           created_at: '2024-01-01T00:00:00Z',
           updated_at: '2024-01-01T00:00:00Z',
         },

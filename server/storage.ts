@@ -110,17 +110,17 @@ export interface IStorage {
   // Subscription management methods (Phase 1)
   switchSubscriptionTier(subscriptionId: number, newTierId: number, prorationAmount?: number): Promise<Subscription | undefined>;
   calculateProration(subscriptionId: number, newTierId: number): Promise<{ prorationAmount: number; isUpgrade: boolean; daysRemaining: number }>;
-  
+
   // Subscription changes tracking
   createSubscriptionChange(change: InsertSubscriptionChange): Promise<SubscriptionChange>;
   getSubscriptionChangeHistory(subscriptionId: number): Promise<SubscriptionChange[]>;
-  
+
   // Pending subscription changes
   createPendingSubscriptionChange(change: InsertPendingSubscriptionChange): Promise<PendingSubscriptionChange>;
   getPendingSubscriptionChanges(subscriptionId: number): Promise<PendingSubscriptionChange[]>;
   applyPendingSubscriptionChange(changeId: number): Promise<boolean>;
   cancelPendingSubscriptionChange(changeId: number): Promise<boolean>;
-  
+
   // Proration credits
   createProrationCredit(credit: InsertProrationCredit): Promise<ProrationCredit>;
   getProrationCredits(subscriptionId: number): Promise<ProrationCredit[]>;
@@ -701,13 +701,13 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Phase 1 Subscription Management Methods
-  
+
   async switchSubscriptionTier(subscriptionId: number, newTierId: number, prorationAmount: number = 0): Promise<Subscription | undefined> {
     try {
       // Get current subscription and tier details
       const [currentSubscription] = await db.select().from(subscriptions).where(eq(subscriptions.id, subscriptionId));
       const [newTier] = await db.select().from(subscription_tiers).where(eq(subscription_tiers.id, newTierId));
-      
+
       if (!currentSubscription || !newTier) {
         throw new Error('Subscription or tier not found');
       }
@@ -749,7 +749,7 @@ export class DatabaseStorage implements IStorage {
       const subscription = await this.getSubscription(subscriptionId);
       const newTier = await this.getSubscriptionTier(newTierId);
       const currentTier = subscription ? await this.getSubscriptionTier(subscription.tier_id) : null;
-      
+
       if (!subscription || !newTier || !currentTier) {
         return { prorationAmount: 0, isUpgrade: false, daysRemaining: 0 };
       }
@@ -758,12 +758,12 @@ export class DatabaseStorage implements IStorage {
       const now = new Date();
       const nextBilling = subscription.next_billing_date ? new Date(subscription.next_billing_date) : new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
       const daysRemaining = Math.ceil((nextBilling.getTime() - now.getTime()) / (24 * 60 * 60 * 1000));
-      
+
       const currentPrice = parseFloat(currentTier.price);
       const newPrice = parseFloat(newTier.price);
       const isUpgrade = newPrice > currentPrice;
-      
-      // Calculate proration: 
+
+      // Calculate proration:
       // For upgrades: charge difference for remaining days
       // For downgrades: credit difference for remaining days
       const dailyDifference = (newPrice - currentPrice) / 30;
@@ -1365,6 +1365,7 @@ export class DatabaseStorage implements IStorage {
     throw new Error('Conversations feature not yet implemented');
   }
 
+  async getMessages(conversationId: number): Promise<Message[]>;
   async getMessages(conversationId: number): Promise<Message[]> {
     try {
       // Return empty array for now since messages table doesn't exist
@@ -1484,7 +1485,12 @@ export class DatabaseStorage implements IStorage {
 
   async updateNotificationPreferences(userId: number, updates: Partial<NotificationPreferences>): Promise<NotificationPreferences | undefined> {
     try {
-      return undefined;
+      const [updatedPrefs] = await db
+        .update(notification_preferences)
+        .set({ ...updates, updated_at: new Date() })
+        .where(eq(notification_preferences.user_id, userId))
+        .returning();
+      return updatedPrefs;
     } catch (error) {
       console.error('Error updating notification preferences:', error);
       return undefined;
