@@ -104,6 +104,44 @@ export const TierManagementModal: React.FC<TierManagementModalProps> = ({
   const [pendingChanges, setPendingChanges] = useState<PendingChange[]>([]);
   const [changeHistory, setChangeHistory] = useState<SubscriptionChange[]>([]);
 
+  const fetchTierData = async () => {
+    if (!user?.id || !subscription?.id) return;
+
+    try {
+      setLoading(true);
+      
+      // Fetch enhanced subscription data with tier options
+      const response = await fetch(`/api/subscriptions/user/${user.id}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.data && Array.isArray(data.data)) {
+          const enhancedSub = data.data.find((sub: any) => sub.id === subscription.id);
+          
+          if (enhancedSub) {
+            setTierOptions(Array.isArray(enhancedSub.available_tiers) ? enhancedSub.available_tiers : []);
+            setPendingChanges(Array.isArray(enhancedSub.pending_changes) ? enhancedSub.pending_changes : []);
+            setChangeHistory(Array.isArray(enhancedSub.change_history) ? enhancedSub.change_history : []);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching tier data:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load tier management data",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen && subscription) {
+      fetchTierData();
+    }
+  }, [isOpen, subscription]);
+
   // Early return if modal is not open
   if (!isOpen) {
     return null;
@@ -137,43 +175,6 @@ export const TierManagementModal: React.FC<TierManagementModalProps> = ({
     );
   }
 
-  useEffect(() => {
-    if (isOpen && subscription) {
-      fetchTierData();
-    }
-  }, [isOpen, subscription]);
-
-  const fetchTierData = async () => {
-    if (!user?.id || !subscription?.id) return;
-
-    try {
-      setLoading(true);
-      
-      // Fetch enhanced subscription data with tier options
-      const response = await fetch(`/api/subscriptions/user/${user.id}`);
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success && data.data && Array.isArray(data.data)) {
-          const enhancedSub = data.data.find((sub: any) => sub.id === subscription.id);
-          
-          if (enhancedSub) {
-            setTierOptions(Array.isArray(enhancedSub.available_tiers) ? enhancedSub.available_tiers : []);
-            setPendingChanges(Array.isArray(enhancedSub.pending_changes) ? enhancedSub.pending_changes : []);
-            setChangeHistory(Array.isArray(enhancedSub.change_history) ? enhancedSub.change_history : []);
-          }
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching tier data:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load tier management data",
-        variant: "destructive"
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleUpgrade = async (tierId: number) => {
     setProcessingTierId(tierId);
