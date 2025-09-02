@@ -95,6 +95,11 @@ export const TierManagementModal: React.FC<TierManagementModalProps> = ({
   subscription,
   onSubscriptionUpdate
 }) => {
+  // Validate subscription data before hooks
+  if (!isOpen || !subscription || !subscription.creator || !subscription.tier || !subscription.creator.username) {
+    return null;
+  }
+
   const { user } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -102,11 +107,6 @@ export const TierManagementModal: React.FC<TierManagementModalProps> = ({
   const [tierOptions, setTierOptions] = useState<TierOption[]>([]);
   const [pendingChanges, setPendingChanges] = useState<PendingChange[]>([]);
   const [changeHistory, setChangeHistory] = useState<SubscriptionChange[]>([]);
-
-  // Validate subscription data after hooks
-  if (!isOpen || !subscription || !subscription.creator || !subscription.tier || !subscription.creator.username) {
-    return null;
-  }
 
   useEffect(() => {
     if (isOpen && subscription) {
@@ -295,7 +295,7 @@ export const TierManagementModal: React.FC<TierManagementModalProps> = ({
       <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-left">
-            Manage Subscription - {subscription.creator?.display_name || subscription.creator?.username || 'Creator'}
+            Manage Subscription - {subscription?.creator?.display_name || subscription?.creator?.username || 'Creator'}
           </DialogTitle>
         </DialogHeader>
 
@@ -310,15 +310,15 @@ export const TierManagementModal: React.FC<TierManagementModalProps> = ({
                     <span className="font-semibold">Current Tier:</span>
                   </div>
                   <Badge variant="secondary" className="text-sm">
-                    {subscription.tier?.name || 'Unknown Tier'}
+                    {subscription?.tier?.name || 'Unknown Tier'}
                   </Badge>
                   <span className="text-lg font-bold">
-                    GHS {subscription.tier?.price || '0'}/month
+                    GHS {subscription?.tier?.price || '0'}/month
                   </span>
                 </div>
                 <div className="text-right text-sm text-muted-foreground">
-                  <div>Next billing: {subscription.next_billing_date ? new Date(subscription.next_billing_date).toLocaleDateString() : 'N/A'}</div>
-                  <div className="text-xs">Status: {subscription.status || 'Unknown'}</div>
+                  <div>Next billing: {subscription?.next_billing_date ? new Date(subscription.next_billing_date).toLocaleDateString() : 'N/A'}</div>
+                  <div className="text-xs">Status: {subscription?.status || 'Unknown'}</div>
                 </div>
               </div>
             </CardContent>
