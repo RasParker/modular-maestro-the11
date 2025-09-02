@@ -47,6 +47,7 @@ router.get('/user/:userId', async (req, res) => {
 
         return {
           ...subscription,
+          next_billing_date: subscription.current_period_end || subscription.next_billing_date,
           available_tiers: tierOptions,
           pending_changes: pendingChanges,
           change_history: changeHistory.slice(0, 5) // Last 5 changes

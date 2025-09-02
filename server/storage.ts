@@ -520,16 +520,26 @@ export class DatabaseStorage implements IStorage {
         current_period_end: subscriptions.ends_at,
         created_at: subscriptions.created_at,
         auto_renew: subscriptions.auto_renew,
+        creator_id: subscriptions.creator_id,
+        tier_id: subscriptions.tier_id,
         creator: {
           id: users.id,
           username: users.username,
           display_name: users.display_name,
-          avatar: users.avatar
+          avatar: users.avatar || null,
+          category: users.primary_category_id || 'Uncategorized'
         },
         tier: {
+          id: subscription_tiers.id,
           name: subscription_tiers.name,
-          price: subscription_tiers.price
-        }
+          price: subscription_tiers.price,
+          description: subscription_tiers.description
+        },
+        status: subscriptions.status,
+        next_billing_date: subscriptions.ends_at,
+        current_period_end: subscriptions.ends_at,
+        created_at: subscriptions.created_at,
+        auto_renew: subscriptions.auto_renew
       })
       .from(subscriptions)
       .innerJoin(users, eq(subscriptions.creator_id, users.id))
@@ -1873,7 +1883,7 @@ export class DatabaseStorage implements IStorage {
           creator_count: sql<number>`COUNT(${creator_categories.creator_id})`.as('creator_count'),
         })
         .from(categories)
-        .leftJoin(creator_categories, eq(categories.id, creator_categories.category_id))
+        .leftJoin(creator_categories, eq(categories.id, creator_categories.creator_id))
         .groupBy(categories.id, categories.name, categories.description, categories.is_active)
         .orderBy(categories.name);
 
