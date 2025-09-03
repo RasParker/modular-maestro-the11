@@ -665,8 +665,11 @@ button[class*="outline"]:hover,
 /* Manage Subscriptions page desktop layout centering */
 @media (min-width: 768px) {
   .manage-subscriptions-container {
-    margin-left: auto !important;
+    margin-left: 50% !important;
     margin-right: auto !important;
+    transform: translateX(-50%) !important;
+    width: min(56rem, calc(100vw - 16rem)) !important;
+    max-width: none !important;
   }
 }
 
