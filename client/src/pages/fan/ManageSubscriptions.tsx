@@ -216,8 +216,16 @@ export const ManageSubscriptions: React.FC = () => {
 
   return (
     <AppLayout>
-      <div className={!isMobile ? "w-screen relative -ml-64" : ""}>
-        <EdgeToEdgeContainer maxWidth="4xl" enablePadding enableTopPadding>
+      <div style={{ 
+        width: !isMobile ? '100vw' : 'auto',
+        marginLeft: !isMobile ? '-16rem' : '0',
+        position: 'relative'
+      }}>
+        <div style={{
+          maxWidth: '56rem',
+          margin: '0 auto',
+          padding: '1.5rem 1rem 2rem 1rem'
+        }}>
         <div className="mb-6 sm:mb-8 text-center sm:text-left">
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2 justify-center sm:justify-start">
             Manage Subscriptions
@@ -451,7 +459,7 @@ export const ManageSubscriptions: React.FC = () => {
           )}
         </Tabs>
         </div>
-        </EdgeToEdgeContainer>
+        </div>
       </div>
     </AppLayout>
   );
