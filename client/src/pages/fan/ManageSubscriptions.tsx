@@ -214,7 +214,7 @@ export const ManageSubscriptions: React.FC = () => {
 
   return (
     <AppLayout>
-      <EdgeToEdgeContainer maxWidth="4xl" enablePadding enableTopPadding>
+      <EdgeToEdgeContainer maxWidth="4xl" enablePadding enableTopPadding className="manage-subscriptions-container">
         <div className="mb-6 sm:mb-8 text-center sm:text-left">
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2 justify-center sm:justify-start">
             Manage Subscriptions
