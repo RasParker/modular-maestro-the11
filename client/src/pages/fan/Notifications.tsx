@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, Bell, CheckCheck, Trash2, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -209,89 +210,104 @@ export const Notifications: React.FC = () => {
             ) : (
               <div className="divide-y">
                 {filteredNotifications.map((notification) => (
-                  <div
+                  <Collapsible 
                     key={notification.id}
+                    asChild 
                     className={cn(
                       "p-4 hover:bg-accent/50 transition-colors",
                       !notification.read && "bg-accent/20 border-l-4 border-l-primary"
                     )}
                   >
-                    <div className="flex items-start gap-4">
-                      {/* Avatar/Icon */}
-                      <div className="flex-shrink-0">
-                        {notification.actor?.avatar ? (
-                          <Avatar className="h-10 w-10">
-                            <AvatarImage src={notification.actor.avatar} alt={notification.actor.display_name} />
-                            <AvatarFallback>
-                              {notification.actor.display_name?.charAt(0) || notification.actor.username?.charAt(0)}
-                            </AvatarFallback>
-                          </Avatar>
-                        ) : (
-                          <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                            <span className="text-lg">{getNotificationIcon(notification.type)}</span>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Content */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <h3 className="font-semibold text-foreground">{notification.title}</h3>
-                              {!notification.read && (
-                                <div className="h-2 w-2 bg-primary rounded-full" />
-                              )}
+                    <div>
+                      <div className="flex items-start gap-4">
+                        {/* Avatar/Icon */}
+                        <div className="flex-shrink-0">
+                          {notification.actor?.avatar ? (
+                            <Avatar className="h-10 w-10">
+                              <AvatarImage src={notification.actor.avatar} alt={notification.actor.display_name} />
+                              <AvatarFallback>
+                                {notification.actor.display_name?.charAt(0) || notification.actor.username?.charAt(0)}
+                              </AvatarFallback>
+                            </Avatar>
+                          ) : (
+                            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                              <span className="text-lg">{getNotificationIcon(notification.type)}</span>
                             </div>
-                            <p className="text-muted-foreground mb-2">
-                              {notification.message}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {notification.time_ago}
-                            </p>
-                          </div>
+                          )}
+                        </div>
 
-                          {/* Actions */}
-                          <div className="flex items-center gap-2 ml-4">
-                            {!notification.read && (
+                        {/* Content */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <CollapsibleTrigger asChild>
+                                <div className="flex items-center gap-2 mb-1 cursor-pointer">
+                                  <h3 className="font-semibold text-foreground">{notification.title}</h3>
+                                  {!notification.read && (
+                                    <div className="h-2 w-2 bg-primary rounded-full" />
+                                  )}
+                                </div>
+                              </CollapsibleTrigger>
+                              <p className="text-muted-foreground mb-2">
+                                {notification.message}
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                {notification.time_ago}
+                              </p>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="flex items-center gap-2 ml-4">
+                              {!notification.read && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => markAsReadMutation.mutate(notification.id)}
+                                  disabled={markAsReadMutation.isPending}
+                                >
+                                  <CheckCheck className="w-4 h-4" />
+                                </Button>
+                              )}
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={() => markAsReadMutation.mutate(notification.id)}
-                                disabled={markAsReadMutation.isPending}
+                                onClick={() => deleteNotificationMutation.mutate(notification.id)}
+                                disabled={deleteNotificationMutation.isPending}
+                                className="text-destructive hover:text-destructive"
                               >
-                                <CheckCheck className="w-4 h-4" />
+                                <Trash2 className="w-4 h-4" />
                               </Button>
-                            )}
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => deleteNotificationMutation.mutate(notification.id)}
-                              disabled={deleteNotificationMutation.isPending}
-                              className="text-destructive hover:text-destructive"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
+                            </div>
                           </div>
-                        </div>
 
-                        {/* Action Button */}
-                        {notification.action_url && (
-                          <div className="mt-3">
-                            <Link to={notification.action_url}>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleNotificationClick(notification)}
-                              >
-                                View Details
-                              </Button>
-                            </Link>
+                          {/* Action Button */}
+                          {notification.action_url && (
+                            <div className="mt-3">
+                              <Link to={notification.action_url}>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleNotificationClick(notification)}
+                                >
+                                  View Details
+                                </Button>
+                              </Link>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <CollapsibleContent>
+                        {notification.metadata && (
+                          <div className="mt-4 p-3 bg-secondary/50 rounded-md">
+                            <h4 className="font-semibold text-sm mb-2">Details</h4>
+                            <pre className="text-xs overflow-x-auto whitespace-pre-wrap">
+                              {JSON.stringify(notification.metadata, null, 2)}
+                            </pre>
                           </div>
                         )}
-                      </div>
+                      </CollapsibleContent>
                     </div>
-                  </div>
+                  </Collapsible>
                 ))}
               </div>
             )}

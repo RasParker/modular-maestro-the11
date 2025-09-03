@@ -36,6 +36,8 @@ export const NotificationBell: React.FC = React.memo(() => {
   const [isOpen, setIsOpen] = useState(false);
   const [hasNewNotification, setHasNewNotification] = useState(false);
   const [pushPermission, setPushPermission] = useState<NotificationPermission>('default');
+  const [expandedNotifications, setExpandedNotifications] = useState<Set<number>>(new Set());
+  const [showPushPrompt, setShowPushPrompt] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const wsRef = useRef<NotificationWebSocket | null>(null);
   const queryClient = useQueryClient();
@@ -191,11 +193,34 @@ export const NotificationBell: React.FC = React.memo(() => {
     }
   }, [isOpen, hasNewNotification, unreadData?.count]);
 
+  // Show push prompt after user interacts with notifications multiple times
+  useEffect(() => {
+    if (isOpen && pushPermission === 'default') {
+      const interactionCount = parseInt(localStorage.getItem('notification-interactions') || '0');
+      if (interactionCount >= 2) {
+        setShowPushPrompt(true);
+      }
+      localStorage.setItem('notification-interactions', (interactionCount + 1).toString());
+    }
+  }, [isOpen, pushPermission]);
+
   const handleNotificationClick = (notification: Notification) => {
     if (!notification.read) {
       markAsReadMutation.mutate(notification.id);
     }
     setIsOpen(false);
+  };
+
+  const toggleNotificationExpanded = (notificationId: number) => {
+    setExpandedNotifications(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(notificationId)) {
+        newSet.delete(notificationId);
+      } else {
+        newSet.add(notificationId);
+      }
+      return newSet;
+    });
   };
 
   const requestPushPermission = async () => {
@@ -318,10 +343,20 @@ export const NotificationBell: React.FC = React.memo(() => {
                     >
                       {notification.action_url ? (
                         <Link to={notification.action_url} className="block">
-                          <NotificationContent notification={notification} getNotificationIcon={getNotificationIcon} />
+                          <NotificationContent 
+                            notification={notification} 
+                            getNotificationIcon={getNotificationIcon}
+                            isExpanded={expandedNotifications.has(notification.id)}
+                            onToggleExpanded={() => toggleNotificationExpanded(notification.id)}
+                          />
                         </Link>
                       ) : (
-                        <NotificationContent notification={notification} getNotificationIcon={getNotificationIcon} />
+                        <NotificationContent 
+                          notification={notification} 
+                          getNotificationIcon={getNotificationIcon}
+                          isExpanded={expandedNotifications.has(notification.id)}
+                          onToggleExpanded={() => toggleNotificationExpanded(notification.id)}
+                        />
                       )}
                     </div>
                   ))}
@@ -330,16 +365,47 @@ export const NotificationBell: React.FC = React.memo(() => {
             </div>
 
             <div className="p-3 border-t bg-muted/50 space-y-2 flex-shrink-0">
-              {pushPermission === 'default' && (
-                <Button 
-                  variant="outline" 
-                  className="w-full text-sm"
-                  onClick={requestPushPermission}
+              {showPushPrompt && pushPermission === 'default' && (
+                <div className="space-y-2">
+                  <div className="text-xs text-muted-foreground">
+                    Stay updated with instant notifications
+                  </div>
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="flex-1 text-xs"
+                      onClick={requestPushPermission}
+                    >
+                      <BellRing className="w-3 h-3 mr-1" />
+                      Enable
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      className="flex-1 text-xs"
+                      onClick={() => setShowPushPrompt(false)}
+                    >
+                      Later
+                    </Button>
+                  </div>
+                </div>
+              )}
+              
+              {/* Conditional bulk actions */}
+              {unreadData?.count && unreadData.count > 3 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => markAllAsReadMutation.mutate()}
+                  disabled={markAllAsReadMutation.isPending}
+                  className="w-full text-xs"
                 >
-                  <BellRing className="w-4 h-4 mr-2" />
-                  Enable Push Notifications
+                  <CheckCheck className="h-3 w-3 mr-2" />
+                  Clear all notifications
                 </Button>
               )}
+              
               <Link to={`/${user?.role || 'fan'}/notifications`} onClick={() => setIsOpen(false)}>
                 <Button variant="ghost" className="w-full text-sm">
                   View all notifications
@@ -356,40 +422,76 @@ export const NotificationBell: React.FC = React.memo(() => {
 interface NotificationContentProps {
   notification: Notification;
   getNotificationIcon: (type: string) => string;
+  isExpanded?: boolean;
+  onToggleExpanded?: () => void;
 }
 
-const NotificationContent: React.FC<NotificationContentProps> = ({ notification, getNotificationIcon }) => (
-  <div className="flex items-start gap-3">
-    <div className="flex-shrink-0">
-      {notification.actor?.avatar ? (
-        <Avatar className="h-8 w-8">
-          <AvatarImage src={notification.actor.avatar} alt={notification.actor.display_name} />
-          <AvatarFallback className="text-xs">
-            {notification.actor.display_name?.charAt(0) || notification.actor.username?.charAt(0)}
-          </AvatarFallback>
-        </Avatar>
-      ) : (
-        <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-          <span className="text-sm">{getNotificationIcon(notification.type)}</span>
-        </div>
-      )}
-    </div>
+const NotificationContent: React.FC<NotificationContentProps> = ({ 
+  notification, 
+  getNotificationIcon, 
+  isExpanded = false,
+  onToggleExpanded 
+}) => {
+  const hasLongMessage = notification.message.length > 50;
+  const truncatedMessage = hasLongMessage && !isExpanded 
+    ? notification.message.substring(0, 50) + '...' 
+    : notification.message;
 
-    <div className="flex-1 min-w-0">
-      <div className="flex items-center justify-between">
-        <p className="font-medium text-sm text-foreground truncate">
-          {notification.title}
-        </p>
-        {!notification.read && (
-          <div className="h-2 w-2 bg-primary rounded-full flex-shrink-0 ml-2" />
+  return (
+    <div className="flex items-start gap-3">
+      <div className="flex-shrink-0">
+        {notification.actor?.avatar ? (
+          <Avatar className="h-8 w-8">
+            <AvatarImage src={notification.actor.avatar} alt={notification.actor.display_name} />
+            <AvatarFallback className="text-xs">
+              {notification.actor.display_name?.charAt(0) || notification.actor.username?.charAt(0)}
+            </AvatarFallback>
+          </Avatar>
+        ) : (
+          <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+            <span className="text-sm">{getNotificationIcon(notification.type)}</span>
+          </div>
         )}
       </div>
-      <p className="text-xs text-muted-foreground mt-1 truncate">
-        {notification.message}
-      </p>
-      <p className="text-xs text-muted-foreground mt-1">
-        {notification.time_ago}
-      </p>
+
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center justify-between">
+          <p className="font-medium text-sm text-foreground truncate">
+            {notification.title}
+          </p>
+          {!notification.read && (
+            <div className="h-2 w-2 bg-primary rounded-full flex-shrink-0 ml-2" />
+          )}
+        </div>
+        
+        <div className="mt-1">
+          <p className="text-xs text-muted-foreground">
+            {truncatedMessage}
+          </p>
+          {hasLongMessage && onToggleExpanded && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleExpanded();
+              }}
+              className="text-xs text-primary hover:text-primary/80 mt-1"
+            >
+              {isExpanded ? 'Show less' : 'Show more'}
+            </button>
+          )}
+        </div>
+        
+        <div className="flex items-center justify-between mt-1">
+          <p className="text-xs text-muted-foreground">
+            {notification.time_ago}
+          </p>
+          {notification.actor && isExpanded && (
+            <p className="text-xs text-muted-foreground">
+              by {notification.actor.display_name || notification.actor.username}
+            </p>
+          )}
+        </div>
+      </div>
     </div>
-  </div>
-);
+  );
+};
