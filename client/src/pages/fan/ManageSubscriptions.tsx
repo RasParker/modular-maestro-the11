@@ -11,6 +11,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface PendingChange {
   id: number;
@@ -51,6 +52,7 @@ interface Subscription {
 export const ManageSubscriptions: React.FC = () => {
   const { toast } = useToast();
   const { user } = useAuth();
+  const isMobile = useIsMobile();
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -214,8 +216,8 @@ export const ManageSubscriptions: React.FC = () => {
 
   return (
     <AppLayout>
-      <div className="w-full md:w-screen md:relative md:-ml-64">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div className={!isMobile ? "w-screen relative -ml-64" : ""}>
+        <EdgeToEdgeContainer maxWidth="4xl" enablePadding enableTopPadding>
         <div className="mb-6 sm:mb-8 text-center sm:text-left">
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 flex items-center gap-2 justify-center sm:justify-start">
             Manage Subscriptions
@@ -449,7 +451,7 @@ export const ManageSubscriptions: React.FC = () => {
           )}
         </Tabs>
         </div>
-        </div>
+        </EdgeToEdgeContainer>
       </div>
     </AppLayout>
   );
