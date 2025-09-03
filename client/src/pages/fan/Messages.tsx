@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNotificationWebSocket } from '@/contexts/NotificationContext';
+import { getTimeAgo } from '@/lib/timeUtils';
 
 interface Creator {
   username: string;
@@ -144,7 +145,7 @@ export const Messages: React.FC = () => {
         // Check if there's a specific conversation to auto-select from chat initiation
         const autoSelectId = sessionStorage.getItem('autoSelectConversationId');
         if (autoSelectId) {
-          const targetConversation = data.find(conv => conv.id === autoSelectId);
+          const targetConversation = data.find((conv: Conversation) => conv.id === autoSelectId);
           if (targetConversation) {
             console.log('Auto-selecting conversation:', targetConversation);
             setSelectedConversation(targetConversation);
@@ -293,15 +294,6 @@ export const Messages: React.FC = () => {
     setShowMobileChat(false);
   };
 
-  const getTimeAgo = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
-
-    if (diffInHours < 1) return 'Just now';
-    if (diffInHours < 24) return `${diffInHours}h ago`;
-    return `${Math.floor(diffInHours / 24)}d ago`;
-  };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {

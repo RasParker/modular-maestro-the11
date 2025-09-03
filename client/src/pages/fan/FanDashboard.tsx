@@ -45,82 +45,106 @@ export const FanDashboard: React.FC = () => {
   const [activityLoading, setActivityLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchSubscriptions = async () => {
-      if (!user) return;
+  // Define functions outside useEffect for reusability
+  const fetchSubscriptions = async () => {
+    if (!user) return;
 
-      try {
-        const response = await fetch(`/api/subscriptions/fan/${user.id}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch subscriptions');
-        }
-        const data = await response.json();
-        setSubscriptions(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setLoading(false);
+    try {
+      const response = await fetch(`/api/subscriptions/fan/${user.id}`, {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      // Check content type before parsing
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Server returned an invalid response');
       }
-    };
 
-    const fetchRecentActivity = async () => {
-      if (!user) return;
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to fetch subscriptions');
+      }
 
-      try {
-        const response = await fetch(`/api/fan/${user.id}/recent-activity`);
-        if (response.ok) {
+      const data = await response.json();
+      setSubscriptions(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error('Error fetching subscriptions:', err);
+      setError(err instanceof Error ? err.message : 'Failed to load subscriptions');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchRecentActivity = async () => {
+    if (!user) return;
+
+    try {
+      const response = await fetch(`/api/fan/${user.id}/recent-activity`, {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      // Only process if response is ok and JSON
+      if (response.ok) {
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
           const data = await response.json();
           // Handle the correct response structure: {activities: [], total: 0, hasMore: false}
           setRecentActivity(Array.isArray(data) ? data : (data.activities || []));
         } else {
-          // If response is not ok, set empty array
           setRecentActivity([]);
         }
-      } catch (err) {
-        console.error('Error fetching recent activity:', err);
-        // Don't set error state for activity, just use empty array
+      } else {
         setRecentActivity([]);
-      } finally {
-        setActivityLoading(false);
       }
-    };
-
-    const fetchNewContentCount = async () => {
-      if (!user) return;
-
-      try {
-        const response = await fetch(`/api/fan/${user.id}/new-content-count`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch new content count');
-        }
-        const data = await response.json();
-        setNewContentCount(data.count || 0);
-      } catch (err) {
-        console.error('Error fetching new content count:', err);
-        setNewContentCount(0);
-      }
-    };
-
-    fetchSubscriptions();
-    fetchRecentActivity();
-    fetchNewContentCount();
-  }, [user]);
+    } catch (err) {
+      console.error('Error fetching recent activity:', err);
+      // Don't set error state for activity, just use empty array
+      setRecentActivity([]);
+    } finally {
+      setActivityLoading(false);
+    }
+  };
 
   const fetchNewContentCount = async () => {
     if (!user) return;
 
     try {
-      const response = await fetch(`/api/fan/${user.id}/new-content-count`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch new content count');
+      const response = await fetch(`/api/fan/${user.id}/new-content-count`, {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const data = await response.json();
+          setNewContentCount(data.count || 0);
+        } else {
+          setNewContentCount(0);
+        }
+      } else {
+        setNewContentCount(0);
       }
-      const data = await response.json();
-      setNewContentCount(data.count || 0);
     } catch (err) {
       console.error('Error fetching new content count:', err);
       setNewContentCount(0);
     }
   };
+
+  useEffect(() => {
+    fetchSubscriptions();
+    fetchRecentActivity();
+    fetchNewContentCount();
+  }, [user]);
+
 
   useEffect(() => {
     if (user?.id) {
@@ -199,7 +223,7 @@ export const FanDashboard: React.FC = () => {
                     <div>
                       <p className="text-sm font-medium text-muted-foreground">Monthly Spending</p>
                       <p className="text-2xl font-bold text-foreground">
-                        GHS {subscriptions.filter(sub => sub.status === 'active').reduce((sum, sub) => sum + parseFloat(sub.tier.price), 0).toFixed(2)}
+                        GHS {subscriptions.filter(sub => sub.status === 'active').reduce((sum, sub) => sum + sub.tier.price, 0).toFixed(2)}
                       </p>
                     </div>
                     <CreditCard className="h-8 w-8 text-white" strokeWidth={1} />

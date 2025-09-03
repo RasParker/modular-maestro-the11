@@ -9,7 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
-import { CreditCard, Smartphone, Loader2, Lock, Shield, Star, Check } from 'lucide-react';
+import { CreditCard, Smartphone, Loader2, Lock, Shield, Star, Check, AlertCircle } from 'lucide-react';
+import { validatePhoneNumber } from '@/lib/validation';
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -33,6 +34,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, tie
   const [mobileProvider, setMobileProvider] = useState<'mtn' | 'vod' | 'tgo' | 'airtel'>('mtn');
   const [isLoading, setIsLoading] = useState(false);
   const [paystackConfig, setPaystackConfig] = useState<{ public_key: string; currency: string } | null>(null);
+  const [phoneError, setPhoneError] = useState<string>('');
 
   useEffect(() => {
     if (isOpen) {
@@ -177,9 +179,19 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, tie
     }
   };
 
+  // Real-time phone validation
+  const handlePhoneChange = (value: string) => {
+    setPhoneNumber(value);
+    if (value.trim()) {
+      const validation = validatePhoneNumber(value);
+      setPhoneError(validation.isValid ? '' : validation.error || '');
+    } else {
+      setPhoneError('');
+    }
+  };
+
   const isValidPhoneNumber = (phone: string) => {
-    const phoneRegex = /^(0|\+233)[2-9]\d{8}$/;
-    return phoneRegex.test(phone);
+    return validatePhoneNumber(phone).isValid;
   };
 
   return (
@@ -258,13 +270,15 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, tie
                   type="tel"
                   placeholder="0244000000"
                   value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="mt-2 bg-slate-700/50 border-slate-600 text-slate-100 placeholder:text-slate-400 focus:border-blue-500 focus:ring-blue-500/20"
+                  onChange={(e) => handlePhoneChange(e.target.value)}
+                  className={`mt-2 bg-slate-700/50 border-slate-600 text-slate-100 placeholder:text-slate-400 focus:border-blue-500 focus:ring-blue-500/20 ${
+                    phoneError ? 'border-red-500 focus:border-red-500' : ''
+                  }`}
                 />
-                {phoneNumber && !isValidPhoneNumber(phoneNumber) && (
-                  <p className="text-sm text-red-400 mt-2 flex items-center gap-1">
-                    <span className="w-1 h-1 bg-red-400 rounded-full"></span>
-                    Please enter a valid Ghana phone number
+                {phoneError && (
+                  <p className="text-sm text-red-400 mt-2 flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                    {phoneError}
                   </p>
                 )}
               </div>

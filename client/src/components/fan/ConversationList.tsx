@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Search } from 'lucide-react';
+import { getTimeAgo } from '@/lib/timeUtils';
 
 interface Conversation {
   id: string;
@@ -25,7 +26,6 @@ interface ConversationListProps {
   searchTerm: string;
   onSearchChange: (value: string) => void;
   onSelectConversation: (conversation: Conversation) => void;
-  getTimeAgo: (dateString: string) => string;
 }
 
 export const ConversationList: React.FC<ConversationListProps> = ({
@@ -33,8 +33,7 @@ export const ConversationList: React.FC<ConversationListProps> = ({
   selectedConversation,
   searchTerm,
   onSearchChange,
-  onSelectConversation,
-  getTimeAgo
+  onSelectConversation
 }) => {
   return (
     <div className="h-full flex flex-col lg:bg-transparent bg-gradient-card lg:border-0 border-border/50 lg:rounded-none rounded-lg">
