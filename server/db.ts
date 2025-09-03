@@ -12,17 +12,30 @@ console.log('Using PostgreSQL database');
 
 export const pool = new Pool({ 
   connectionString: process.env.DATABASE_URL,
-  max: 15, // Increased pool size for better performance
-  min: 2, // Maintain minimum connections
-  idleTimeoutMillis: 120000, // 2 minutes
-  connectionTimeoutMillis: 20000, // 20 seconds for Replit environment
-  statement_timeout: 45000, // 45 seconds for complex operations
-  query_timeout: 45000, // 45 seconds for complex queries
-  allowExitOnIdle: true, // Allow pool to exit when idle
+  max: 5, // Reduced pool size for Replit environment stability
+  min: 1, // Minimum connections
+  idleTimeoutMillis: 30000, // 30 seconds
+  connectionTimeoutMillis: 10000, // 10 seconds
+  statement_timeout: 30000, // 30 seconds
+  query_timeout: 30000, // 30 seconds
+  allowExitOnIdle: false, // Keep pool alive
   keepAlive: true, // Enable TCP keep-alive
-  keepAliveInitialDelayMillis: 10000, // 10 seconds
+  keepAliveInitialDelayMillis: 5000, // 5 seconds
 });
 
 export const db = drizzle({ client: pool, schema });
+
+// Add graceful shutdown handler for database pool
+process.on('SIGINT', async () => {
+  console.log('Closing database pool...');
+  await pool.end();
+  console.log('Database pool closed');
+});
+
+process.on('SIGTERM', async () => {
+  console.log('Closing database pool...');
+  await pool.end();
+  console.log('Database pool closed');
+});
 
 console.log('Database setup completed successfully');

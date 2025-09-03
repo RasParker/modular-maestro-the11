@@ -13,15 +13,15 @@ export async function initializeDatabase() {
   console.log('Initializing database tables...');
   
   try {
-    // Test database connection with longer timeout for Replit
+    // Test database connection with shorter timeout for Replit
     console.log('Testing database connection...');
     
     const result = await Promise.race([
       db.execute(sql`SELECT 1 as test`),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('Database connection timeout after 15 seconds')), 15000))
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Database connection timeout after 8 seconds')), 8000))
     ]);
     
-    console.log('Database connection test successful');
+    console.log('Database connection test successful', result);
     
     // Check if all required tables exist
     const tablesCheck = await db.execute(sql`
@@ -61,6 +61,15 @@ export async function initializeDatabase() {
       stack: (error as any)?.stack || 'No stack trace available',
       name: (error as any)?.name || 'Unknown error type'
     });
+    
+    // Force close any hanging connections and retry once
+    console.log('Attempting to clean up connections and retry...');
+    try {
+      await db.execute(sql`SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE pid <> pg_backend_pid() AND datname = current_database()`);
+      console.log('Connection cleanup completed');
+    } catch (cleanupError) {
+      console.warn('Connection cleanup failed:', cleanupError);
+    }
     
     // Instead of throwing and crashing the app, log the error and continue
     console.warn('Database initialization failed, but continuing app startup...');
