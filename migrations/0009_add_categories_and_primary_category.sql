@@ -22,16 +22,16 @@ END $$;
 
 -- Insert default categories
 INSERT INTO categories (name, slug, description, icon, color, is_active) VALUES
-  ('Art', 'art', 'Digital art, illustrations, and creative visual content', 'Palette', '#ef4444', true),
-  ('Fitness', 'fitness', 'Workout routines, nutrition advice, and health tips', 'Dumbbell', '#10b981', true),
-  ('Music', 'music', 'Original music, covers, and audio content', 'Music', '#8b5cf6', true),
-  ('Tech', 'tech', 'Technology tutorials, reviews, and programming content', 'Laptop', '#06b6d4', true),
-  ('Cooking', 'cooking', 'Recipes, cooking tutorials, and culinary content', 'ChefHat', '#f59e0b', true),
-  ('Fashion', 'fashion', 'Style guides, fashion tips, and lifestyle content', 'Shirt', '#ec4899', true),
-  ('Gaming', 'gaming', 'Gaming content, reviews, and entertainment', 'Gamepad2', '#84cc16', true),
-  ('Business', 'business', 'Entrepreneurship, business tips, and professional content', 'Briefcase', '#6366f1', true),
-  ('Lifestyle', 'lifestyle', 'Daily life, vlogs, and personal content', 'Home', '#f97316', true),
-  ('Education', 'education', 'Educational content, tutorials, and learning materials', 'GraduationCap', '#0ea5e9', true)
+  ('Art & Design', 'art-design', 'Visual arts, digital art, illustrations, and design', 'Palette', '#ef4444', true),
+  ('Fitness & Health', 'fitness-health', 'Workouts, nutrition, wellness, and healthy lifestyle', 'Dumbbell', '#10b981', true),
+  ('Music & Audio', 'music-audio', 'Music creation, covers, podcasts, and audio content', 'Music', '#8b5cf6', true),
+  ('Technology', 'technology', 'Programming, tech reviews, tutorials, and innovation', 'Laptop', '#06b6d4', true),
+  ('Cooking & Food', 'cooking-food', 'Recipes, cooking tutorials, and food content', 'ChefHat', '#f59e0b', true),
+  ('Fashion & Beauty', 'fashion-beauty', 'Style tips, makeup tutorials, and fashion content', 'Shirt', '#ec4899', true),
+  ('Gaming', 'gaming', 'Game streams, reviews, tutorials, and gaming content', 'Gamepad2', '#84cc16', true),
+  ('Education', 'education', 'Learning content, tutorials, and educational material', 'GraduationCap', '#0ea5e9', true),
+  ('Lifestyle', 'lifestyle', 'Daily life, vlogs, and lifestyle content', 'Home', '#f97316', true),
+  ('Business', 'business', 'Entrepreneurship, business tips, and professional content', 'Briefcase', '#6366f1', true)
 ON CONFLICT (name) DO NOTHING;
 
 -- Create creator_categories table if it doesn't exist
