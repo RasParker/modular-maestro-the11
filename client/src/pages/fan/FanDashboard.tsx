@@ -223,7 +223,7 @@ export const FanDashboard: React.FC = () => {
                     <div>
                       <p className="text-sm font-medium text-muted-foreground">Monthly Spending</p>
                       <p className="text-2xl font-bold text-foreground">
-                        GHS {subscriptions.filter(sub => sub.status === 'active').reduce((sum, sub) => sum + sub.tier.price, 0).toFixed(2)}
+                        GHS {subscriptions.filter(sub => sub.status === 'active').reduce((sum, sub) => sum + parseFloat(sub.tier.price), 0).toFixed(2)}
                       </p>
                     </div>
                     <CreditCard className="h-8 w-8 text-white" strokeWidth={1} />
