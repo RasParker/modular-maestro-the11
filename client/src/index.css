@@ -112,6 +112,34 @@
     scroll-behavior: smooth;
   }
 
+  /* Category tab scrolling styles */
+  #category-scroll-container {
+    /* Enable momentum scrolling on iOS */
+    -webkit-overflow-scrolling: touch;
+    /* Snap scrolling for better UX */
+    scroll-snap-type: x proximity;
+  }
+
+  #category-scroll-container > button {
+    /* Prevent buttons from shrinking */
+    flex-shrink: 0;
+    /* Add snap points */
+    scroll-snap-align: start;
+  }
+
+  /* Arrow buttons styling */
+  #scroll-left,
+  #scroll-right {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  #scroll-left:hover,
+  #scroll-right:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
   /* TikTok/Instagram Reels Style Feed */
   .feed-container {
     max-width: 470px;

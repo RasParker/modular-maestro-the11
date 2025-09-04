@@ -335,9 +335,9 @@ export const Explore: React.FC = () => {
           {loadingCategories ? (
             // Loading skeleton for categories
             <div className="flex justify-center gap-2">
-              <div className="h-8 w-12 bg-muted/50 rounded-md animate-pulse" />
+              <div className="h-8 w-12 bg-muted/50 rounded-full animate-pulse" />
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="h-8 w-16 bg-muted/50 rounded-md animate-pulse" />
+                <div key={i} className="h-8 w-16 bg-muted/50 rounded-full animate-pulse" />
               ))}
             </div>
           ) : (
@@ -394,6 +394,24 @@ export const Explore: React.FC = () => {
                     }
                   }
                 }}
+                ref={(el) => {
+                  if (el && !loadingCategories) {
+                    // Check initial scroll state after categories load
+                    setTimeout(() => {
+                      const leftArrow = document.getElementById('scroll-left');
+                      const rightArrow = document.getElementById('scroll-right');
+                      
+                      if (leftArrow && rightArrow) {
+                        // Initial check for right arrow
+                        const isScrollable = el.scrollWidth > el.clientWidth;
+                        if (isScrollable) {
+                          rightArrow.classList.remove('opacity-0', 'pointer-events-none');
+                          rightArrow.classList.add('opacity-100');
+                        }
+                      }
+                    }, 100);
+                  }
+                }}
               >
                 {/* All Categories Button */}
                 <Button
@@ -436,7 +454,7 @@ export const Explore: React.FC = () => {
               {/* Right Arrow */}
               <button
                 id="scroll-right"
-                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm border border-border rounded-full w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors opacity-100"
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm border border-border rounded-full w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors opacity-0 pointer-events-none"
                 onClick={() => {
                   const container = document.getElementById('category-scroll-container');
                   if (container) {
