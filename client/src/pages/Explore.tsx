@@ -374,8 +374,8 @@ export const Explore: React.FC = () => {
                   const rightArrow = document.getElementById('scroll-right');
 
                   if (leftArrow && rightArrow) {
-                    // Show/hide left arrow - use <= 5 for more precise detection at beginning
-                    if (container.scrollLeft <= 5) {
+                    // Show/hide left arrow - use <= 1 for more precise detection at beginning
+                    if (container.scrollLeft <= 1) {
                       leftArrow.classList.add('opacity-0', 'pointer-events-none');
                       leftArrow.classList.remove('opacity-100');
                     } else {
@@ -402,7 +402,7 @@ export const Explore: React.FC = () => {
                       const rightArrow = document.getElementById('scroll-right');
                       
                       if (leftArrow && rightArrow) {
-                        // Ensure left arrow is hidden initially
+                        // Always hide left arrow initially (at beginning)
                         leftArrow.classList.add('opacity-0', 'pointer-events-none');
                         leftArrow.classList.remove('opacity-100');
                         
