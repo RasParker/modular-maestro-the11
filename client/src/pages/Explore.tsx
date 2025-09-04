@@ -345,7 +345,7 @@ export const Explore: React.FC = () => {
               {/* Left Arrow */}
               <button
                 id="scroll-left"
-                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm border border-border rounded-full w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors opacity-0 pointer-events-none"
+                className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm border border-border rounded-full w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors opacity-0 pointer-events-none"
                 onClick={() => {
                   const container = document.getElementById('category-scroll-container');
                   if (container) {
@@ -362,7 +362,7 @@ export const Explore: React.FC = () => {
               {/* Category Container */}
               <div 
                 id="category-scroll-container"
-                className="flex gap-2 overflow-x-auto scrollbar-hide px-8 mx-auto scroll-smooth"
+                className="flex gap-2 overflow-x-auto scrollbar-hide px-12 mx-auto scroll-smooth"
                 style={{
                   scrollbarWidth: 'none',
                   msOverflowStyle: 'none',
@@ -461,7 +461,7 @@ export const Explore: React.FC = () => {
               {/* Right Arrow */}
               <button
                 id="scroll-right"
-                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm border border-border rounded-full w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors opacity-0 pointer-events-none"
+                className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm border border-border rounded-full w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors opacity-0 pointer-events-none"
                 onClick={() => {
                   const container = document.getElementById('category-scroll-container');
                   if (container) {
