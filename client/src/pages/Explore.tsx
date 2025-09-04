@@ -345,7 +345,7 @@ export const Explore: React.FC = () => {
               {/* Left Arrow */}
               <button
                 id="scroll-left"
-                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm border border-border rounded-full w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors opacity-0 pointer-events-none"
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 text-muted-foreground hover:text-foreground hover:bg-accent opacity-0 pointer-events-none"
                 onClick={() => {
                   const container = document.getElementById('category-scroll-container');
                   if (container) {
@@ -402,11 +402,18 @@ export const Explore: React.FC = () => {
                       const rightArrow = document.getElementById('scroll-right');
                       
                       if (leftArrow && rightArrow) {
-                        // Initial check for right arrow
+                        // Ensure left arrow is hidden initially
+                        leftArrow.classList.add('opacity-0', 'pointer-events-none');
+                        leftArrow.classList.remove('opacity-100');
+                        
+                        // Only show right arrow if scrollable
                         const isScrollable = el.scrollWidth > el.clientWidth;
                         if (isScrollable) {
                           rightArrow.classList.remove('opacity-0', 'pointer-events-none');
                           rightArrow.classList.add('opacity-100');
+                        } else {
+                          rightArrow.classList.add('opacity-0', 'pointer-events-none');
+                          rightArrow.classList.remove('opacity-100');
                         }
                       }
                     }, 100);
@@ -454,7 +461,7 @@ export const Explore: React.FC = () => {
               {/* Right Arrow */}
               <button
                 id="scroll-right"
-                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm border border-border rounded-full w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors opacity-0 pointer-events-none"
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 text-muted-foreground hover:text-foreground hover:bg-accent opacity-0 pointer-events-none"
                 onClick={() => {
                   const container = document.getElementById('category-scroll-container');
                   if (container) {
