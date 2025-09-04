@@ -345,7 +345,7 @@ export const Explore: React.FC = () => {
               {/* Left Arrow */}
               <button
                 id="scroll-left"
-                className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm border border-border rounded-full w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors opacity-0 pointer-events-none"
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm border border-border rounded-full w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors opacity-0 pointer-events-none"
                 onClick={() => {
                   const container = document.getElementById('category-scroll-container');
                   if (container) {
@@ -362,7 +362,7 @@ export const Explore: React.FC = () => {
               {/* Category Container */}
               <div 
                 id="category-scroll-container"
-                className="flex gap-2 overflow-x-auto scrollbar-hide px-12 mx-auto scroll-smooth"
+                className="flex gap-2 overflow-x-auto scrollbar-hide px-8 mx-auto scroll-smooth"
                 style={{
                   scrollbarWidth: 'none',
                   msOverflowStyle: 'none',
@@ -374,17 +374,17 @@ export const Explore: React.FC = () => {
                   const rightArrow = document.getElementById('scroll-right');
 
                   if (leftArrow && rightArrow) {
-                    // Show/hide left arrow - use <= 25 for very reliable detection at beginning
-                    if (container.scrollLeft <= 25) {
-                      leftArrow.classList.add('opacity-0', 'pointer-events-none');
-                      leftArrow.classList.remove('opacity-100');
-                    } else {
+                    // Show/hide left arrow
+                    if (container.scrollLeft > 10) {
                       leftArrow.classList.remove('opacity-0', 'pointer-events-none');
                       leftArrow.classList.add('opacity-100');
+                    } else {
+                      leftArrow.classList.add('opacity-0', 'pointer-events-none');
+                      leftArrow.classList.remove('opacity-100');
                     }
 
                     // Show/hide right arrow
-                    const isAtEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 25;
+                    const isAtEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 10;
                     if (isAtEnd) {
                       rightArrow.classList.add('opacity-0', 'pointer-events-none');
                       rightArrow.classList.remove('opacity-100');
@@ -402,7 +402,7 @@ export const Explore: React.FC = () => {
                       const rightArrow = document.getElementById('scroll-right');
                       
                       if (leftArrow && rightArrow) {
-                        // Always hide left arrow initially (at beginning)
+                        // Ensure left arrow is hidden initially
                         leftArrow.classList.add('opacity-0', 'pointer-events-none');
                         leftArrow.classList.remove('opacity-100');
                         
@@ -461,7 +461,7 @@ export const Explore: React.FC = () => {
               {/* Right Arrow */}
               <button
                 id="scroll-right"
-                className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm border border-border rounded-full w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors opacity-0 pointer-events-none"
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm border border-border rounded-full w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors opacity-0 pointer-events-none"
                 onClick={() => {
                   const container = document.getElementById('category-scroll-container');
                   if (container) {
