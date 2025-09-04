@@ -36,7 +36,7 @@ const CREATORS = [
     username: 'fitnessking',
     display_name: 'Fitness King',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
-    cover: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=200&fit=crop',
+    cover: 'https://images.unsplash.com/photo-1571019613454-1cb2f9b2d8b?w=400&h=200&fit=crop',
     bio: 'Personal trainer sharing workout tips and nutrition advice',
     category: 'Fitness',
     subscribers: 5120,
@@ -134,7 +134,7 @@ export const Explore: React.FC = () => {
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [selectedTier, setSelectedTier] = useState<any>(null);
   const [selectedCreator, setSelectedCreator] = useState<any>(null);
-  
+
   const [realCreators, setRealCreators] = useState<any[]>([]);
   const [allCreators, setAllCreators] = useState<any[]>([]);
 
@@ -163,7 +163,7 @@ export const Explore: React.FC = () => {
     const fetchCreators = async () => {
       // Only fetch creators after categories are loaded
       if (loadingCategories) return;
-      
+
       try {
         const response = await fetch('/api/creators');
         if (response.ok) {
@@ -173,7 +173,7 @@ export const Explore: React.FC = () => {
           // Transform real creators to match the expected format
           // Filter out suspended users first
           const activeCreators = creators.filter((creator: any) => creator.status === 'active');
-          
+
           const transformedCreators = await Promise.all(activeCreators.map(async (creator: any) => {
             // Fetch subscription tiers from API
             let tiers = [];
@@ -246,7 +246,7 @@ export const Explore: React.FC = () => {
       console.log(`Looking for creator with display_name: "${creatorName}"`);
       console.log(`Found creator:`, creator);
       console.log(`Creator tiers:`, creator?.tiers);
-      
+
       if (!creator) {
         toast({
           title: "Error",
@@ -289,7 +289,7 @@ export const Explore: React.FC = () => {
     setPaymentModalOpen(true);
   };
 
-  
+
 
   const filteredCreators = allCreators.filter(creator => {
     const matchesSearch = creator.display_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -330,29 +330,86 @@ export const Explore: React.FC = () => {
             />
           </div>
 
-          {/* Category Filters */}
-          <div className="flex flex-wrap justify-center gap-2">
-            {loadingCategories ? (
-              // Loading skeleton for categories
-              <>
-                <div className="h-8 w-12 bg-muted/50 rounded-md animate-pulse" />
-                {[...Array(6)].map((_, i) => (
-                  <div key={i} className="h-8 w-16 bg-muted/50 rounded-md animate-pulse" />
-                ))}
-              </>
-            ) : (
-              <>
+          {/* Category Filters - Scrollable Tab Bar */}
+        <div className="relative max-w-full">
+          {loadingCategories ? (
+            // Loading skeleton for categories
+            <div className="flex justify-center gap-2">
+              <div className="h-8 w-12 bg-muted/50 rounded-md animate-pulse" />
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="h-8 w-16 bg-muted/50 rounded-md animate-pulse" />
+              ))}
+            </div>
+          ) : (
+            <>
+              {/* Left Arrow */}
+              <button
+                id="scroll-left"
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm border border-border rounded-full w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors opacity-0 pointer-events-none"
+                onClick={() => {
+                  const container = document.getElementById('category-scroll-container');
+                  if (container) {
+                    container.scrollBy({ left: -200, behavior: 'smooth' });
+                  }
+                }}
+                aria-label="Scroll categories left"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+
+              {/* Category Container */}
+              <div 
+                id="category-scroll-container"
+                className="flex gap-2 overflow-x-auto scrollbar-hide px-8 mx-auto scroll-smooth"
+                style={{
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none',
+                  WebkitScrollbarWidth: 'none'
+                }}
+                onScroll={(e) => {
+                  const container = e.currentTarget;
+                  const leftArrow = document.getElementById('scroll-left');
+                  const rightArrow = document.getElementById('scroll-right');
+
+                  if (leftArrow && rightArrow) {
+                    // Show/hide left arrow
+                    if (container.scrollLeft > 10) {
+                      leftArrow.classList.remove('opacity-0', 'pointer-events-none');
+                      leftArrow.classList.add('opacity-100');
+                    } else {
+                      leftArrow.classList.add('opacity-0', 'pointer-events-none');
+                      leftArrow.classList.remove('opacity-100');
+                    }
+
+                    // Show/hide right arrow
+                    const isAtEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 10;
+                    if (isAtEnd) {
+                      rightArrow.classList.add('opacity-0', 'pointer-events-none');
+                      rightArrow.classList.remove('opacity-100');
+                    } else {
+                      rightArrow.classList.remove('opacity-0', 'pointer-events-none');
+                      rightArrow.classList.add('opacity-100');
+                    }
+                  }
+                }}
+              >
                 {/* All Categories Button */}
                 <Button
                   variant={selectedCategory === 'All' ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => setSelectedCategory('All')}
-                  className={selectedCategory === 'All' ? 'bg-white text-black hover:bg-white/90' : 'hover:bg-[#1e1e24] hover:text-foreground focus-visible:ring-0 focus-visible:ring-offset-0'}
+                  className={`flex-shrink-0 rounded-full px-4 ${
+                    selectedCategory === 'All' 
+                      ? 'bg-white text-black hover:bg-white/90' 
+                      : 'hover:bg-[#1e1e24] hover:text-foreground focus-visible:ring-0 focus-visible:ring-offset-0'
+                  }`}
                   data-testid="category-filter-all"
                 >
                   All
                 </Button>
-                
+
                 {/* Dynamic Categories */}
                 {categories.map(category => {
                   const IconComponent = categoryIcons[category.icon] || Star;
@@ -362,17 +419,39 @@ export const Explore: React.FC = () => {
                       variant={selectedCategory === category.name ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setSelectedCategory(category.name)}
-                      className={selectedCategory === category.name ? 'bg-white text-black hover:bg-white/90' : 'hover:bg-[#1e1e24] hover:text-foreground focus-visible:ring-0 focus-visible:ring-offset-0'}
+                      className={`flex-shrink-0 rounded-full px-4 ${
+                        selectedCategory === category.name 
+                          ? 'bg-white text-black hover:bg-white/90' 
+                          : 'hover:bg-[#1e1e24] hover:text-foreground focus-visible:ring-0 focus-visible:ring-offset-0'
+                      }`}
                       data-testid={`category-filter-${category.slug}`}
                     >
-                      <IconComponent className="w-3 h-3 mr-1" style={{ color: category.color }} />
+                      <IconComponent className="w-3 h-3 mr-1" style={{ color: selectedCategory === category.name ? '#000' : category.color }} />
                       {category.name}
                     </Button>
                   );
                 })}
-              </>
-            )}
-          </div>
+              </div>
+
+              {/* Right Arrow */}
+              <button
+                id="scroll-right"
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm border border-border rounded-full w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors opacity-100"
+                onClick={() => {
+                  const container = document.getElementById('category-scroll-container');
+                  if (container) {
+                    container.scrollBy({ left: 200, behavior: 'smooth' });
+                  }
+                }}
+                aria-label="Scroll categories right"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+            </>
+          )}
+        </div>
         </div>
 
         {/* Results Count */}
@@ -517,7 +596,7 @@ export const Explore: React.FC = () => {
                 Select a tier to unlock exclusive content from {selectedCreator.display_name}
               </p>
             </DialogHeader>
-            
+
             <div className="flex-1 overflow-y-auto pr-2 -mr-2">
               <div className="space-y-3">
                 {(() => {
@@ -563,7 +642,7 @@ export const Explore: React.FC = () => {
                               Monthly
                             </div>
                           </div>
-                          
+
                           {/* Description */}
                           {tier.description && (
                             <div className="bg-muted/30 p-3 rounded-lg">
@@ -612,7 +691,7 @@ export const Explore: React.FC = () => {
                 )}
               </div>
             </div>
-            
+
             <div className="flex-shrink-0 pt-4 border-t border-border/50">
               <p className="text-xs text-center text-muted-foreground">
                 Cancel anytime • Secure payments via Paystack
