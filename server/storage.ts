@@ -20,6 +20,7 @@ import {
   categories,
   creator_categories,
   creator_favorites, // Make sure creator_favorites is imported if it's a separate table
+  creator_likes,
   type User,
   type InsertUser,
   type Post,
@@ -551,11 +552,7 @@ export class DatabaseStorage implements IStorage {
           price: subscription_tiers.price,
           description: subscription_tiers.description
         },
-        status: subscriptions.status,
-        next_billing_date: subscriptions.ends_at,
-        current_period_end: subscriptions.ends_at,
-        created_at: subscriptions.created_at,
-        auto_renew: subscriptions.auto_renew
+        next_billing_date: subscriptions.ends_at
       })
       .from(subscriptions)
       .innerJoin(users, eq(subscriptions.creator_id, users.id))
