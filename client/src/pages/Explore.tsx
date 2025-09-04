@@ -345,7 +345,7 @@ export const Explore: React.FC = () => {
               {/* Left Arrow */}
               <button
                 id="scroll-left"
-                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 text-muted-foreground hover:text-foreground hover:bg-accent opacity-0 pointer-events-none"
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm border border-border rounded-full w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors opacity-0 pointer-events-none"
                 onClick={() => {
                   const container = document.getElementById('category-scroll-container');
                   if (container) {
@@ -425,7 +425,7 @@ export const Explore: React.FC = () => {
                   variant={selectedCategory === 'All' ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => setSelectedCategory('All')}
-                  className={`flex-shrink-0 rounded-full px-4 ${
+                  className={`flex-shrink-0 rounded-lg px-4 ${
                     selectedCategory === 'All' 
                       ? 'bg-white text-black hover:bg-white/90' 
                       : 'hover:bg-[#1e1e24] hover:text-foreground focus-visible:ring-0 focus-visible:ring-offset-0'
@@ -444,7 +444,7 @@ export const Explore: React.FC = () => {
                       variant={selectedCategory === category.name ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setSelectedCategory(category.name)}
-                      className={`flex-shrink-0 rounded-full px-4 ${
+                      className={`flex-shrink-0 rounded-lg px-4 ${
                         selectedCategory === category.name 
                           ? 'bg-white text-black hover:bg-white/90' 
                           : 'hover:bg-[#1e1e24] hover:text-foreground focus-visible:ring-0 focus-visible:ring-offset-0'
@@ -461,7 +461,7 @@ export const Explore: React.FC = () => {
               {/* Right Arrow */}
               <button
                 id="scroll-right"
-                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 text-muted-foreground hover:text-foreground hover:bg-accent opacity-0 pointer-events-none"
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm border border-border rounded-full w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors opacity-0 pointer-events-none"
                 onClick={() => {
                   const container = document.getElementById('category-scroll-container');
                   if (container) {
